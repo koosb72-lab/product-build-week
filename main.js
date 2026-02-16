@@ -21,6 +21,7 @@ generateBtn.addEventListener('click', () => {
       const lottoNumber = document.createElement('span');
       lottoNumber.classList.add('lotto-number');
       lottoNumber.textContent = number;
+      lottoNumber.style.backgroundColor = getColorForNumber(number);
       lottoSet.appendChild(lottoNumber);
     });
 
@@ -35,4 +36,18 @@ function generateLottoNumbers() {
     numbers.add(randomNumber);
   }
   return Array.from(numbers).sort((a, b) => a - b);
+}
+
+function getColorForNumber(number) {
+  if (number >= 1 && number <= 10) {
+    return '#fbc400'; // Yellow
+  } else if (number >= 11 && number <= 20) {
+    return '#69c8f2'; // Blue
+  } else if (number >= 21 && number <= 30) {
+    return '#ff7272'; // Red
+  } else if (number >= 31 && number <= 40) {
+    return '#aaa'; // Gray
+  } else {
+    return '#b0d840'; // Green
+  }
 }
