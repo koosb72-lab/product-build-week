@@ -1,21 +1,564 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로또 번호 추첨기 (6/45)</title>
+  <style>
+    :root{
+      /* ===== 다크모드(기본) ===== */
+      --bg1:#070a18;
+      --bg2:#0b1020;
+      --card: rgba(255,255,255,0.06);
+      --line: rgba(255,255,255,0.14);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.72);
+      --shadow: 0 14px 45px rgba(0,0,0,0.35);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+    }
+
+    /* ===== 화이트(라이트) 모드: body에 .light가 붙으면 변수 덮어씀 ===== */
+    body.light{
+      --bg1:#f4f6fb;
+      --bg2:#e9edf7;
+      --card: rgba(255,255,255,0.92);
+      --line: rgba(0,0,0,0.10);
+      --text: rgba(0,0,0,0.88);
+      --muted: rgba(0,0,0,0.60);
+      --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; min-height:100vh;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(124,92,255,0.35), transparent 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(45,212,191,0.22), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 40%, var(--bg1));
+      transition: background .25s ease, color .25s ease;
+    }
+    .container{ max-width: 980px; margin:0 auto; padding: 26px 16px 80px; }
+
+    header{
+      position: sticky; top:0; z-index: 10;
+      padding: 14px 16px;
+      backdrop-filter: blur(12px);
+      background: rgba(6,8,22,0.55);
+      border-bottom: 1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      transition: background .25s ease, border-color .25s ease;
+    }
+    /* 라이트 모드에서 헤더 배경도 조금 밝게 */
+    body.light header{
+      background: rgba(255,255,255,0.70);
+    }
+
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:-0.4px; }
+    .logo{
+      width: 36px; height: 36px; border-radius: 12px;
+      background: linear-gradient(135deg, #7c5cff, #2dd4bf);
+      box-shadow: var(--shadow);
+    }
+    .chip{
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration:none;
+    }
+
+    /* ✅ 테마 토글 버튼(추가) */
+    .theme-toggle{
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    body.light .theme-toggle{
+      background: rgba(0,0,0,0.04);
+    }
+
+    .card{
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    h1{ margin: 0; font-size: 18px; }
+    .sub{ margin: 8px 0 0; color: var(--muted); line-height: 1.7; font-size: 14px; }
+
+    .controls{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top: 14px;
+      align-items:center;
+    }
+    .btn{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 750;
+      transition: transform .15s ease, border-color .15s ease;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    body.light .btn{
+      background: rgba(0,0,0,0.04);
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.28); }
+    body.light .btn:hover{ border-color: rgba(0,0,0,0.22); }
+    .btn:active{ transform: translateY(0); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(124,92,255,0.9), rgba(45,212,191,0.5));
+      border-color: rgba(255,255,255,0.18);
+    }
+    .btn.danger{
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.86);
+    }
+    body.light .btn.danger{
+      background: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.80);
+      border-color: rgba(0,0,0,0.12);
+    }
+
+    .options{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-left:auto;
+      align-items:center;
+    }
+    select, input[type="number"]{
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      outline: none;
+      font-size: 14px;
+    }
+    body.light select, body.light input[type="number"]{
+      background: rgba(255,255,255,0.90);
+      color: rgba(0,0,0,0.88);
+    }
+    label{ color: var(--muted); font-size: 13px; display:flex; gap:8px; align-items:center; }
+
+    .balls{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top: 16px;
+      min-height: 62px;
+      align-items:center;
+    }
+
+    .ball{
+      width: 52px; height: 52px;
+      border-radius: 999px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 900;
+      letter-spacing:-0.2px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+      animation: pop .28s ease forwards;
+      user-select:none;
+      position: relative;
+      overflow: hidden;
+    }
+    body.light .ball{
+      border-color: rgba(0,0,0,0.10);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+    }
+    .ball::before{
+      content:"";
+      position:absolute;
+      inset: -10% -10% auto -10%;
+      height: 55%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.0));
+      transform: rotate(-18deg);
+      pointer-events:none;
+      opacity: 0.45;
+    }
+
+    .ball.small{
+      width: 42px; height: 42px;
+      font-size: 14px;
+    }
+    @keyframes pop{
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .ball.yellow { background: #fbc400; color: #111; }
+    .ball.blue   { background: #69c8f2; color: #111; }
+    .ball.red    { background: #ff7272; color: #111; }
+    .ball.gray   { background: #aaaaaa; color: #111; }
+    .ball.green  { background: #b0d840; color: #111; }
+
+    .meta{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      display:flex; flex-wrap:wrap; gap:12px;
+      align-items:center;
+    }
+
+    @media (max-width: 860px){
+      .options{ margin-left: 0; }
+    }
+
+    .history{
+      margin-top: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display:grid;
+      gap: 10px;
+    }
+    .history-item{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 12px 12px;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      align-items:center;
+    }
+    body.light .history-item{
+      background: rgba(0,0,0,0.03);
+    }
+
+    .history-left{
+      display:flex; flex-direction:column; gap:6px;
+      min-width: 140px;
+    }
+    .history-title{
+      font-weight: 850; font-size: 14px;
+    }
+    .history-time{
+      font-size: 12px; color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .toast{
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(6,8,22,0.82);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      display:none;
+      z-index: 99;
+      max-width: min(560px, calc(100vw - 24px));
+      font-size: 13px;
+      line-height: 1.5;
+      text-align:center;
+    }
+    body.light .toast{
+      background: rgba(255,255,255,0.92);
+      border-color: rgba(0,0,0,0.12);
+      color: rgba(0,0,0,0.85);
+    }
+
+    .muted{ color: var(--muted); }
+  </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>로또 번호 생성기</h1>
-    <div class="controls">
-      <label for="sets">생성할 갯수 (최대 5개):</label>
-      <input type="number" id="sets" min="1" max="5" value="1">
-      <button id="generate">생성</button>
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true"></div>
+    <div>
+      <div style="font-size:14px;">로또 번호 추첨기</div>
+      <div style="font-size:12px; color: var(--muted);">6/45 · 중복 없이 랜덤</div>
     </div>
-    <div id="results"></div>
   </div>
-  <script defer type="text/javascript" src="/main.js"></script>
+
+  <!-- ✅ 오른쪽 영역: 테마 토글 + 기존 링크 -->
+  <div style="display:flex; gap:10px; align-items:center;">
+    <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
+    <a class="chip" href="#history">최근 추첨</a>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h1>원클릭 로또 번호 뽑기</h1>
+    <p class="sub">
+      버튼을 누르면 <b>1~45</b>에서 <b>중복 없이 6개</b>를 뽑아 <b>오름차순 정렬</b>로 보여줍니다.
+      (이 도구는 재미/연습용이며 당첨을 보장하지 않습니다.)
+    </p>
+
+    <div class="controls">
+      <button class="btn primary" id="drawBtn">🎲 추첨하기</button>
+      <button class="btn" id="copyBtn">📋 번호 복사</button>
+      <button class="btn danger" id="resetBtn">🧹 기록 초기화</button>
+
+      <div class="options">
+        <label>정렬
+          <select id="sortMode">
+            <option value="asc" selected>오름차순</option>
+            <option value="none">뽑은 순서</option>
+          </select>
+        </label>
+
+        <label>자동 추첨(회)
+          <input id="autoCount" type="number" min="1" max="10" value="1" />
+        </label>
+        <button class="btn" id="autoBtn">⚡ 자동 실행</button>
+      </div>
+    </div>
+
+    <div class="balls" id="balls" aria-label="추첨 결과"></div>
+
+    <div class="meta">
+      <span>결과: <b id="resultText" class="muted">-</b></span>
+      <span>마지막 추첨: <b id="lastTime" class="muted">-</b></span>
+    </div>
+  </section>
+
+  <section class="card" id="history">
+    <h1>최근 추첨 (최대 10개 저장)</h1>
+    <p class="sub">추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.</p>
+
+    <div class="history" id="historyList"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // ===== 유틸 =====
+  const $ = (id) => document.getElementById(id);
+
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => (t.style.display = "none"), 2400);
+  }
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function nowStamp(){
+    const d = new Date();
+    return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+  }
+
+  // ===== ✅ 다크/화이트 모드 토글(추가) =====
+  const THEME_KEY = "lotto_theme_v1";
+
+  function applyTheme(theme){
+    if(theme === "light"){
+      document.body.classList.add("light");
+      $("themeToggle").textContent = "🌙 다크모드";
+    }else{
+      document.body.classList.remove("light");
+      $("themeToggle").textContent = "☀ 화이트모드";
+    }
+    localStorage.setItem(THEME_KEY, theme);
+  }
+
+  // 저장된 테마 적용(없으면 다크)
+  applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+
+  $("themeToggle").addEventListener("click", () => {
+    const isLight = document.body.classList.contains("light");
+    applyTheme(isLight ? "dark" : "light");
+  });
+
+  // ===== 번호에 따른 색상 클래스 =====
+  function getColorClass(n){
+    if(n <= 10) return "yellow";
+    if(n <= 20) return "blue";
+    if(n <= 30) return "red";
+    if(n <= 40) return "gray";
+    return "green"; // 41~45
+  }
+
+  // ===== 로또 추첨 로직(중복 없는 6개) =====
+  function drawLotto(){
+    const set = new Set();
+    while(set.size < 6){
+      const n = Math.floor(Math.random()*45) + 1; // 1~45
+      set.add(n);
+    }
+    return Array.from(set); // 뽑힌 순서
+  }
+
+  function renderBalls(numbers){
+    const wrap = $("balls");
+    wrap.innerHTML = "";
+
+    numbers.forEach((n, idx) => {
+      const b = document.createElement("div");
+      b.className = "ball " + getColorClass(n);
+      b.textContent = n;
+      b.style.animationDelay = (idx * 60) + "ms";
+      wrap.appendChild(b);
+    });
+  }
+
+  // ===== 저장(최근 10개) =====
+  const STORAGE_KEY = "lotto_history_v1";
+
+  function loadHistory(){
+    try{
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    }catch{
+      return [];
+    }
+  }
+
+  function saveHistory(items){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0,10)));
+  }
+
+  function addHistory(entry){
+    const list = loadHistory();
+    list.unshift(entry);
+    saveHistory(list);
+    renderHistory();
+  }
+
+  function renderHistory(){
+    const list = loadHistory();
+    const box = $("historyList");
+    box.innerHTML = "";
+
+    if(list.length === 0){
+      box.innerHTML = `<div class="muted" style="padding:10px 2px;">아직 추첨 기록이 없습니다.</div>`;
+      return;
+    }
+
+    list.forEach((item, i) => {
+      const row = document.createElement("div");
+      row.className = "history-item";
+
+      const left = document.createElement("div");
+      left.className = "history-left";
+      left.innerHTML = `
+        <div class="history-title">#${list.length - i} 회</div>
+        <div class="history-time">${item.time}</div>
+      `;
+
+      const balls = document.createElement("div");
+      balls.className = "balls";
+      balls.style.marginTop = "0";
+      balls.style.minHeight = "unset";
+
+      item.nums.forEach((n) => {
+        const b = document.createElement("div");
+        b.className = "ball small " + getColorClass(n);
+        b.style.opacity = 1;
+        b.style.transform = "none";
+        b.style.animation = "none";
+        b.textContent = n;
+        balls.appendChild(b);
+      });
+
+      const useBtn = document.createElement("button");
+      useBtn.className = "btn";
+      useBtn.textContent = "이 결과 보기";
+      useBtn.onclick = () => {
+        renderBalls(item.nums);
+        $("resultText").textContent = item.nums.join(", ");
+        $("lastTime").textContent = item.time;
+        toast("선택한 기록을 불러왔습니다.");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      row.appendChild(left);
+      row.appendChild(balls);
+      row.appendChild(useBtn);
+      box.appendChild(row);
+    });
+  }
+
+  // ===== UI 동작 =====
+  function doDrawOnce(){
+    const sortMode = $("sortMode").value;
+    const raw = drawLotto(); // 뽑은 순서
+    const nums = (sortMode === "asc") ? [...raw].sort((a,b)=>a-b) : raw;
+
+    renderBalls(nums);
+
+    const t = nowStamp();
+    $("resultText").textContent = nums.join(", ");
+    $("lastTime").textContent = t;
+
+    addHistory({ time: t, nums });
+  }
+
+  async function copyCurrent(){
+    const txt = $("resultText").textContent;
+    if(!txt || txt === "-"){
+      toast("복사할 번호가 없습니다. 먼저 추첨하세요.");
+      return;
+    }
+    try{
+      await navigator.clipboard.writeText(txt);
+      toast("번호를 클립보드에 복사했습니다!");
+    }catch{
+      const ta = document.createElement("textarea");
+      ta.value = txt;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toast("번호를 복사했습니다! (대체 방식)");
+    }
+  }
+
+  function resetAll(){
+    localStorage.removeItem(STORAGE_KEY);
+    $("balls").innerHTML = "";
+    $("resultText").textContent = "-";
+    $("lastTime").textContent = "-";
+    renderHistory();
+    toast("기록을 초기화했습니다.");
+  }
+
+  async function autoDraw(){
+    let n = Number($("autoCount").value || 1);
+    n = Math.max(1, Math.min(10, n)); // 1~10 제한
+    $("autoCount").value = n;
+
+    toast(`자동 추첨 ${n}회 실행합니다.`);
+    for(let i=0; i<n; i++){
+      doDrawOnce();
+      await new Promise(r => setTimeout(r, 350));
+    }
+  }
+
+  // ===== 이벤트 바인딩 =====
+  $("drawBtn").addEventListener("click", doDrawOnce);
+  $("copyBtn").addEventListener("click", copyCurrent);
+  $("resetBtn").addEventListener("click", resetAll);
+  $("autoBtn").addEventListener("click", autoDraw);
+
+  // 초기 렌더
+  renderHistory();
+</script>
 </body>
 </html>
