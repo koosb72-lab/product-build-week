@@ -418,6 +418,21 @@
       </div>
     </section>
   </div>
+
+  <section class="card" id="comments">
+    <h1 id="commentsTitle">댓글</h1>
+    <p class="sub" id="commentsSub">Disqus 댓글 기능입니다.</p>
+    <div id="disqus_thread"></div>
+    <script>
+      (function() {
+        var d = document, s = d.createElement("script");
+        s.src = "https://productbuildweek.disqus.com/embed.js";
+        s.setAttribute("data-timestamp", +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </section>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -464,6 +479,8 @@
       lastLabel: "마지막 추첨",
       historyTitle: "최근 추첨 (최대 10개 저장)",
       historySub: "추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.",
+      commentsTitle: "댓글",
+      commentsSub: "Disqus 댓글 기능입니다.",
       dinnerTitle: "오늘 저녁 뭐 먹지?",
       dinnerSub: "버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.",
       dinnerPlaceholderTitle: "저녁메뉴를 추천해드릴게요",
@@ -501,6 +518,8 @@
       lastLabel: "Last Draw",
       historyTitle: "Recent Draws (up to 10 saved)",
       historySub: "Results are saved in your browser (local storage) and are not shared to other devices/browsers.",
+      commentsTitle: "Comments",
+      commentsSub: "Comments are powered by Disqus.",
       dinnerTitle: "What should I eat tonight?",
       dinnerSub: "Press the button to get a random dinner menu with a reason.",
       dinnerPlaceholderTitle: "Let's pick your dinner menu",
@@ -568,6 +587,8 @@
     $("lastLabel").textContent = tr("lastLabel");
     $("historyTitle").textContent = tr("historyTitle");
     $("historySub").textContent = tr("historySub");
+    $("commentsTitle").textContent = tr("commentsTitle");
+    $("commentsSub").textContent = tr("commentsSub");
     $("dinnerTitle").textContent = tr("dinnerTitle");
     $("dinnerSub").textContent = tr("dinnerSub");
     $("dinnerTimeLabel").textContent = tr("dinnerTimeLabel");
