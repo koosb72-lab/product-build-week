@@ -71,6 +71,7 @@
       font-size: 13px;
       color: var(--muted);
       text-decoration:none;
+      cursor:pointer;
     }
 
     /* ✅ 테마 토글 버튼(추가) */
@@ -296,6 +297,7 @@
 
   <!-- ✅ 오른쪽 영역: 테마 토글 + 기존 링크 -->
   <div style="display:flex; gap:10px; align-items:center;">
+    <button class="chip" id="dinnerBtn" type="button">🍽 저녁메뉴 추천</button>
     <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
     <a class="chip" href="#history">최근 추첨</a>
   </div>
@@ -334,6 +336,7 @@
     <div class="meta">
       <span>결과: <b id="resultText" class="muted">-</b></span>
       <span>마지막 추첨: <b id="lastTime" class="muted">-</b></span>
+      <span>저녁메뉴: <b id="dinnerText" class="muted">-</b></span>
     </div>
   </section>
 
@@ -363,6 +366,28 @@
   function nowStamp(){
     const d = new Date();
     return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+  }
+
+  const DINNER_MENU = [
+    "김치찌개",
+    "된장찌개",
+    "삼겹살",
+    "제육볶음",
+    "비빔밥",
+    "불고기",
+    "돈까스",
+    "초밥",
+    "파스타",
+    "마라탕",
+    "치킨",
+    "샤브샤브"
+  ];
+
+  function pickDinnerMenu(){
+    const idx = Math.floor(Math.random() * DINNER_MENU.length);
+    const menu = DINNER_MENU[idx];
+    $("dinnerText").textContent = menu;
+    toast(`오늘 저녁 추천: ${menu}`);
   }
 
   // ===== ✅ 다크/화이트 모드 토글(추가) =====
@@ -556,6 +581,7 @@
   $("copyBtn").addEventListener("click", copyCurrent);
   $("resetBtn").addEventListener("click", resetAll);
   $("autoBtn").addEventListener("click", autoDraw);
+  $("dinnerBtn").addEventListener("click", pickDinnerMenu);
 
   // 초기 렌더
   renderHistory();
