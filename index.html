@@ -336,6 +336,48 @@
       gap:10px;
       flex-wrap:wrap;
     }
+
+    .animal-stage{
+      text-align:center;
+    }
+    .animal-preview{
+      width:min(320px, 90%);
+      aspect-ratio: 1 / 1;
+      border: 1px dashed var(--line);
+      border-radius: 20px;
+      margin: 14px auto;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .animal-preview img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
+    .animal-result{
+      margin-top: 10px;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .animal-confidence{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .animal-actions{
+      margin-top: 14px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
   </style>
 </head>
 
@@ -352,6 +394,7 @@
   <!-- ✅ 오른쪽 영역: 테마 토글 + 기존 링크 -->
   <div style="display:flex; gap:10px; align-items:center;">
     <button class="chip" id="dinnerBtn" type="button">🍽 저녁메뉴 추천</button>
+    <button class="chip" id="animalTestBtn" type="button">🐶 동물상 테스트</button>
     <button class="chip" id="langToggle" type="button">EN</button>
     <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
     <a class="chip" id="historyLink" href="#history">최근 추첨</a>
@@ -419,6 +462,27 @@
     </section>
   </div>
 
+  <div class="view hidden" id="animalView">
+    <section class="card animal-stage">
+      <h1 id="animalTitle">강아지/고양이 동물상 테스트</h1>
+      <p class="sub" id="animalSub">얼굴 사진을 업로드하면 모델이 강아지상/고양이상을 예측합니다.</p>
+
+      <input id="animalFileInput" type="file" accept="image/*" />
+      <div class="animal-preview" id="animalPreviewText">
+        <img id="animalPreviewImg" alt="animal preview" />
+        <span id="animalPlaceholder">이미지를 선택해 주세요.</span>
+      </div>
+
+      <div class="animal-result" id="animalResult">-</div>
+      <div class="animal-confidence" id="animalConfidence">-</div>
+
+      <div class="animal-actions">
+        <button class="btn primary" id="animalRunBtn" type="button">🔎 동물상 분석</button>
+        <button class="btn" id="animalBackBtn" type="button">🎲 로또 화면으로</button>
+      </div>
+    </section>
+  </div>
+
   <section class="card" id="comments">
     <h1 id="commentsTitle">댓글</h1>
     <p class="sub" id="commentsSub">Disqus 댓글 기능입니다.</p>
@@ -437,6 +501,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <script>
   // ===== 유틸 =====
   const $ = (id) => document.getElementById(id);
@@ -458,6 +524,9 @@
   const LANG_KEY = "lotto_lang_v1";
   let currentLang = localStorage.getItem(LANG_KEY) || "ko";
   let lastDinner = null;
+  const ANIMAL_MODEL_BASE = "https://teachablemachine.withgoogle.com/models/8lfLdOYC9/";
+  let animalModel = null;
+  let animalImageReady = false;
 
   const I18N = {
     ko: {
@@ -481,6 +550,17 @@
       historySub: "추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.",
       commentsTitle: "댓글",
       commentsSub: "Disqus 댓글 기능입니다.",
+      animalBtn: "🐶 동물상 테스트",
+      animalTitle: "강아지/고양이 동물상 테스트",
+      animalSub: "얼굴 사진을 업로드하면 모델이 강아지상/고양이상을 예측합니다.",
+      animalPlaceholder: "이미지를 선택해 주세요.",
+      animalRunBtn: "🔎 동물상 분석",
+      animalBackBtn: "🎲 로또 화면으로",
+      toastAnimalNoImage: "먼저 분석할 이미지를 선택해 주세요.",
+      toastAnimalLoading: "동물상 모델을 불러오는 중입니다...",
+      toastAnimalError: "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      animalResultPrefix: "분석 결과",
+      animalConfidencePrefix: "신뢰도",
       dinnerTitle: "오늘 저녁 뭐 먹지?",
       dinnerSub: "버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.",
       dinnerPlaceholderTitle: "저녁메뉴를 추천해드릴게요",
@@ -520,6 +600,17 @@
       historySub: "Results are saved in your browser (local storage) and are not shared to other devices/browsers.",
       commentsTitle: "Comments",
       commentsSub: "Comments are powered by Disqus.",
+      animalBtn: "🐶 Animal Face Test",
+      animalTitle: "Dog/Cat Face Type Test",
+      animalSub: "Upload a face image and the model predicts dog-like or cat-like type.",
+      animalPlaceholder: "Please choose an image.",
+      animalRunBtn: "🔎 Analyze",
+      animalBackBtn: "🎲 Back to Lotto",
+      toastAnimalNoImage: "Please select an image first.",
+      toastAnimalLoading: "Loading animal-face model...",
+      toastAnimalError: "An error occurred while analyzing. Please try again.",
+      animalResultPrefix: "Result",
+      animalConfidencePrefix: "Confidence",
       dinnerTitle: "What should I eat tonight?",
       dinnerSub: "Press the button to get a random dinner menu with a reason.",
       dinnerPlaceholderTitle: "Let's pick your dinner menu",
@@ -572,6 +663,7 @@
     $("brandTitle").textContent = tr("brandTitle");
     $("brandSub").textContent = tr("brandSub");
     $("dinnerBtn").textContent = tr("dinnerBtn");
+    $("animalTestBtn").textContent = tr("animalBtn");
     $("historyLink").textContent = tr("historyLink");
     $("lottoTitle").textContent = tr("lottoTitle");
     $("lottoSub").innerHTML = tr("lottoSub");
@@ -589,6 +681,11 @@
     $("historySub").textContent = tr("historySub");
     $("commentsTitle").textContent = tr("commentsTitle");
     $("commentsSub").textContent = tr("commentsSub");
+    $("animalTitle").textContent = tr("animalTitle");
+    $("animalSub").textContent = tr("animalSub");
+    $("animalPlaceholder").textContent = tr("animalPlaceholder");
+    $("animalRunBtn").textContent = tr("animalRunBtn");
+    $("animalBackBtn").textContent = tr("animalBackBtn");
     $("dinnerTitle").textContent = tr("dinnerTitle");
     $("dinnerSub").textContent = tr("dinnerSub");
     $("dinnerTimeLabel").textContent = tr("dinnerTimeLabel");
@@ -607,13 +704,22 @@
   function openDinnerView(){
     $("lottoView").classList.add("hidden");
     $("dinnerView").classList.remove("hidden");
+    $("animalView").classList.add("hidden");
     $("historyLink").style.display = "none";
   }
 
   function openLottoView(){
     $("dinnerView").classList.add("hidden");
+    $("animalView").classList.add("hidden");
     $("lottoView").classList.remove("hidden");
     $("historyLink").style.display = "inline-flex";
+  }
+
+  function openAnimalView(){
+    $("lottoView").classList.add("hidden");
+    $("dinnerView").classList.add("hidden");
+    $("animalView").classList.remove("hidden");
+    $("historyLink").style.display = "none";
   }
 
   function renderDinner(picked){
@@ -629,6 +735,53 @@
     renderDinner(lastDinner);
     const menuName = (currentLang === "ko") ? lastDinner.koName : lastDinner.enName;
     toast(tr("toastDinner").replace("{menu}", menuName));
+  }
+
+  async function loadAnimalModel(){
+    if(animalModel){
+      return animalModel;
+    }
+    toast(tr("toastAnimalLoading"));
+    const modelURL = ANIMAL_MODEL_BASE + "model.json";
+    const metadataURL = ANIMAL_MODEL_BASE + "metadata.json";
+    animalModel = await tmImage.load(modelURL, metadataURL);
+    return animalModel;
+  }
+
+  function handleAnimalImageSelect(e){
+    const file = e.target.files && e.target.files[0];
+    const previewImg = $("animalPreviewImg");
+    const placeholder = $("animalPlaceholder");
+    if(!file){
+      animalImageReady = false;
+      previewImg.style.display = "none";
+      placeholder.style.display = "inline";
+      return;
+    }
+    previewImg.src = URL.createObjectURL(file);
+    previewImg.style.display = "block";
+    placeholder.style.display = "none";
+    $("animalResult").textContent = "-";
+    $("animalConfidence").textContent = "-";
+    animalImageReady = true;
+  }
+
+  async function runAnimalTest(){
+    if(!animalImageReady){
+      toast(tr("toastAnimalNoImage"));
+      return;
+    }
+    try{
+      const model = await loadAnimalModel();
+      const previewImg = $("animalPreviewImg");
+      const prediction = await model.predict(previewImg);
+      prediction.sort((a, b) => b.probability - a.probability);
+      const top = prediction[0];
+      $("animalResult").textContent = `${tr("animalResultPrefix")}: ${top.className}`;
+      $("animalConfidence").textContent = `${tr("animalConfidencePrefix")}: ${(top.probability * 100).toFixed(1)}%`;
+    }catch{
+      toast(tr("toastAnimalError"));
+    }
   }
 
   // ===== ✅ 다크/화이트 모드 토글(추가) =====
@@ -828,6 +981,10 @@
     openDinnerView();
     pickDinnerMenu();
   });
+  $("animalTestBtn").addEventListener("click", openAnimalView);
+  $("animalFileInput").addEventListener("change", handleAnimalImageSelect);
+  $("animalRunBtn").addEventListener("click", runAnimalTest);
+  $("animalBackBtn").addEventListener("click", openLottoView);
   $("dinnerAgainBtn").addEventListener("click", pickDinnerMenu);
   $("backToLottoBtn").addEventListener("click", openLottoView);
 
