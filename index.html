@@ -383,6 +383,37 @@
       gap:10px;
       flex-wrap:wrap;
     }
+    .saju-form{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+      margin-top: 14px;
+    }
+    .saju-form label{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:6px;
+      font-size: 13px;
+    }
+    .saju-result{
+      margin-top: 14px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      line-height: 1.8;
+    }
+    .saju-result h2{
+      margin:0 0 8px;
+      font-size: 16px;
+    }
+    .saju-actions{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
 
     .article-grid{
       display:grid;
@@ -453,6 +484,7 @@
   <div style="display:flex; gap:10px; align-items:center;">
     <button class="chip" id="dinnerBtn" type="button">🍽 저녁메뉴 추천</button>
     <button class="chip" id="animalTestBtn" type="button">🐶 동물상 테스트</button>
+    <button class="chip" id="sajuBtn" type="button">🔮 사주 보기</button>
     <button class="chip" id="langToggle" type="button">EN</button>
     <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
     <a class="chip" id="historyLink" href="#history">최근 추첨</a>
@@ -537,6 +569,38 @@
       <div class="animal-actions">
         <button class="btn primary" id="animalRunBtn" type="button">🔎 동물상 분석</button>
         <button class="btn" id="animalBackBtn" type="button">🎲 로또 화면으로</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="view hidden" id="sajuView">
+    <section class="card">
+      <h1 id="sajuTitle">오늘의 사주 간단 보기</h1>
+      <p class="sub" id="sajuSub">생년월일과 태어난 시간을 입력하면 오행 성향과 오늘의 흐름을 참고용으로 보여드립니다.</p>
+
+      <div class="saju-form">
+        <label><span id="sajuYearLabel">출생 연도</span>
+          <input type="number" id="birthYear" min="1900" max="2100" value="1995" />
+        </label>
+        <label><span id="sajuMonthLabel">출생 월</span>
+          <input type="number" id="birthMonth" min="1" max="12" value="1" />
+        </label>
+        <label><span id="sajuDayLabel">출생 일</span>
+          <input type="number" id="birthDay" min="1" max="31" value="1" />
+        </label>
+        <label><span id="sajuHourLabel">출생 시간(24h)</span>
+          <input type="number" id="birthHour" min="0" max="23" value="12" />
+        </label>
+      </div>
+
+      <div class="saju-actions">
+        <button class="btn primary" id="sajuRunBtn" type="button">✨ 사주 보기</button>
+        <button class="btn" id="sajuBackBtn" type="button">🎲 로또 화면으로</button>
+      </div>
+
+      <div class="saju-result" id="sajuResult">
+        <h2 id="sajuResultTitle">결과 안내</h2>
+        <div id="sajuResultBody">입력 후 버튼을 누르면 결과가 표시됩니다.</div>
       </div>
     </section>
   </div>
@@ -641,6 +705,21 @@
       historySub: "추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.",
       commentsTitle: "댓글",
       commentsSub: "Disqus 댓글 기능입니다.",
+      sajuBtn: "🔮 사주 보기",
+      sajuTitle: "오늘의 사주 간단 보기",
+      sajuSub: "생년월일과 태어난 시간을 입력하면 오행 성향과 오늘의 흐름을 참고용으로 보여드립니다.",
+      sajuYearLabel: "출생 연도",
+      sajuMonthLabel: "출생 월",
+      sajuDayLabel: "출생 일",
+      sajuHourLabel: "출생 시간(24h)",
+      sajuRunBtn: "✨ 사주 보기",
+      sajuBackBtn: "🎲 로또 화면으로",
+      sajuResultTitle: "결과 안내",
+      sajuResultInit: "입력 후 버튼을 누르면 결과가 표시됩니다.",
+      toastSajuInvalid: "생년월일/시간을 정확히 입력해 주세요.",
+      sajuYearAnimal: "띠",
+      sajuElement: "오행 성향",
+      sajuAdvice: "오늘의 조언",
       animalBtn: "🐶 동물상 테스트",
       animalTitle: "강아지/고양이 동물상 테스트",
       animalSub: "얼굴 사진을 업로드하면 모델이 강아지상/고양이상을 예측합니다.",
@@ -691,6 +770,21 @@
       historySub: "Results are saved in your browser (local storage) and are not shared to other devices/browsers.",
       commentsTitle: "Comments",
       commentsSub: "Comments are powered by Disqus.",
+      sajuBtn: "🔮 Saju",
+      sajuTitle: "Quick Saju Reading",
+      sajuSub: "Enter birth date and hour to see a simple five-elements tendency and today guidance.",
+      sajuYearLabel: "Birth year",
+      sajuMonthLabel: "Birth month",
+      sajuDayLabel: "Birth day",
+      sajuHourLabel: "Birth hour (24h)",
+      sajuRunBtn: "✨ Read Saju",
+      sajuBackBtn: "🎲 Back to Lotto",
+      sajuResultTitle: "Result",
+      sajuResultInit: "Fill in your birth info and click the button.",
+      toastSajuInvalid: "Please enter a valid birth date and hour.",
+      sajuYearAnimal: "Zodiac",
+      sajuElement: "Element tendency",
+      sajuAdvice: "Today advice",
       animalBtn: "🐶 Animal Face Test",
       animalTitle: "Dog/Cat Face Type Test",
       animalSub: "Upload a face image and the model predicts dog-like or cat-like type.",
@@ -755,6 +849,7 @@
     $("brandSub").textContent = tr("brandSub");
     $("dinnerBtn").textContent = tr("dinnerBtn");
     $("animalTestBtn").textContent = tr("animalBtn");
+    $("sajuBtn").textContent = tr("sajuBtn");
     $("historyLink").textContent = tr("historyLink");
     $("lottoTitle").textContent = tr("lottoTitle");
     $("lottoSub").innerHTML = tr("lottoSub");
@@ -772,6 +867,15 @@
     $("historySub").textContent = tr("historySub");
     $("commentsTitle").textContent = tr("commentsTitle");
     $("commentsSub").textContent = tr("commentsSub");
+    $("sajuTitle").textContent = tr("sajuTitle");
+    $("sajuSub").textContent = tr("sajuSub");
+    $("sajuYearLabel").textContent = tr("sajuYearLabel");
+    $("sajuMonthLabel").textContent = tr("sajuMonthLabel");
+    $("sajuDayLabel").textContent = tr("sajuDayLabel");
+    $("sajuHourLabel").textContent = tr("sajuHourLabel");
+    $("sajuRunBtn").textContent = tr("sajuRunBtn");
+    $("sajuBackBtn").textContent = tr("sajuBackBtn");
+    $("sajuResultTitle").textContent = tr("sajuResultTitle");
     $("animalTitle").textContent = tr("animalTitle");
     $("animalSub").textContent = tr("animalSub");
     $("animalPlaceholder").textContent = tr("animalPlaceholder");
@@ -789,6 +893,9 @@
       $("dinnerMenu").textContent = tr("dinnerPlaceholderTitle");
       $("dinnerReason").textContent = tr("dinnerPlaceholderReason");
     }
+    if($("sajuResultBody").dataset.ready !== "1"){
+      $("sajuResultBody").textContent = tr("sajuResultInit");
+    }
     renderHistory();
   }
 
@@ -796,12 +903,14 @@
     $("lottoView").classList.add("hidden");
     $("dinnerView").classList.remove("hidden");
     $("animalView").classList.add("hidden");
+    $("sajuView").classList.add("hidden");
     $("historyLink").style.display = "none";
   }
 
   function openLottoView(){
     $("dinnerView").classList.add("hidden");
     $("animalView").classList.add("hidden");
+    $("sajuView").classList.add("hidden");
     $("lottoView").classList.remove("hidden");
     $("historyLink").style.display = "inline-flex";
   }
@@ -810,7 +919,65 @@
     $("lottoView").classList.add("hidden");
     $("dinnerView").classList.add("hidden");
     $("animalView").classList.remove("hidden");
+    $("sajuView").classList.add("hidden");
     $("historyLink").style.display = "none";
+  }
+
+  function openSajuView(){
+    $("lottoView").classList.add("hidden");
+    $("dinnerView").classList.add("hidden");
+    $("animalView").classList.add("hidden");
+    $("sajuView").classList.remove("hidden");
+    $("historyLink").style.display = "none";
+  }
+
+  function runSaju(){
+    const year = Number($("birthYear").value);
+    const month = Number($("birthMonth").value);
+    const day = Number($("birthDay").value);
+    const hour = Number($("birthHour").value);
+
+    if(!Number.isInteger(year) || year < 1900 || year > 2100 ||
+       !Number.isInteger(month) || month < 1 || month > 12 ||
+       !Number.isInteger(day) || day < 1 || day > 31 ||
+       !Number.isInteger(hour) || hour < 0 || hour > 23){
+      toast(tr("toastSajuInvalid"));
+      return;
+    }
+
+    const animalsKo = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
+    const animalsEn = ["Monkey","Rooster","Dog","Pig","Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Sheep"];
+    const elementsKo = ["목(木)", "화(火)", "토(土)", "금(金)", "수(水)"];
+    const elementsEn = ["Wood", "Fire", "Earth", "Metal", "Water"];
+    const adviceKo = [
+      "새로운 시작보다 현재 일의 완성도를 높이면 좋은 흐름이 생깁니다.",
+      "대화에서 단정적인 표현을 줄이면 인간관계 운이 좋아집니다.",
+      "작은 지출을 정리하면 금전 흐름이 안정됩니다.",
+      "몸의 리듬을 맞추기 위해 수면 시간을 일정하게 유지해 보세요.",
+      "중요한 결정은 오전보다 오후에 검토하면 실수가 줄어듭니다."
+    ];
+    const adviceEn = [
+      "Focus on finishing current tasks rather than starting too many new ones.",
+      "Softer wording in conversation can improve relationship flow today.",
+      "Reviewing small expenses helps stabilize your money flow.",
+      "Keep a consistent sleep schedule to maintain your physical rhythm.",
+      "Important decisions may work better after a second review later in the day."
+    ];
+
+    const animalIdx = year % 12;
+    const elementIdx = (year + month + day + hour) % 5;
+    const adviceIdx = (year * 3 + month * 5 + day * 7 + hour) % 5;
+
+    const animal = (currentLang === "ko") ? animalsKo[animalIdx] : animalsEn[animalIdx];
+    const element = (currentLang === "ko") ? elementsKo[elementIdx] : elementsEn[elementIdx];
+    const advice = (currentLang === "ko") ? adviceKo[adviceIdx] : adviceEn[adviceIdx];
+
+    $("sajuResultBody").innerHTML = `
+      <div><strong>${tr("sajuYearAnimal")}:</strong> ${animal}</div>
+      <div><strong>${tr("sajuElement")}:</strong> ${element}</div>
+      <div><strong>${tr("sajuAdvice")}:</strong> ${advice}</div>
+    `;
+    $("sajuResultBody").dataset.ready = "1";
   }
 
   function renderDinner(picked){
@@ -1073,9 +1240,12 @@
     pickDinnerMenu();
   });
   $("animalTestBtn").addEventListener("click", openAnimalView);
+  $("sajuBtn").addEventListener("click", openSajuView);
   $("animalFileInput").addEventListener("change", handleAnimalImageSelect);
   $("animalRunBtn").addEventListener("click", runAnimalTest);
   $("animalBackBtn").addEventListener("click", openLottoView);
+  $("sajuRunBtn").addEventListener("click", runSaju);
+  $("sajuBackBtn").addEventListener("click", openLottoView);
   $("dinnerAgainBtn").addEventListener("click", pickDinnerMenu);
   $("backToLottoBtn").addEventListener("click", openLottoView);
 
