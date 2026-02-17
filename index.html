@@ -282,6 +282,60 @@
     }
 
     .muted{ color: var(--muted); }
+
+    .view.hidden{ display:none; }
+
+    .dinner-card{
+      text-align:center;
+      padding: 28px 18px;
+      background:
+        radial-gradient(500px 240px at 50% -10%, rgba(124,92,255,0.28), transparent 60%),
+        radial-gradient(400px 240px at 50% 110%, rgba(45,212,191,0.22), transparent 60%),
+        var(--card);
+    }
+
+    .dinner-image{
+      width: 156px;
+      height: 156px;
+      margin: 18px auto 12px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 72px;
+      background: rgba(255,255,255,0.06);
+      box-shadow: var(--shadow);
+    }
+    body.light .dinner-image{
+      background: rgba(255,255,255,0.75);
+    }
+
+    .dinner-menu{
+      margin: 6px 0 8px;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+    }
+    .dinner-reason{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .dinner-meta{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: var(--mono);
+    }
+    .dinner-actions{
+      margin-top: 16px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
   </style>
 </head>
 
@@ -299,11 +353,12 @@
   <div style="display:flex; gap:10px; align-items:center;">
     <button class="chip" id="dinnerBtn" type="button">🍽 저녁메뉴 추천</button>
     <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
-    <a class="chip" href="#history">최근 추첨</a>
+    <a class="chip" id="historyLink" href="#history">최근 추첨</a>
   </div>
 </header>
 
 <main class="container">
+  <div class="view" id="lottoView">
   <section class="card">
     <h1>원클릭 로또 번호 뽑기</h1>
     <p class="sub">
@@ -336,7 +391,6 @@
     <div class="meta">
       <span>결과: <b id="resultText" class="muted">-</b></span>
       <span>마지막 추첨: <b id="lastTime" class="muted">-</b></span>
-      <span>저녁메뉴: <b id="dinnerText" class="muted">-</b></span>
     </div>
   </section>
 
@@ -346,6 +400,24 @@
 
     <div class="history" id="historyList"></div>
   </section>
+  </div>
+
+  <div class="view hidden" id="dinnerView">
+    <section class="card dinner-card">
+      <h1>오늘 저녁 뭐 먹지?</h1>
+      <p class="sub">버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.</p>
+
+      <div class="dinner-image" id="dinnerImage" aria-hidden="true">🍽</div>
+      <div class="dinner-menu" id="dinnerMenu">저녁메뉴를 추천해드릴게요</div>
+      <p class="dinner-reason" id="dinnerReason">오른쪽 위 버튼 또는 아래 버튼으로 추천을 시작해보세요.</p>
+      <div class="dinner-meta">추천 시각: <b id="dinnerTime">-</b></div>
+
+      <div class="dinner-actions">
+        <button class="btn primary" id="dinnerAgainBtn" type="button">🔀 다시 추천받기</button>
+        <button class="btn" id="backToLottoBtn" type="button">🎲 로또 화면으로</button>
+      </div>
+    </section>
+  </div>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -369,25 +441,37 @@
   }
 
   const DINNER_MENU = [
-    "김치찌개",
-    "된장찌개",
-    "삼겹살",
-    "제육볶음",
-    "비빔밥",
-    "불고기",
-    "돈까스",
-    "초밥",
-    "파스타",
-    "마라탕",
-    "치킨",
-    "샤브샤브"
+    { name: "김치찌개", image: "🍲", reason: "칼칼한 국물이라 하루 피로를 풀면서 든든하게 마무리하기 좋습니다." },
+    { name: "삼겹살", image: "🥓", reason: "굽는 재미가 있어 식사 시간이 더 즐겁고, 포만감도 확실합니다." },
+    { name: "비빔밥", image: "🥗", reason: "채소와 단백질을 균형 있게 먹을 수 있어 부담이 적습니다." },
+    { name: "돈까스", image: "🍛", reason: "바삭한 식감으로 만족감이 높고 남녀노소 선호도가 높습니다." },
+    { name: "초밥", image: "🍣", reason: "깔끔한 맛으로 늦은 저녁에도 비교적 가볍게 즐길 수 있습니다." },
+    { name: "파스타", image: "🍝", reason: "소스 선택 폭이 넓어서 그날 기분에 맞춰 즐기기 좋습니다." },
+    { name: "마라탕", image: "🌶️", reason: "재료를 취향대로 고를 수 있어 커스터마이징 만족도가 높습니다." },
+    { name: "치킨", image: "🍗", reason: "혼밥부터 모임까지 모두 어울리고 실패 확률이 낮은 메뉴입니다." },
+    { name: "샤브샤브", image: "🥘", reason: "신선한 재료를 빠르게 익혀 먹어 깔끔하고 따뜻한 한 끼가 됩니다." }
   ];
+
+  function openDinnerView(){
+    $("lottoView").classList.add("hidden");
+    $("dinnerView").classList.remove("hidden");
+    $("historyLink").style.display = "none";
+  }
+
+  function openLottoView(){
+    $("dinnerView").classList.add("hidden");
+    $("lottoView").classList.remove("hidden");
+    $("historyLink").style.display = "inline-flex";
+  }
 
   function pickDinnerMenu(){
     const idx = Math.floor(Math.random() * DINNER_MENU.length);
-    const menu = DINNER_MENU[idx];
-    $("dinnerText").textContent = menu;
-    toast(`오늘 저녁 추천: ${menu}`);
+    const picked = DINNER_MENU[idx];
+    $("dinnerImage").textContent = picked.image;
+    $("dinnerMenu").textContent = picked.name;
+    $("dinnerReason").textContent = picked.reason;
+    $("dinnerTime").textContent = nowStamp();
+    toast(`오늘 저녁 추천: ${picked.name}`);
   }
 
   // ===== ✅ 다크/화이트 모드 토글(추가) =====
@@ -581,7 +665,12 @@
   $("copyBtn").addEventListener("click", copyCurrent);
   $("resetBtn").addEventListener("click", resetAll);
   $("autoBtn").addEventListener("click", autoDraw);
-  $("dinnerBtn").addEventListener("click", pickDinnerMenu);
+  $("dinnerBtn").addEventListener("click", () => {
+    openDinnerView();
+    pickDinnerMenu();
+  });
+  $("dinnerAgainBtn").addEventListener("click", pickDinnerMenu);
+  $("backToLottoBtn").addEventListener("click", openLottoView);
 
   // 초기 렌더
   renderHistory();
