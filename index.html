@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="로또 번호 생성기, 저녁메뉴 추천, 동물상 테스트와 함께 확률/책임 이용 가이드를 제공하는 정보형 웹사이트입니다." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://koosb72-lab.github.io/product-build-week/" />
   <meta name="google-adsense-account" content="ca-pub-7981059984083694" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7981059984083694" crossorigin="anonymous"></script>
   <title>로또 번호 추첨기 (6/45)</title>
@@ -380,6 +383,59 @@
       gap:10px;
       flex-wrap:wrap;
     }
+
+    .article-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-top: 12px;
+    }
+    .article-item{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+    }
+    body.light .article-item{
+      background: rgba(0,0,0,0.02);
+    }
+    .article-item h2{
+      margin:0;
+      font-size: 15px;
+    }
+    .article-item p{
+      margin:8px 0 0;
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .site-footer{
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .footer-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 8px;
+    }
+    .footer-links a{
+      color: var(--text);
+      border:1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      text-decoration:none;
+      font-size: 12px;
+    }
+    @media (max-width: 860px){
+      .article-grid{ grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 
@@ -499,6 +555,39 @@
     </script>
     <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
   </section>
+
+  <section class="card" id="guides">
+    <h1>콘텐츠 가이드 & 책임 있는 이용</h1>
+    <p class="sub">
+      본 사이트는 단순 도구 제공을 넘어서 사용자에게 실제로 도움이 되는 정보 콘텐츠를 함께 제공합니다.
+      과몰입을 유도하지 않으며, 확률형 서비스는 항상 책임 있게 이용해야 합니다.
+    </p>
+    <div class="article-grid">
+      <article class="article-item">
+        <h2>1) 로또 번호 생성기의 올바른 사용법</h2>
+        <p>랜덤 추첨은 재미 요소이며 당첨을 보장하지 않습니다. 번호 생성은 기록 관리와 취향 실험용으로 활용하세요.</p>
+      </article>
+      <article class="article-item">
+        <h2>2) 과도한 지출을 막는 예산 규칙</h2>
+        <p>월 예산을 먼저 정하고, 손실 복구를 위한 추가 지출은 하지 않는 것이 핵심입니다. 여유 자금 내에서만 이용하세요.</p>
+      </article>
+      <article class="article-item">
+        <h2>3) 자동 추천 도구의 한계</h2>
+        <p>저녁메뉴 추천/동물상 테스트는 오락 및 참고 목적입니다. 건강/의학/전문 판단을 대체하지 않습니다.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div><strong>Product Build Week</strong>는 도구와 정보성 콘텐츠를 함께 제공하는 실험형 사이트입니다.</div>
+    <div>문의 및 정책 문서는 아래 링크에서 확인할 수 있습니다.</div>
+    <div class="footer-links">
+      <a href="./about.html">사이트 소개</a>
+      <a href="./contact.html">문의하기</a>
+      <a href="./privacy.html">개인정보 처리방침</a>
+      <a href="./terms.html">이용약관</a>
+    </div>
+  </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
