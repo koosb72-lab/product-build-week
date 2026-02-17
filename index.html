@@ -344,14 +344,15 @@
   <div class="brand">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div style="font-size:14px;">로또 번호 추첨기</div>
-      <div style="font-size:12px; color: var(--muted);">6/45 · 중복 없이 랜덤</div>
+      <div id="brandTitle" style="font-size:14px;">로또 번호 추첨기</div>
+      <div id="brandSub" style="font-size:12px; color: var(--muted);">6/45 · 중복 없이 랜덤</div>
     </div>
   </div>
 
   <!-- ✅ 오른쪽 영역: 테마 토글 + 기존 링크 -->
   <div style="display:flex; gap:10px; align-items:center;">
     <button class="chip" id="dinnerBtn" type="button">🍽 저녁메뉴 추천</button>
+    <button class="chip" id="langToggle" type="button">EN</button>
     <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
     <a class="chip" id="historyLink" href="#history">최근 추첨</a>
   </div>
@@ -360,10 +361,9 @@
 <main class="container">
   <div class="view" id="lottoView">
   <section class="card">
-    <h1>원클릭 로또 번호 뽑기</h1>
-    <p class="sub">
-      버튼을 누르면 <b>1~45</b>에서 <b>중복 없이 6개</b>를 뽑아 <b>오름차순 정렬</b>로 보여줍니다.
-      (이 도구는 재미/연습용이며 당첨을 보장하지 않습니다.)
+    <h1 id="lottoTitle">원클릭 로또 번호 뽑기</h1>
+    <p class="sub" id="lottoSub">
+      버튼을 누르면 <b>1~45</b>에서 <b>중복 없이 6개</b>를 뽑아 <b>오름차순 정렬</b>로 보여줍니다. (이 도구는 재미/연습용이며 당첨을 보장하지 않습니다.)
     </p>
 
     <div class="controls">
@@ -372,14 +372,14 @@
       <button class="btn danger" id="resetBtn">🧹 기록 초기화</button>
 
       <div class="options">
-        <label>정렬
+        <label><span id="sortLabel">정렬</span>
           <select id="sortMode">
-            <option value="asc" selected>오름차순</option>
-            <option value="none">뽑은 순서</option>
+            <option id="sortAsc" value="asc" selected>오름차순</option>
+            <option id="sortNone" value="none">뽑은 순서</option>
           </select>
         </label>
 
-        <label>자동 추첨(회)
+        <label><span id="autoLabel">자동 추첨(회)</span>
           <input id="autoCount" type="number" min="1" max="10" value="1" />
         </label>
         <button class="btn" id="autoBtn">⚡ 자동 실행</button>
@@ -389,14 +389,14 @@
     <div class="balls" id="balls" aria-label="추첨 결과"></div>
 
     <div class="meta">
-      <span>결과: <b id="resultText" class="muted">-</b></span>
-      <span>마지막 추첨: <b id="lastTime" class="muted">-</b></span>
+      <span><span id="resultLabel">결과</span>: <b id="resultText" class="muted">-</b></span>
+      <span><span id="lastLabel">마지막 추첨</span>: <b id="lastTime" class="muted">-</b></span>
     </div>
   </section>
 
   <section class="card" id="history">
-    <h1>최근 추첨 (최대 10개 저장)</h1>
-    <p class="sub">추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.</p>
+    <h1 id="historyTitle">최근 추첨 (최대 10개 저장)</h1>
+    <p class="sub" id="historySub">추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.</p>
 
     <div class="history" id="historyList"></div>
   </section>
@@ -404,13 +404,13 @@
 
   <div class="view hidden" id="dinnerView">
     <section class="card dinner-card">
-      <h1>오늘 저녁 뭐 먹지?</h1>
-      <p class="sub">버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.</p>
+      <h1 id="dinnerTitle">오늘 저녁 뭐 먹지?</h1>
+      <p class="sub" id="dinnerSub">버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.</p>
 
       <div class="dinner-image" id="dinnerImage" aria-hidden="true">🍽</div>
       <div class="dinner-menu" id="dinnerMenu">저녁메뉴를 추천해드릴게요</div>
       <p class="dinner-reason" id="dinnerReason">오른쪽 위 버튼 또는 아래 버튼으로 추천을 시작해보세요.</p>
-      <div class="dinner-meta">추천 시각: <b id="dinnerTime">-</b></div>
+      <div class="dinner-meta"><span id="dinnerTimeLabel">추천 시각</span>: <b id="dinnerTime">-</b></div>
 
       <div class="dinner-actions">
         <button class="btn primary" id="dinnerAgainBtn" type="button">🔀 다시 추천받기</button>
@@ -440,17 +440,148 @@
     return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
   }
 
+  const LANG_KEY = "lotto_lang_v1";
+  let currentLang = localStorage.getItem(LANG_KEY) || "ko";
+  let lastDinner = null;
+
+  const I18N = {
+    ko: {
+      brandTitle: "로또 번호 추첨기",
+      brandSub: "6/45 · 중복 없이 랜덤",
+      dinnerBtn: "🍽 저녁메뉴 추천",
+      historyLink: "최근 추첨",
+      lottoTitle: "원클릭 로또 번호 뽑기",
+      lottoSub: "버튼을 누르면 <b>1~45</b>에서 <b>중복 없이 6개</b>를 뽑아 <b>오름차순 정렬</b>로 보여줍니다. (이 도구는 재미/연습용이며 당첨을 보장하지 않습니다.)",
+      drawBtn: "🎲 추첨하기",
+      copyBtn: "📋 번호 복사",
+      resetBtn: "🧹 기록 초기화",
+      sortLabel: "정렬",
+      sortAsc: "오름차순",
+      sortNone: "뽑은 순서",
+      autoLabel: "자동 추첨(회)",
+      autoBtn: "⚡ 자동 실행",
+      resultLabel: "결과",
+      lastLabel: "마지막 추첨",
+      historyTitle: "최근 추첨 (최대 10개 저장)",
+      historySub: "추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.",
+      dinnerTitle: "오늘 저녁 뭐 먹지?",
+      dinnerSub: "버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.",
+      dinnerPlaceholderTitle: "저녁메뉴를 추천해드릴게요",
+      dinnerPlaceholderReason: "오른쪽 위 버튼 또는 아래 버튼으로 추천을 시작해보세요.",
+      dinnerTimeLabel: "추천 시각",
+      dinnerAgainBtn: "🔀 다시 추천받기",
+      backToLottoBtn: "🎲 로또 화면으로",
+      emptyHistory: "아직 추첨 기록이 없습니다.",
+      showResultBtn: "이 결과 보기",
+      drawUnit: "회",
+      toastDinner: "오늘 저녁 추천: {menu}",
+      toastLoadResult: "선택한 기록을 불러왔습니다.",
+      toastNoCopy: "복사할 번호가 없습니다. 먼저 추첨하세요.",
+      toastCopy: "번호를 클립보드에 복사했습니다!",
+      toastCopyFallback: "번호를 복사했습니다! (대체 방식)",
+      toastReset: "기록을 초기화했습니다.",
+      toastAuto: "자동 추첨 {n}회 실행합니다."
+    },
+    en: {
+      brandTitle: "Lotto Number Picker",
+      brandSub: "6/45 · Random without duplicates",
+      dinnerBtn: "🍽 Dinner Suggestion",
+      historyLink: "Recent Draws",
+      lottoTitle: "One-click Lotto Draw",
+      lottoSub: "Click the button to draw <b>6 unique numbers</b> from <b>1 to 45</b>, shown in <b>ascending order</b>. (For fun/practice only. Not a winning guarantee.)",
+      drawBtn: "🎲 Draw Numbers",
+      copyBtn: "📋 Copy Numbers",
+      resetBtn: "🧹 Reset History",
+      sortLabel: "Sort",
+      sortAsc: "Ascending",
+      sortNone: "Draw Order",
+      autoLabel: "Auto Draw (runs)",
+      autoBtn: "⚡ Run Auto",
+      resultLabel: "Result",
+      lastLabel: "Last Draw",
+      historyTitle: "Recent Draws (up to 10 saved)",
+      historySub: "Results are saved in your browser (local storage) and are not shared to other devices/browsers.",
+      dinnerTitle: "What should I eat tonight?",
+      dinnerSub: "Press the button to get a random dinner menu with a reason.",
+      dinnerPlaceholderTitle: "Let's pick your dinner menu",
+      dinnerPlaceholderReason: "Use the top-right button or the button below to start.",
+      dinnerTimeLabel: "Recommended at",
+      dinnerAgainBtn: "🔀 Recommend Again",
+      backToLottoBtn: "🎲 Back to Lotto",
+      emptyHistory: "No draw history yet.",
+      showResultBtn: "View This Result",
+      drawUnit: "draw",
+      toastDinner: "Dinner recommendation: {menu}",
+      toastLoadResult: "Loaded selected history result.",
+      toastNoCopy: "No numbers to copy. Draw numbers first.",
+      toastCopy: "Copied numbers to clipboard!",
+      toastCopyFallback: "Copied numbers! (fallback method)",
+      toastReset: "History has been reset.",
+      toastAuto: "Running auto draw {n} times."
+    }
+  };
+
   const DINNER_MENU = [
-    { name: "김치찌개", image: "🍲", reason: "칼칼한 국물이라 하루 피로를 풀면서 든든하게 마무리하기 좋습니다." },
-    { name: "삼겹살", image: "🥓", reason: "굽는 재미가 있어 식사 시간이 더 즐겁고, 포만감도 확실합니다." },
-    { name: "비빔밥", image: "🥗", reason: "채소와 단백질을 균형 있게 먹을 수 있어 부담이 적습니다." },
-    { name: "돈까스", image: "🍛", reason: "바삭한 식감으로 만족감이 높고 남녀노소 선호도가 높습니다." },
-    { name: "초밥", image: "🍣", reason: "깔끔한 맛으로 늦은 저녁에도 비교적 가볍게 즐길 수 있습니다." },
-    { name: "파스타", image: "🍝", reason: "소스 선택 폭이 넓어서 그날 기분에 맞춰 즐기기 좋습니다." },
-    { name: "마라탕", image: "🌶️", reason: "재료를 취향대로 고를 수 있어 커스터마이징 만족도가 높습니다." },
-    { name: "치킨", image: "🍗", reason: "혼밥부터 모임까지 모두 어울리고 실패 확률이 낮은 메뉴입니다." },
-    { name: "샤브샤브", image: "🥘", reason: "신선한 재료를 빠르게 익혀 먹어 깔끔하고 따뜻한 한 끼가 됩니다." }
+    { image: "🍲", koName: "김치찌개", enName: "Kimchi Stew", koReason: "칼칼한 국물이라 하루 피로를 풀면서 든든하게 마무리하기 좋습니다.", enReason: "Spicy warm soup helps you unwind and finish the day with comfort." },
+    { image: "🥓", koName: "삼겹살", enName: "Samgyeopsal", koReason: "굽는 재미가 있어 식사 시간이 더 즐겁고, 포만감도 확실합니다.", enReason: "It is fun to grill and gives a very satisfying dinner." },
+    { image: "🥗", koName: "비빔밥", enName: "Bibimbap", koReason: "채소와 단백질을 균형 있게 먹을 수 있어 부담이 적습니다.", enReason: "Balanced ingredients make it a healthy and not-too-heavy option." },
+    { image: "🍛", koName: "돈까스", enName: "Pork Cutlet", koReason: "바삭한 식감으로 만족감이 높고 남녀노소 선호도가 높습니다.", enReason: "The crispy texture is crowd-pleasing and reliably satisfying." },
+    { image: "🍣", koName: "초밥", enName: "Sushi", koReason: "깔끔한 맛으로 늦은 저녁에도 비교적 가볍게 즐길 수 있습니다.", enReason: "Clean flavors make it easier to enjoy even at a late dinner time." },
+    { image: "🍝", koName: "파스타", enName: "Pasta", koReason: "소스 선택 폭이 넓어서 그날 기분에 맞춰 즐기기 좋습니다.", enReason: "With many sauces to choose from, it fits different moods." },
+    { image: "🌶️", koName: "마라탕", enName: "Mala Tang", koReason: "재료를 취향대로 고를 수 있어 커스터마이징 만족도가 높습니다.", enReason: "You can customize ingredients freely, so satisfaction is high." },
+    { image: "🍗", koName: "치킨", enName: "Fried Chicken", koReason: "혼밥부터 모임까지 모두 어울리고 실패 확률이 낮은 메뉴입니다.", enReason: "Works for solo meals and groups, and it is hard to go wrong." },
+    { image: "🥘", koName: "샤브샤브", enName: "Shabu-shabu", koReason: "신선한 재료를 빠르게 익혀 먹어 깔끔하고 따뜻한 한 끼가 됩니다.", enReason: "Fresh ingredients in hot broth make a warm and clean meal." }
   ];
+
+  function tr(key){
+    return I18N[currentLang][key] || key;
+  }
+
+  function setThemeToggleLabel(){
+    const isLight = document.body.classList.contains("light");
+    if(currentLang === "en"){
+      $("themeToggle").textContent = isLight ? "🌙 Dark Mode" : "☀ Light Mode";
+      return;
+    }
+    $("themeToggle").textContent = isLight ? "🌙 다크모드" : "☀ 화이트모드";
+  }
+
+  function applyLanguage(lang){
+    currentLang = lang;
+    localStorage.setItem(LANG_KEY, lang);
+    $("langToggle").textContent = (lang === "ko") ? "EN" : "KO";
+    $("brandTitle").textContent = tr("brandTitle");
+    $("brandSub").textContent = tr("brandSub");
+    $("dinnerBtn").textContent = tr("dinnerBtn");
+    $("historyLink").textContent = tr("historyLink");
+    $("lottoTitle").textContent = tr("lottoTitle");
+    $("lottoSub").innerHTML = tr("lottoSub");
+    $("drawBtn").textContent = tr("drawBtn");
+    $("copyBtn").textContent = tr("copyBtn");
+    $("resetBtn").textContent = tr("resetBtn");
+    $("sortLabel").textContent = tr("sortLabel");
+    $("sortAsc").textContent = tr("sortAsc");
+    $("sortNone").textContent = tr("sortNone");
+    $("autoLabel").textContent = tr("autoLabel");
+    $("autoBtn").textContent = tr("autoBtn");
+    $("resultLabel").textContent = tr("resultLabel");
+    $("lastLabel").textContent = tr("lastLabel");
+    $("historyTitle").textContent = tr("historyTitle");
+    $("historySub").textContent = tr("historySub");
+    $("dinnerTitle").textContent = tr("dinnerTitle");
+    $("dinnerSub").textContent = tr("dinnerSub");
+    $("dinnerTimeLabel").textContent = tr("dinnerTimeLabel");
+    $("dinnerAgainBtn").textContent = tr("dinnerAgainBtn");
+    $("backToLottoBtn").textContent = tr("backToLottoBtn");
+    setThemeToggleLabel();
+    if(lastDinner){
+      renderDinner(lastDinner);
+    }else{
+      $("dinnerMenu").textContent = tr("dinnerPlaceholderTitle");
+      $("dinnerReason").textContent = tr("dinnerPlaceholderReason");
+    }
+    renderHistory();
+  }
 
   function openDinnerView(){
     $("lottoView").classList.add("hidden");
@@ -464,14 +595,19 @@
     $("historyLink").style.display = "inline-flex";
   }
 
+  function renderDinner(picked){
+    $("dinnerImage").textContent = picked.image;
+    $("dinnerMenu").textContent = (currentLang === "ko") ? picked.koName : picked.enName;
+    $("dinnerReason").textContent = (currentLang === "ko") ? picked.koReason : picked.enReason;
+    $("dinnerTime").textContent = nowStamp();
+  }
+
   function pickDinnerMenu(){
     const idx = Math.floor(Math.random() * DINNER_MENU.length);
-    const picked = DINNER_MENU[idx];
-    $("dinnerImage").textContent = picked.image;
-    $("dinnerMenu").textContent = picked.name;
-    $("dinnerReason").textContent = picked.reason;
-    $("dinnerTime").textContent = nowStamp();
-    toast(`오늘 저녁 추천: ${picked.name}`);
+    lastDinner = DINNER_MENU[idx];
+    renderDinner(lastDinner);
+    const menuName = (currentLang === "ko") ? lastDinner.koName : lastDinner.enName;
+    toast(tr("toastDinner").replace("{menu}", menuName));
   }
 
   // ===== ✅ 다크/화이트 모드 토글(추가) =====
@@ -480,11 +616,10 @@
   function applyTheme(theme){
     if(theme === "light"){
       document.body.classList.add("light");
-      $("themeToggle").textContent = "🌙 다크모드";
     }else{
       document.body.classList.remove("light");
-      $("themeToggle").textContent = "☀ 화이트모드";
     }
+    setThemeToggleLabel();
     localStorage.setItem(THEME_KEY, theme);
   }
 
@@ -494,6 +629,9 @@
   $("themeToggle").addEventListener("click", () => {
     const isLight = document.body.classList.contains("light");
     applyTheme(isLight ? "dark" : "light");
+  });
+  $("langToggle").addEventListener("click", () => {
+    applyLanguage(currentLang === "ko" ? "en" : "ko");
   });
 
   // ===== 번호에 따른 색상 클래스 =====
@@ -556,7 +694,7 @@
     box.innerHTML = "";
 
     if(list.length === 0){
-      box.innerHTML = `<div class="muted" style="padding:10px 2px;">아직 추첨 기록이 없습니다.</div>`;
+      box.innerHTML = `<div class="muted" style="padding:10px 2px;">${tr("emptyHistory")}</div>`;
       return;
     }
 
@@ -567,7 +705,7 @@
       const left = document.createElement("div");
       left.className = "history-left";
       left.innerHTML = `
-        <div class="history-title">#${list.length - i} 회</div>
+        <div class="history-title">#${list.length - i} ${tr("drawUnit")}</div>
         <div class="history-time">${item.time}</div>
       `;
 
@@ -588,12 +726,12 @@
 
       const useBtn = document.createElement("button");
       useBtn.className = "btn";
-      useBtn.textContent = "이 결과 보기";
+      useBtn.textContent = tr("showResultBtn");
       useBtn.onclick = () => {
         renderBalls(item.nums);
         $("resultText").textContent = item.nums.join(", ");
         $("lastTime").textContent = item.time;
-        toast("선택한 기록을 불러왔습니다.");
+        toast(tr("toastLoadResult"));
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
@@ -622,12 +760,12 @@
   async function copyCurrent(){
     const txt = $("resultText").textContent;
     if(!txt || txt === "-"){
-      toast("복사할 번호가 없습니다. 먼저 추첨하세요.");
+      toast(tr("toastNoCopy"));
       return;
     }
     try{
       await navigator.clipboard.writeText(txt);
-      toast("번호를 클립보드에 복사했습니다!");
+      toast(tr("toastCopy"));
     }catch{
       const ta = document.createElement("textarea");
       ta.value = txt;
@@ -635,7 +773,7 @@
       ta.select();
       document.execCommand("copy");
       ta.remove();
-      toast("번호를 복사했습니다! (대체 방식)");
+      toast(tr("toastCopyFallback"));
     }
   }
 
@@ -645,7 +783,7 @@
     $("resultText").textContent = "-";
     $("lastTime").textContent = "-";
     renderHistory();
-    toast("기록을 초기화했습니다.");
+    toast(tr("toastReset"));
   }
 
   async function autoDraw(){
@@ -653,7 +791,7 @@
     n = Math.max(1, Math.min(10, n)); // 1~10 제한
     $("autoCount").value = n;
 
-    toast(`자동 추첨 ${n}회 실행합니다.`);
+    toast(tr("toastAuto").replace("{n}", n));
     for(let i=0; i<n; i++){
       doDrawOnce();
       await new Promise(r => setTimeout(r, 350));
@@ -673,7 +811,7 @@
   $("backToLottoBtn").addEventListener("click", openLottoView);
 
   // 초기 렌더
-  renderHistory();
+  applyLanguage(currentLang);
 </script>
 </body>
 </html>
