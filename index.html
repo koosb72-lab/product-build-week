@@ -10,31 +10,42 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7981059984083694" crossorigin="anonymous"></script>
   <title>행운의 도구함 | Product Build Week</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap");
+
     :root{
-      /* ===== 다크모드(기본) ===== */
-      --bg1:#070a18;
-      --bg2:#0b1020;
-      --card: rgba(255,255,255,0.06);
-      --line: rgba(255,255,255,0.14);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.72);
-      --shadow: 0 14px 45px rgba(0,0,0,0.35);
+      /* ===== 라이트모드(기본) ===== */
+      --bg1:#f7f5ef;
+      --bg2:#ece8df;
+      --card: rgba(255,255,255,0.82);
+      --line: rgba(34,39,50,0.12);
+      --text: rgba(26,30,39,0.92);
+      --muted: rgba(46,53,64,0.66);
+      --shadow: 0 16px 38px rgba(20,27,36,0.12);
       --radius: 18px;
-      --primary: #7c5cff;
-      --secondary: #2dd4bf;
-      --gold: #ffd700;
+      --primary: #0ea5a4;
+      --secondary: #ff6f61;
+      --gold: #f1b938;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      --sans: "Outfit", "Noto Sans KR", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body.light{
-      --bg1:#f4f6fb;
-      --bg2:#e9edf7;
-      --card: rgba(255,255,255,0.92);
-      --line: rgba(0,0,0,0.10);
-      --text: rgba(0,0,0,0.88);
-      --muted: rgba(0,0,0,0.60);
-      --shadow: 0 10px 30px rgba(0,0,0,0.10);
+      --bg1:#f7f5ef;
+      --bg2:#ece8df;
+      --card: rgba(255,255,255,0.86);
+      --line: rgba(34,39,50,0.12);
+      --text: rgba(26,30,39,0.92);
+      --muted: rgba(46,53,64,0.66);
+      --shadow: 0 16px 38px rgba(20,27,36,0.12);
+    }
+    body:not(.light){
+      --bg1:#091420;
+      --bg2:#101e2f;
+      --card: rgba(255,255,255,0.06);
+      --line: rgba(255,255,255,0.14);
+      --text: rgba(255,255,255,0.93);
+      --muted: rgba(255,255,255,0.70);
+      --shadow: 0 14px 45px rgba(0,0,0,0.35);
     }
 
     *{ box-sizing:border-box; }
@@ -43,8 +54,8 @@
       font-family: var(--sans);
       color: var(--text);
       background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(124,92,255,0.35), transparent 55%),
-        radial-gradient(900px 500px at 80% 20%, rgba(45,212,191,0.22), transparent 55%),
+        radial-gradient(1200px 600px at 15% 10%, rgba(14,165,164,0.26), transparent 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(255,111,97,0.18), transparent 55%),
         linear-gradient(180deg, var(--bg1), var(--bg2) 40%, var(--bg1));
       transition: background .25s ease, color .25s ease;
     }
@@ -59,7 +70,7 @@
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       transition: background .25s ease, border-color .25s ease;
     }
-    body.light header{ background: rgba(255,255,255,0.70); }
+    body.light header{ background: rgba(255,255,255,0.62); }
 
     .brand{ display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:-0.4px; cursor:pointer; }
     .logo{
@@ -73,7 +84,10 @@
       border-radius: 999px; font-size: 13px; color: var(--muted); text-decoration:none; cursor:pointer; white-space: nowrap;
       transition: 0.2s;
     }
-    .chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: bold; }
+    .chip.active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; border-color: transparent; font-weight: bold;
+    }
     
     .theme-toggle{
       padding: 8px; border: 1px solid var(--line); background: rgba(255,255,255,0.05);
@@ -100,7 +114,7 @@
     .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.3); }
     .btn:active{ transform: translateY(0); }
     .btn.primary{
-      background: linear-gradient(135deg, rgba(124,92,255,0.9), rgba(45,212,191,0.5));
+      background: linear-gradient(135deg, rgba(14,165,164,0.95), rgba(255,111,97,0.82));
       border-color: rgba(255,255,255,0.18); color: #fff;
     }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -129,7 +143,7 @@
     }
     .deck-card {
       width: 60px; height: 100px; border-radius: 8px; cursor: pointer;
-      background: linear-gradient(135deg, #2a2a3a 0%, #111 100%);
+      background: linear-gradient(140deg, #223f56 0%, #121f32 100%);
       border: 1px solid rgba(255,255,255,0.1); position: relative;
       transition: transform 0.25s, box-shadow 0.25s;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -139,7 +153,7 @@
       content: ""; position: absolute; inset: 4px; border: 1px dashed rgba(255,215,0,0.3); border-radius: 4px;
       background-image: radial-gradient(var(--primary) 1px, transparent 1px); background-size: 8px 8px; opacity: 0.5;
     }
-    .deck-card:hover { transform: translateY(-6px); border-color: var(--primary); box-shadow: 0 8px 20px rgba(124,92,255,0.25); }
+    .deck-card:hover { transform: translateY(-6px); border-color: var(--primary); box-shadow: 0 10px 24px rgba(14,165,164,0.24); }
     .deck-card.selected {
       transform: translateY(-12px); border: 2px solid var(--gold);
       box-shadow: 0 0 15px rgba(255,215,0,0.4);
@@ -174,11 +188,33 @@
     .tarot-back::after { content: "✨"; font-size: 24px; opacity: 0.7; }
     
     .tarot-front {
-      transform: rotateY(180deg); background: linear-gradient(160deg, #20202c, #000);
+      transform: rotateY(180deg); background: linear-gradient(160deg, #203042, #0e1a29);
       border: 2px solid var(--gold);
+      overflow: hidden;
     }
-    .tarot-icon-large { font-size: 42px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.3)); }
-    .tarot-name { font-size: 13px; font-weight: 900; color: var(--gold); text-align: center; padding: 0 4px; }
+    .tarot-icon-large {
+      width: calc(100% - 14px);
+      height: calc(100% - 44px);
+      margin-top: 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .tarot-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: contrast(1.03) saturate(1.05);
+    }
+    .tarot-name {
+      font-size: 12px; font-weight: 800; color: #f8e4a3; text-align: center; padding: 6px 6px 8px;
+      width: 100%; letter-spacing: 0.2px; background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.4));
+    }
     
     .tarot-desc {
       margin-top: 15px; font-size: 13px; line-height: 1.6; text-align: left;
@@ -579,29 +615,30 @@ $("autoBtn").onclick = async () => {
 };
 
 /* ================= 3. TAROT LOGIC (3-Card Spread) ================= */
+const TAROT_IMAGE_BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
 const TAROT_CARDS = [
-  {name:"바보", en:"The Fool", icon:"🃏", desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요."},
-  {name:"마법사", en:"The Magician", icon:"🪄", desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다."},
-  {name:"여사제", en:"The High Priestess", icon:"📖", desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요."},
-  {name:"여황제", en:"The Empress", icon:"👑", desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다."},
-  {name:"황제", en:"The Emperor", icon:"🏛️", desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다."},
-  {name:"교황", en:"The Hierophant", icon:"⛪", desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다."},
-  {name:"연인", en:"The Lovers", icon:"❤️", desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요."},
-  {name:"전차", en:"The Chariot", icon:"⚔️", desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다."},
-  {name:"힘", en:"Strength", icon:"💪", desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다."},
-  {name:"은둔자", en:"The Hermit", icon:"🧘", desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다."},
-  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요."},
-  {name:"정의", en:"Justice", icon:"⚖️", desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요."},
-  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요."},
-  {name:"죽음", en:"Death", icon:"💀", desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요."},
-  {name:"절제", en:"Temperance", icon:"🥛", desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다."},
-  {name:"악마", en:"The Devil", icon:"😈", desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요."},
-  {name:"탑", en:"The Tower", icon:"⚡", desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다."},
-  {name:"별", en:"The Star", icon:"⭐", desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요."},
-  {name:"달", en:"The Moon", icon:"🌙", desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요."},
-  {name:"태양", en:"The Sun", icon:"☀️", desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다."},
-  {name:"심판", en:"Judgement", icon:"🎺", desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요."},
-  {name:"세계", en:"The World", icon:"🌍", desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다."}
+  {name:"바보", en:"The Fool", icon:"🃏", img:`${TAROT_IMAGE_BASE}RWS_Tarot_00_Fool.jpg`, desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요."},
+  {name:"마법사", en:"The Magician", icon:"🪄", img:`${TAROT_IMAGE_BASE}RWS_Tarot_01_Magician.jpg`, desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다."},
+  {name:"여사제", en:"The High Priestess", icon:"📖", img:`${TAROT_IMAGE_BASE}RWS_Tarot_02_High_Priestess.jpg`, desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요."},
+  {name:"여황제", en:"The Empress", icon:"👑", img:`${TAROT_IMAGE_BASE}RWS_Tarot_03_Empress.jpg`, desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다."},
+  {name:"황제", en:"The Emperor", icon:"🏛️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_04_Emperor.jpg`, desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다."},
+  {name:"교황", en:"The Hierophant", icon:"⛪", img:`${TAROT_IMAGE_BASE}RWS_Tarot_05_Hierophant.jpg`, desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다."},
+  {name:"연인", en:"The Lovers", icon:"❤️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_06_Lovers.jpg`, desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요."},
+  {name:"전차", en:"The Chariot", icon:"⚔️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_07_Chariot.jpg`, desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다."},
+  {name:"힘", en:"Strength", icon:"💪", img:`${TAROT_IMAGE_BASE}RWS_Tarot_08_Strength.jpg`, desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다."},
+  {name:"은둔자", en:"The Hermit", icon:"🧘", img:`${TAROT_IMAGE_BASE}RWS_Tarot_09_Hermit.jpg`, desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다."},
+  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", img:`${TAROT_IMAGE_BASE}RWS_Tarot_10_Wheel_of_Fortune.jpg`, desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요."},
+  {name:"정의", en:"Justice", icon:"⚖️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_11_Justice.jpg`, desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요."},
+  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", img:`${TAROT_IMAGE_BASE}RWS_Tarot_12_Hanged_Man.jpg`, desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요."},
+  {name:"죽음", en:"Death", icon:"💀", img:`${TAROT_IMAGE_BASE}RWS_Tarot_13_Death.jpg`, desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요."},
+  {name:"절제", en:"Temperance", icon:"🥛", img:`${TAROT_IMAGE_BASE}RWS_Tarot_14_Temperance.jpg`, desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다."},
+  {name:"악마", en:"The Devil", icon:"😈", img:`${TAROT_IMAGE_BASE}RWS_Tarot_15_Devil.jpg`, desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요."},
+  {name:"탑", en:"The Tower", icon:"⚡", img:`${TAROT_IMAGE_BASE}RWS_Tarot_16_Tower.jpg`, desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다."},
+  {name:"별", en:"The Star", icon:"⭐", img:`${TAROT_IMAGE_BASE}RWS_Tarot_17_Star.jpg`, desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요."},
+  {name:"달", en:"The Moon", icon:"🌙", img:`${TAROT_IMAGE_BASE}RWS_Tarot_18_Moon.jpg`, desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요."},
+  {name:"태양", en:"The Sun", icon:"☀️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_19_Sun.jpg`, desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다."},
+  {name:"심판", en:"Judgement", icon:"🎺", img:`${TAROT_IMAGE_BASE}RWS_Tarot_20_Judgement.jpg`, desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요."},
+  {name:"세계", en:"The World", icon:"🌍", img:`${TAROT_IMAGE_BASE}RWS_Tarot_21_World.jpg`, desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다."}
 ];
 
 let selectedIndices = [];
@@ -651,7 +688,7 @@ $("tarotRevealBtn").onclick = () => {
     const slot = $(`tarotCard${i}`);
     
     // 데이터 채우기
-    slot.querySelector(".tarot-icon-large").textContent = cardData.icon;
+    slot.querySelector(".tarot-icon-large").innerHTML = `<img class="tarot-image" loading="lazy" src="${cardData.img}" alt="${cardData.name} 카드 이미지" onerror="this.remove(); this.parentElement.textContent='${cardData.icon}'; this.parentElement.style.fontSize='42px';">`;
     slot.querySelector(".tarot-name").textContent = cardData.name;
     $(`tarotDesc${i}`).innerText = cardData.desc;
 
@@ -791,7 +828,7 @@ $("themeToggle").onclick = () => {
 };
 
 // 초기화
-applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
 renderLottoHistory();
 initTarot();
 </script>
