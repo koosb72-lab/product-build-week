@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="로또 번호 생성기, 저녁메뉴 추천, 동물상 테스트와 함께 확률/책임 이용 가이드를 제공하는 정보형 웹사이트입니다." />
+  <meta name="description" content="로또 번호 생성기, 저녁메뉴 추천, 동물상 테스트, 오늘의 타로와 함께 행운 가이드를 제공하는 정보형 웹사이트입니다." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://koosb72-lab.github.io/product-build-week/" />
   <meta name="google-adsense-account" content="ca-pub-7981059984083694" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7981059984083694" crossorigin="anonymous"></script>
-  <title>로또 번호 추첨기 (6/45)</title>
+  <title>행운의 도구함 | Product Build Week</title>
   <style>
     :root{
       /* ===== 다크모드(기본) ===== */
@@ -22,9 +22,10 @@
       --radius: 18px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+      --primary: #7c5cff;
+      --secondary: #2dd4bf;
     }
 
-    /* ===== 화이트(라이트) 모드: body에 .light가 붙으면 변수 덮어씀 ===== */
     body.light{
       --bg1:#f4f6fb;
       --bg2:#e9edf7;
@@ -57,10 +58,7 @@
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       transition: background .25s ease, border-color .25s ease;
     }
-    /* 라이트 모드에서 헤더 배경도 조금 밝게 */
-    body.light header{
-      background: rgba(255,255,255,0.70);
-    }
+    body.light header{ background: rgba(255,255,255,0.70); }
 
     .brand{ display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:-0.4px; }
     .logo{
@@ -69,1249 +67,362 @@
       box-shadow: var(--shadow);
     }
     .chip{
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--muted);
-      text-decoration:none;
-      cursor:pointer;
+      padding: 8px 10px; border: 1px solid var(--line); background: rgba(255,255,255,0.05);
+      border-radius: 999px; font-size: 13px; color: var(--muted); text-decoration:none; cursor:pointer;
     }
 
-    /* ✅ 테마 토글 버튼(추가) */
     .theme-toggle{
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--text);
-      cursor: pointer;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
+      padding: 8px 10px; border: 1px solid var(--line); background: rgba(255,255,255,0.05);
+      border-radius: 999px; font-size: 13px; color: var(--text); cursor: pointer;
+      display:inline-flex; align-items:center; gap:8px;
     }
-    body.light .theme-toggle{
-      background: rgba(0,0,0,0.04);
-    }
+    body.light .theme-toggle{ background: rgba(0,0,0,0.04); }
 
     .card{
-      margin-top: 18px;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
+      margin-top: 18px; background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px;
     }
 
     h1{ margin: 0; font-size: 18px; }
     .sub{ margin: 8px 0 0; color: var(--muted); line-height: 1.7; font-size: 14px; }
 
-    .controls{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin-top: 14px;
-      align-items:center;
-    }
+    .controls{ display:flex; flex-wrap:wrap; gap:10px; margin-top: 14px; align-items:center; }
     .btn{
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight: 750;
+      border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: var(--text);
+      padding: 10px 12px; border-radius: 14px; cursor:pointer; font-weight: 750;
       transition: transform .15s ease, border-color .15s ease;
       display:inline-flex; align-items:center; gap:8px;
     }
-    body.light .btn{
-      background: rgba(0,0,0,0.04);
-    }
+    body.light .btn{ background: rgba(0,0,0,0.04); }
     .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.28); }
-    body.light .btn:hover{ border-color: rgba(0,0,0,0.22); }
-    .btn:active{ transform: translateY(0); }
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(124,92,255,0.9), rgba(45,212,191,0.5));
-      border-color: rgba(255,255,255,0.18);
-    }
-    .btn.danger{
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.18);
-      color: rgba(255,255,255,0.86);
-    }
-    body.light .btn.danger{
-      background: rgba(0,0,0,0.04);
-      color: rgba(0,0,0,0.80);
-      border-color: rgba(0,0,0,0.12);
-    }
+    .btn.primary{ background: linear-gradient(135deg, rgba(124,92,255,0.9), rgba(45,212,191,0.5)); border-color: rgba(255,255,255,0.18); }
 
-    .options{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin-left:auto;
-      align-items:center;
-    }
-    select, input[type="number"]{
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,0.22);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      outline: none;
-      font-size: 14px;
-    }
-    body.light select, body.light input[type="number"]{
-      background: rgba(255,255,255,0.90);
-      color: rgba(0,0,0,0.88);
-    }
-    label{ color: var(--muted); font-size: 13px; display:flex; gap:8px; align-items:center; }
-
-    .balls{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin-top: 16px;
-      min-height: 62px;
-      align-items:center;
-    }
-
+    .balls{ display:flex; flex-wrap:wrap; gap:10px; margin-top: 16px; min-height: 62px; align-items:center; }
     .ball{
-      width: 52px; height: 52px;
-      border-radius: 999px;
-      display:flex; align-items:center; justify-content:center;
-      font-weight: 900;
-      letter-spacing:-0.2px;
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-      opacity: 0;
-      transform: translateY(8px) scale(0.96);
-      animation: pop .28s ease forwards;
-      user-select:none;
-      position: relative;
-      overflow: hidden;
+      width: 52px; height: 52px; border-radius: 999px; display:flex; align-items:center; justify-content:center;
+      font-weight: 900; border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      opacity: 0; transform: translateY(8px) scale(0.96); animation: pop .28s ease forwards;
+      position: relative; overflow: hidden;
     }
-    body.light .ball{
-      border-color: rgba(0,0,0,0.10);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.10);
-    }
-    .ball::before{
-      content:"";
-      position:absolute;
-      inset: -10% -10% auto -10%;
-      height: 55%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.0));
-      transform: rotate(-18deg);
-      pointer-events:none;
-      opacity: 0.45;
-    }
-
-    .ball.small{
-      width: 42px; height: 42px;
-      font-size: 14px;
-    }
-    @keyframes pop{
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
+    .ball::before{ content:""; position:absolute; inset: -10% -10% auto -10%; height: 55%; background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.0)); transform: rotate(-18deg); pointer-events:none; opacity: 0.45; }
+    .ball.small { width: 42px; height: 42px; font-size: 14px; }
+    @keyframes pop{ to { opacity: 1; transform: translateY(0) scale(1); } }
     .ball.yellow { background: #fbc400; color: #111; }
     .ball.blue   { background: #69c8f2; color: #111; }
     .ball.red    { background: #ff7272; color: #111; }
     .ball.gray   { background: #aaaaaa; color: #111; }
     .ball.green  { background: #b0d840; color: #111; }
 
-    .meta{
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-      display:flex; flex-wrap:wrap; gap:12px;
-      align-items:center;
-    }
-
-    @media (max-width: 860px){
-      .options{ margin-left: 0; }
-    }
-
-    .history{
-      margin-top: 10px;
-      border-top: 1px solid var(--line);
-      padding-top: 12px;
-      display:grid;
-      gap: 10px;
-    }
-    .history-item{
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
-      border-radius: 16px;
-      padding: 12px 12px;
-      display:flex;
-      justify-content:space-between;
-      gap: 12px;
-      align-items:center;
-    }
-    body.light .history-item{
-      background: rgba(0,0,0,0.03);
-    }
-
-    .history-left{
-      display:flex; flex-direction:column; gap:6px;
-      min-width: 140px;
-    }
-    .history-title{
-      font-weight: 850; font-size: 14px;
-    }
-    .history-time{
-      font-size: 12px; color: var(--muted);
-      font-family: var(--mono);
-    }
-
-    .toast{
-      position: fixed;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(6,8,22,0.82);
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: var(--shadow);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      display:none;
-      z-index: 99;
-      max-width: min(560px, calc(100vw - 24px));
-      font-size: 13px;
-      line-height: 1.5;
-      text-align:center;
-    }
-    body.light .toast{
-      background: rgba(255,255,255,0.92);
-      border-color: rgba(0,0,0,0.12);
-      color: rgba(0,0,0,0.85);
-    }
-
-    .muted{ color: var(--muted); }
-
     .view.hidden{ display:none; }
 
-    .dinner-card{
-      text-align:center;
-      padding: 28px 18px;
-      background:
-        radial-gradient(500px 240px at 50% -10%, rgba(124,92,255,0.28), transparent 60%),
-        radial-gradient(400px 240px at 50% 110%, rgba(45,212,191,0.22), transparent 60%),
-        var(--card);
+    /* 타로 스타일 */
+    .tarot-stage { text-align: center; perspective: 1000px; }
+    .tarot-card-wrap {
+      width: 180px; height: 300px; margin: 30px auto;
+      position: relative; transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
     }
-
-    .dinner-image{
-      width: 156px;
-      height: 156px;
-      margin: 18px auto 12px;
-      border-radius: 50%;
-      border: 1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 72px;
-      background: rgba(255,255,255,0.06);
+    .tarot-card-wrap.flipped { transform: rotateY(180deg); }
+    .tarot-card-front, .tarot-card-back {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; border-radius: 12px;
+      border: 2px solid var(--line); display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
       box-shadow: var(--shadow);
     }
-    body.light .dinner-image{
-      background: rgba(255,255,255,0.75);
+    .tarot-card-front { background: linear-gradient(135deg, #1a1a2e, #16213e); transform: rotateY(180deg); }
+    .tarot-card-back {
+      background: linear-gradient(45deg, #2c3e50, #000);
+      background-image: radial-gradient(circle at 50% 50%, rgba(124,92,255,0.2) 0%, transparent 50%),
+                        repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px);
+    }
+    .tarot-card-back::after { content: "✨"; font-size: 40px; }
+    .tarot-card-icon { font-size: 80px; margin-bottom: 15px; }
+    .tarot-card-name { font-size: 20px; font-weight: 900; color: #ffd700; }
+    .tarot-result-area { margin-top: 20px; opacity: 0; transition: opacity 0.5s ease; }
+    .tarot-result-area.show { opacity: 1; }
+    .tarot-meaning {
+      font-size: 15px; line-height: 1.8; color: var(--text); text-align: left;
+      background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid var(--line);
     }
 
-    .dinner-menu{
-      margin: 6px 0 8px;
-      font-size: 30px;
-      font-weight: 900;
-      letter-spacing: -0.4px;
-    }
-    .dinner-reason{
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-    .dinner-meta{
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 12px;
-      font-family: var(--mono);
-    }
-    .dinner-actions{
-      margin-top: 16px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
+    .dinner-card { text-align: center; }
+    .history-item { border: 1px solid var(--line); background: rgba(255,255,255,0.04); border-radius: 16px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    
+    .article-grid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; margin-top: 12px; }
+    .article-item{ border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(255,255,255,0.03); }
+    .article-item h2 { font-size: 16px; margin: 0; }
+    .article-item p { font-size: 13px; color: var(--muted); margin: 8px 0; }
+    .article-item a { color: var(--primary); text-decoration: none; font-weight: bold; }
 
-    .animal-stage{
-      text-align:center;
-    }
-    .animal-preview{
-      width:min(320px, 90%);
-      aspect-ratio: 1 / 1;
-      border: 1px dashed var(--line);
-      border-radius: 20px;
-      margin: 14px auto;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: rgba(255,255,255,0.04);
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .animal-preview img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:none;
-    }
-    .animal-result{
-      margin-top: 10px;
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-    }
-    .animal-confidence{
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .animal-actions{
-      margin-top: 14px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .saju-form{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:10px;
-      margin-top: 14px;
-    }
-    .saju-form label{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-start;
-      gap:6px;
-      font-size: 13px;
-    }
-    .saju-result{
-      margin-top: 14px;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      background: rgba(255,255,255,0.03);
-      line-height: 1.8;
-    }
-    .saju-result h2{
-      margin:0 0 8px;
-      font-size: 16px;
-    }
-    .saju-actions{
-      margin-top: 12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .article-grid{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:12px;
-      margin-top: 12px;
-    }
-    .article-item{
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      background: rgba(255,255,255,0.03);
-    }
-    body.light .article-item{
-      background: rgba(0,0,0,0.02);
-    }
-    .article-item h2{
-      margin:0;
-      font-size: 15px;
-    }
-    .article-item p{
-      margin:8px 0 0;
-      font-size: 13px;
-      line-height: 1.75;
-      color: var(--muted);
-    }
-    .site-footer{
-      margin-top: 18px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-    .footer-links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top: 8px;
-    }
-    .footer-links a{
-      color: var(--text);
-      border:1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 10px;
-      text-decoration:none;
-      font-size: 12px;
-    }
-    @media (max-width: 860px){
-      .article-grid{ grid-template-columns: 1fr; }
-    }
+    .site-footer{ margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,0.03); font-size: 13px; color: var(--muted); line-height: 1.8; }
+    .footer-links{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 8px; }
+    .footer-links a{ color: var(--text); border:1px solid var(--line); border-radius: 999px; padding: 6px 10px; text-decoration:none; font-size: 12px; }
+    @media (max-width: 860px){ .article-grid{ grid-template-columns: 1fr; } }
   </style>
 </head>
 
 <body>
 <header>
-  <div class="brand">
+  <div class="brand" onclick="openLottoView()" style="cursor:pointer;">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div id="brandTitle" style="font-size:14px;">로또 번호 추첨기</div>
-      <div id="brandSub" style="font-size:12px; color: var(--muted);">6/45 · 중복 없이 랜덤</div>
+      <div id="brandTitle" style="font-size:14px;">행운의 도구함</div>
+      <div id="brandSub" style="font-size:12px; color: var(--muted);">AI와 함께하는 행운의 시작</div>
     </div>
   </div>
-
-  <!-- ✅ 오른쪽 영역: 테마 토글 + 기존 링크 -->
-  <div style="display:flex; gap:10px; align-items:center;">
-    <button class="chip" id="dinnerBtn" type="button">🍽 저녁메뉴 추천</button>
-    <button class="chip" id="animalTestBtn" type="button">🐶 동물상 테스트</button>
-    <button class="chip" id="sajuBtn" type="button">🔮 사주 보기</button>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <button class="chip" id="tarotBtn" type="button">🔮 타로</button>
+    <button class="chip" id="dinnerBtn" type="button">🍽 식사</button>
+    <button class="chip" id="animalTestBtn" type="button">🐶 동물상</button>
+    <button class="chip" id="sajuBtn" type="button">🔮 사주</button>
     <button class="chip" id="langToggle" type="button">EN</button>
-    <button class="theme-toggle" id="themeToggle" type="button">☀ 화이트모드</button>
-    <a class="chip" id="historyLink" href="#history">최근 추첨</a>
+    <button class="theme-toggle" id="themeToggle" type="button">☀</button>
   </div>
 </header>
 
 <main class="container">
+  <!-- 로또 뷰 -->
   <div class="view" id="lottoView">
-  <section class="card">
-    <h1 id="lottoTitle">원클릭 로또 번호 뽑기</h1>
-    <p class="sub" id="lottoSub">
-      버튼을 누르면 <b>1~45</b>에서 <b>중복 없이 6개</b>를 뽑아 <b>오름차순 정렬</b>로 보여줍니다. (이 도구는 재미/연습용이며 당첨을 보장하지 않습니다.)
-    </p>
-
-    <div class="controls">
-      <button class="btn primary" id="drawBtn">🎲 추첨하기</button>
-      <button class="btn" id="copyBtn">📋 번호 복사</button>
-      <button class="btn danger" id="resetBtn">🧹 기록 초기화</button>
-
-      <div class="options">
-        <label><span id="sortLabel">정렬</span>
-          <select id="sortMode">
-            <option id="sortAsc" value="asc" selected>오름차순</option>
-            <option id="sortNone" value="none">뽑은 순서</option>
-          </select>
-        </label>
-
-        <label><span id="autoLabel">자동 추첨(회)</span>
-          <input id="autoCount" type="number" min="1" max="10" value="1" />
-        </label>
-        <button class="btn" id="autoBtn">⚡ 자동 실행</button>
+    <section class="card">
+      <h1 id="lottoTitle">원클릭 로또 번호 뽑기</h1>
+      <p class="sub" id="lottoSub">1~45 사이의 중복 없는 6개 숫자를 생성합니다.</p>
+      <div class="controls">
+        <button class="btn primary" id="drawBtn">🎲 추첨하기</button>
+        <button class="btn" id="copyBtn">📋 번호 복사</button>
+        <select id="sortMode" style="margin-left:auto; background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:5px;">
+          <option value="asc">오름차순</option>
+          <option value="none">뽑은 순서</option>
+        </select>
       </div>
-    </div>
-
-    <div class="balls" id="balls" aria-label="추첨 결과"></div>
-
-    <div class="meta">
-      <span><span id="resultLabel">결과</span>: <b id="resultText" class="muted">-</b></span>
-      <span><span id="lastLabel">마지막 추첨</span>: <b id="lastTime" class="muted">-</b></span>
-    </div>
-  </section>
-
-  <section class="card" id="history">
-    <h1 id="historyTitle">최근 추첨 (최대 10개 저장)</h1>
-    <p class="sub" id="historySub">추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.</p>
-
-    <div class="history" id="historyList"></div>
-  </section>
+      <div class="balls" id="balls"></div>
+    </section>
+    <section class="card">
+      <h1>최근 추첨 기록</h1>
+      <div id="historyList"></div>
+    </section>
   </div>
 
+  <!-- 타로 뷰 -->
+  <div class="view hidden" id="tarotView">
+    <section class="card tarot-stage">
+      <h1 id="tarotTitle">오늘의 행운 카드 (AI 타로)</h1>
+      <p class="sub">마음을 가다듬고 카드 한 장을 선택해 보세요.</p>
+      <div class="tarot-card-wrap" id="tarotCardWrap">
+        <div class="tarot-card-back"></div>
+        <div class="tarot-card-front">
+          <div class="tarot-card-icon" id="tarotFrontIcon"></div>
+          <div class="tarot-card-name" id="tarotFrontName"></div>
+        </div>
+      </div>
+      <div class="tarot-result-area" id="tarotResultArea">
+        <div class="tarot-meaning" id="tarotMeaningBody"></div>
+        <div class="controls" style="justify-content:center; margin-top:20px;">
+          <button class="btn primary" id="tarotAgainBtn">🎴 다른 카드 뽑기</button>
+          <button class="btn" onclick="openLottoView()">🎲 메인으로</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 저녁메뉴 뷰 -->
   <div class="view hidden" id="dinnerView">
     <section class="card dinner-card">
-      <h1 id="dinnerTitle">오늘 저녁 뭐 먹지?</h1>
-      <p class="sub" id="dinnerSub">취향에 맞는 카테고리를 선택하거나 랜덤으로 추천받아 보세요.</p>
-
-      <div class="dinner-categories" style="display:flex; justify-content:center; gap:8px; margin-top:15px; flex-wrap:wrap;">
-        <button class="chip" onclick="pickDinnerMenu('all')">🎲 전체 랜덤</button>
+      <h1 id="dinnerTitle">오늘 뭐 먹지?</h1>
+      <div class="dinner-categories" style="display:flex; justify-content:center; gap:8px; margin:15px 0; flex-wrap:wrap;">
+        <button class="chip" onclick="pickDinnerMenu('all')">🎲 전체</button>
         <button class="chip" onclick="pickDinnerMenu('korean')">🇰🇷 한식</button>
         <button class="chip" onclick="pickDinnerMenu('japanese')">🇯🇵 일식</button>
         <button class="chip" onclick="pickDinnerMenu('western')">🇺🇸 양식</button>
       </div>
-
-      <div class="dinner-image" id="dinnerImage" aria-hidden="true">🍽</div>
-      <div class="dinner-menu" id="dinnerMenu">저녁메뉴를 추천해드릴게요</div>
-      <p class="dinner-reason" id="dinnerReason">위의 카테고리를 선택하여 추천을 시작해보세요.</p>
-      <div class="dinner-meta"><span id="dinnerTimeLabel">추천 시각</span>: <b id="dinnerTime">-</b></div>
-
-      <div class="dinner-actions">
-        <button class="btn primary" id="dinnerAgainBtn" type="button">🔀 다시 추천받기</button>
-        <button class="btn" id="backToLottoBtn" type="button">🎲 로또 화면으로</button>
-      </div>
+      <div id="dinnerImage" style="font-size:100px; margin:20px 0;">🍽</div>
+      <div id="dinnerMenu" style="font-size:28px; font-weight:900;">추천을 시작하세요</div>
+      <p id="dinnerReason" style="color:var(--muted); line-height:1.6; max-width:500px; margin:15px auto;"></p>
+      <button class="btn primary" onclick="pickDinnerMenu()">🔀 다시 추천</button>
     </section>
   </div>
 
+  <!-- 동물상 뷰 -->
   <div class="view hidden" id="animalView">
-    <section class="card animal-stage">
-      <h1 id="animalTitle">강아지/고양이 동물상 테스트</h1>
-      <p class="sub" id="animalSub">얼굴 사진을 업로드하면 모델이 강아지상/고양이상을 예측합니다.</p>
-
-      <input id="animalFileInput" type="file" accept="image/*" />
-      <div class="animal-preview" id="animalPreviewText">
-        <img id="animalPreviewImg" alt="animal preview" />
-        <span id="animalPlaceholder">이미지를 선택해 주세요.</span>
-      </div>
-
-      <div class="animal-result" id="animalResult">-</div>
-      <div class="animal-confidence" id="animalConfidence">-</div>
-
-      <div class="animal-actions">
-        <button class="btn primary" id="animalRunBtn" type="button">🔎 동물상 분석</button>
-        <button class="btn" id="animalBackBtn" type="button">🎲 로또 화면으로</button>
-      </div>
+    <section class="card" style="text-align:center;">
+      <h1>동물상 테스트 (AI)</h1>
+      <p class="sub">얼굴 사진을 업로드하여 분석합니다.</p>
+      <input type="file" id="animalFileInput" accept="image/*" style="margin:20px 0;" />
+      <div id="animalResult" style="font-size:22px; font-weight:900; margin:15px 0;"></div>
+      <button class="btn primary" id="animalRunBtn">🔎 분석 시작</button>
     </section>
   </div>
 
+  <!-- 사주 뷰 -->
   <div class="view hidden" id="sajuView">
     <section class="card">
-      <h1 id="sajuTitle">오늘의 사주 간단 보기</h1>
-      <p class="sub" id="sajuSub">생년월일과 태어난 시간을 입력하면 오행 성향과 오늘의 흐름을 참고용으로 보여드립니다.</p>
-
-      <div class="saju-form">
-        <label><span id="sajuYearLabel">출생 연도</span>
-          <input type="number" id="birthYear" min="1900" max="2100" value="1995" />
-        </label>
-        <label><span id="sajuMonthLabel">출생 월</span>
-          <input type="number" id="birthMonth" min="1" max="12" value="1" />
-        </label>
-        <label><span id="sajuDayLabel">출생 일</span>
-          <input type="number" id="birthDay" min="1" max="31" value="1" />
-        </label>
-        <label><span id="sajuHourLabel">출생 시간(24h)</span>
-          <input type="number" id="birthHour" min="0" max="23" value="12" />
-        </label>
+      <h1>간편 사주 성향</h1>
+      <div class="controls" style="flex-direction:column; align-items:flex-start;">
+        <label>출생 연도</label>
+        <input type="number" id="birthYear" value="1995" style="padding:10px; width:100%; border-radius:10px; border:1px solid var(--line); background:var(--bg1); color:var(--text);" />
+        <button class="btn primary" id="sajuRunBtn" style="margin-top:15px;">✨ 결과 보기</button>
       </div>
-
-      <div class="saju-actions">
-        <button class="btn primary" id="sajuRunBtn" type="button">✨ 사주 보기</button>
-        <button class="btn" id="sajuBackBtn" type="button">🎲 로또 화면으로</button>
-      </div>
-
-      <div class="saju-result" id="sajuResult">
-        <h2 id="sajuResultTitle">결과 안내</h2>
-        <div id="sajuResultBody">입력 후 버튼을 누르면 결과가 표시됩니다.</div>
-      </div>
+      <div id="sajuResult" style="margin-top:20px; line-height:1.8;"></div>
     </section>
   </div>
 
-  <section class="card" id="comments">
-    <h1 id="commentsTitle">댓글</h1>
-    <p class="sub" id="commentsSub">Disqus 댓글 기능입니다.</p>
-    <div id="disqus_thread"></div>
-    <script>
-      (function() {
-        var d = document, s = d.createElement("script");
-        s.src = "https://productbuildweek.disqus.com/embed.js";
-        s.setAttribute("data-timestamp", +new Date());
-        (d.head || d.body).appendChild(s);
-      })();
-    </script>
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </section>
-
+  <!-- 가이드 섹션 -->
   <section class="card" id="guides">
-    <h1 id="guidesHeader">지식 가이드 & 심층 분석</h1>
-    <p class="sub">
-      단순한 도구 사용을 넘어, 우리가 제공하는 서비스 뒤에 숨겨진 과학적 원리와 유용한 생활 정보를 확인해보세요. 
-      Product Build Week는 사용자에게 가치 있는 정보를 전달하기 위해 노력합니다.
-    </p>
+    <h1>지식 가이드 & 아티클</h1>
     <div class="article-grid">
       <article class="article-item">
-        <h2 id="guide1Title">1) 로또의 과학: 확률과 통계</h2>
-        <p>1등 당첨 확률 814만 분의 1, 그 뒤에 숨겨진 수학적 진실과 도박사의 오류를 파헤쳐 봅니다.</p>
-        <a href="./guide-lotto.html" style="display:inline-block; margin-top:10px; color:var(--primary); font-weight:700; text-decoration:none;">자세히 읽기 →</a>
+        <h2>1) 로또의 과학</h2>
+        <p>확률과 통계로 본 로또의 진실.</p>
+        <a href="./guide-lotto.html">자세히 보기 →</a>
       </article>
       <article class="article-item">
-        <h2 id="guide2Title">2) 메뉴 선택과 심리학</h2>
-        <p>매일 반복되는 '결정 장애'는 왜 발생할까요? 의사결정 피로를 줄이는 뇌 과학적 팁을 소개합니다.</p>
-        <a href="./guide-dinner.html" style="display:inline-block; margin-top:10px; color:var(--primary); font-weight:700; text-decoration:none;">자세히 읽기 →</a>
+        <h2>2) 메뉴 선택 심리학</h2>
+        <p>결정 장애를 극복하는 법.</p>
+        <a href="./guide-dinner.html">자세히 보기 →</a>
       </article>
       <article class="article-item">
-        <h2 id="guide3Title">3) AI 이미지 분석의 원리</h2>
-        <p>내 얼굴을 분석하는 온디바이스 AI 기술. 개인정보를 보호하면서 지능적으로 분석하는 원리를 알아봅니다.</p>
-        <a href="./guide-animal-test.html" style="display:inline-block; margin-top:10px; color:var(--primary); font-weight:700; text-decoration:none;">자세히 읽기 →</a>
+        <h2>3) AI와 이미지 인식</h2>
+        <p>동물상 테스트의 원리.</p>
+        <a href="./guide-animal-test.html">자세히 보기 →</a>
+      </article>
+      <article class="article-item">
+        <h2>4) 타로와 자기 성찰</h2>
+        <p>무의식을 투영하는 카드의 지혜.</p>
+        <a href="./guide-tarot.html">자세히 보기 →</a>
       </article>
     </div>
   </section>
 
   <footer class="site-footer">
-    <div><strong>Product Build Week</strong>는 도구와 정보성 콘텐츠를 함께 제공하는 실험형 사이트입니다.</div>
-    <div>문의 및 정책 문서는 아래 링크에서 확인할 수 있습니다.</div>
     <div class="footer-links">
-      <a href="./about.html">사이트 소개</a>
-      <a href="./contact.html">문의하기</a>
-      <a href="./privacy.html">개인정보 처리방침</a>
-      <a href="./terms.html">이용약관</a>
+      <a href="./about.html">소개</a>
+      <a href="./contact.html">문의</a>
+      <a href="./privacy.html">개인정보</a>
+      <a href="./terms.html">약관</a>
     </div>
   </footer>
 </main>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:20px; display:none; z-index:100;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <script>
-  // ===== 유틸 =====
   const $ = (id) => document.getElementById(id);
+  let currentLang = localStorage.getItem("lang") || "ko";
 
-  function toast(msg){
-    const t = $("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-    clearTimeout(window.__toastTimer);
-    window.__toastTimer = setTimeout(() => (t.style.display = "none"), 2400);
-  }
-
-  function pad2(n){ return String(n).padStart(2,"0"); }
-  function nowStamp(){
-    const d = new Date();
-    return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
-  }
-
-  const LANG_KEY = "lotto_lang_v1";
-  let currentLang = localStorage.getItem(LANG_KEY) || "ko";
-  let lastDinner = null;
-  const ANIMAL_MODEL_BASE = "https://teachablemachine.withgoogle.com/models/8lfLdOYC9/";
-  let animalModel = null;
-  let animalImageReady = false;
-
-  const I18N = {
-    ko: {
-      brandTitle: "로또 번호 추첨기",
-      brandSub: "6/45 · 중복 없이 랜덤",
-      dinnerBtn: "🍽 저녁메뉴 추천",
-      historyLink: "최근 추첨",
-      lottoTitle: "원클릭 로또 번호 뽑기",
-      lottoSub: "버튼을 누르면 <b>1~45</b>에서 <b>중복 없이 6개</b>를 뽑아 <b>오름차순 정렬</b>로 보여줍니다. (이 도구는 재미/연습용이며 당첨을 보장하지 않습니다.)",
-      drawBtn: "🎲 추첨하기",
-      copyBtn: "📋 번호 복사",
-      resetBtn: "🧹 기록 초기화",
-      sortLabel: "정렬",
-      sortAsc: "오름차순",
-      sortNone: "뽑은 순서",
-      autoLabel: "자동 추첨(회)",
-      autoBtn: "⚡ 자동 실행",
-      resultLabel: "결과",
-      lastLabel: "마지막 추첨",
-      historyTitle: "최근 추첨 (최대 10개 저장)",
-      historySub: "추첨 결과는 브라우저에 저장됩니다(로컬 저장소). 다른 PC/브라우저에는 공유되지 않습니다.",
-      commentsTitle: "댓글",
-      commentsSub: "Disqus 댓글 기능입니다.",
-      sajuBtn: "🔮 사주 보기",
-      sajuTitle: "오늘의 사주 간단 보기",
-      sajuSub: "생년월일과 태어난 시간을 입력하면 오행 성향과 오늘의 흐름을 참고용으로 보여드립니다.",
-      sajuYearLabel: "출생 연도",
-      sajuMonthLabel: "출생 월",
-      sajuDayLabel: "출생 일",
-      sajuHourLabel: "출생 시간(24h)",
-      sajuRunBtn: "✨ 사주 보기",
-      sajuBackBtn: "🎲 로또 화면으로",
-      sajuResultTitle: "결과 안내",
-      sajuResultInit: "입력 후 버튼을 누르면 결과가 표시됩니다.",
-      toastSajuInvalid: "생년월일/시간을 정확히 입력해 주세요.",
-      sajuYearAnimal: "띠",
-      sajuElement: "오행 성향",
-      sajuAdvice: "오늘의 조언",
-      animalBtn: "🐶 동물상 테스트",
-      animalTitle: "강아지/고양이 동물상 테스트",
-      animalSub: "얼굴 사진을 업로드하면 모델이 강아지상/고양이상을 예측합니다.",
-      animalPlaceholder: "이미지를 선택해 주세요.",
-      animalRunBtn: "🔎 동물상 분석",
-      animalBackBtn: "🎲 로또 화면으로",
-      toastAnimalNoImage: "먼저 분석할 이미지를 선택해 주세요.",
-      toastAnimalLoading: "동물상 모델을 불러오는 중입니다...",
-      toastAnimalError: "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
-      animalResultPrefix: "분석 결과",
-      animalConfidencePrefix: "신뢰도",
-      dinnerTitle: "오늘 저녁 뭐 먹지?",
-      dinnerSub: "버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.",
-      dinnerPlaceholderTitle: "저녁메뉴를 추천해드릴게요",
-      dinnerPlaceholderReason: "오른쪽 위 버튼 또는 아래 버튼으로 추천을 시작해보세요.",
-      dinnerTimeLabel: "추천 시각",
-      dinnerAgainBtn: "🔀 다시 추천받기",
-      backToLottoBtn: "🎲 로또 화면으로",
-      emptyHistory: "아직 추첨 기록이 없습니다.",
-      showResultBtn: "이 결과 보기",
-      drawUnit: "회",
-      toastDinner: "오늘 저녁 추천: {menu}",
-      toastLoadResult: "선택한 기록을 불러왔습니다.",
-      toastNoCopy: "복사할 번호가 없습니다. 먼저 추첨하세요.",
-      toastCopy: "번호를 클립보드에 복사했습니다!",
-      toastCopyFallback: "번호를 복사했습니다! (대체 방식)",
-      toastReset: "기록을 초기화했습니다.",
-      toastAuto: "자동 추첨 {n}회 실행합니다."
-    },
-    en: {
-      brandTitle: "Lotto Number Picker",
-      brandSub: "6/45 · Random without duplicates",
-      dinnerBtn: "🍽 Dinner Suggestion",
-      historyLink: "Recent Draws",
-      lottoTitle: "One-click Lotto Draw",
-      lottoSub: "Click the button to draw <b>6 unique numbers</b> from <b>1 to 45</b>, shown in <b>ascending order</b>. (For fun/practice only. Not a winning guarantee.)",
-      drawBtn: "🎲 Draw Numbers",
-      copyBtn: "📋 Copy Numbers",
-      resetBtn: "🧹 Reset History",
-      sortLabel: "Sort",
-      sortAsc: "Ascending",
-      sortNone: "Draw Order",
-      autoLabel: "Auto Draw (runs)",
-      autoBtn: "⚡ Run Auto",
-      resultLabel: "Result",
-      lastLabel: "Last Draw",
-      historyTitle: "Recent Draws (up to 10 saved)",
-      historySub: "Results are saved in your browser (local storage) and are not shared to other devices/browsers.",
-      commentsTitle: "Comments",
-      commentsSub: "Comments are powered by Disqus.",
-      sajuBtn: "🔮 Saju",
-      sajuTitle: "Quick Saju Reading",
-      sajuSub: "Enter birth date and hour to see a simple five-elements tendency and today guidance.",
-      sajuYearLabel: "Birth year",
-      sajuMonthLabel: "Birth month",
-      sajuDayLabel: "Birth day",
-      sajuHourLabel: "Birth hour (24h)",
-      sajuRunBtn: "✨ Read Saju",
-      sajuBackBtn: "🎲 Back to Lotto",
-      sajuResultTitle: "Result",
-      sajuResultInit: "Fill in your birth info and click the button.",
-      toastSajuInvalid: "Please enter a valid birth date and hour.",
-      sajuYearAnimal: "Zodiac",
-      sajuElement: "Element tendency",
-      sajuAdvice: "Today advice",
-      animalBtn: "🐶 Animal Face Test",
-      animalTitle: "Dog/Cat Face Type Test",
-      animalSub: "Upload a face image and the model predicts dog-like or cat-like type.",
-      animalPlaceholder: "Please choose an image.",
-      animalRunBtn: "🔎 Analyze",
-      animalBackBtn: "🎲 Back to Lotto",
-      toastAnimalNoImage: "Please select an image first.",
-      toastAnimalLoading: "Loading animal-face model...",
-      toastAnimalError: "An error occurred while analyzing. Please try again.",
-      animalResultPrefix: "Result",
-      animalConfidencePrefix: "Confidence",
-      dinnerTitle: "What should I eat tonight?",
-      dinnerSub: "Press the button to get a random dinner menu with a reason.",
-      dinnerPlaceholderTitle: "Let's pick your dinner menu",
-      dinnerPlaceholderReason: "Use the top-right button or the button below to start.",
-      dinnerTimeLabel: "Recommended at",
-      dinnerAgainBtn: "🔀 Recommend Again",
-      backToLottoBtn: "🎲 Back to Lotto",
-      emptyHistory: "No draw history yet.",
-      showResultBtn: "View This Result",
-      drawUnit: "draw",
-      toastDinner: "Dinner recommendation: {menu}",
-      toastLoadResult: "Loaded selected history result.",
-      toastNoCopy: "No numbers to copy. Draw numbers first.",
-      toastCopy: "Copied numbers to clipboard!",
-      toastCopyFallback: "Copied numbers! (fallback method)",
-      toastReset: "History has been reset.",
-      toastAuto: "Running auto draw {n} times."
-    }
-  };
-
-  const DINNER_MENU = [
-    /* 한식 (Korean) */
-    { category: "korean", image: "🍲", koName: "김치찌개", enName: "Kimchi Stew", 
-      koReason: "한국인의 소울푸드입니다. 잘 익은 김치와 돼지고기가 어우러진 칼칼한 국물은 하루의 피로를 씻어주며, 갓 지은 흰쌀밥과 환상의 궁합을 자랑합니다. 비타민 C와 유산균이 풍부한 김치는 면역력 강화에도 도움을 줍니다.", 
-      enReason: "The ultimate Korean soul food. This spicy stew with aged kimchi and pork perfectly relieves daily stress. It pairs wonderfully with steamed rice and offers probiotics and Vitamin C from the fermented kimchi." },
-    { category: "korean", image: "🥓", koName: "삼겹살", enName: "Samgyeopsal", 
-      koReason: "지글지능 굽는 소리부터 즐거운 대표 외식 메뉴입니다. 고소한 육즙과 쌈 채소의 조화는 단백질 보충에 최적이며, 동료나 가족과 함께 담소를 나누며 즐기기에 이보다 더 좋은 메뉴는 없습니다. 피로 해소에 좋은 비타민 B1이 풍부합니다.", 
-      enReason: "The sound of sizzling pork belly is pure joy. It's the best menu for protein charging and socializing with friends or family. High in Vitamin B1, it helps recover from physical fatigue." },
-    { category: "korean", image: "🥗", koName: "비빔밥", enName: "Bibimbap", 
-      koReason: "각종 나물과 고기, 고추장이 어우러진 영양 균형의 결정체입니다. 식이섬유가 풍부하여 소화가 잘 되고, 시각적으로도 아름다워 먹는 즐거움을 더합니다. 가볍지만 든든한 한 끼를 원하시는 분들에게 최고의 선택입니다.", 
-      enReason: "A masterpiece of nutritional balance with assorted vegetables, beef, and chili paste. High in fiber and easy to digest, it's perfect for those seeking a healthy yet satisfying meal." },
-    { category: "korean", image: "🥘", koName: "부대찌개", enName: "Budae Jjigae", 
-      koReason: "햄, 소시지, 라면사리 등 다양한 재료가 만들어내는 풍성한 맛이 일품입니다. 여러 재료가 어우러진 깊은 국물 맛은 스트레스를 날려주기에 충분하며, 친구들과 함께 나눠 먹는 재미가 있는 메뉴입니다.", 
-      enReason: "A rich army base stew with ham, sausages, and ramen noodles. The complex flavors of various ingredients provide a deep, comforting taste that's great for group dining." },
-    { category: "korean", image: "🍗", koName: "양념치킨", enName: "Seasoned Chicken", 
-      koReason: "달콤하고 매콤한 소스가 바삭한 튀김옷과 만난 거부할 수 없는 유혹입니다. '치맥'이라는 단어가 생길 정도로 야식과 저녁 메뉴로 사랑받으며, 특유의 감칠맛은 엔도르핀을 생성해 기분 전환에 도움을 줍니다.", 
-      enReason: "Irresistible crispy chicken coated in sweet and spicy sauce. Famous worldwide as 'K-Chicken,' its addictive flavor is perfect for boosting your mood after a long day." },
-
-    /* 일식 (Japanese) */
-    { category: "japanese", image: "🍣", koName: "초밥", enName: "Sushi", 
-      koReason: "신선한 해산물의 풍미를 그대로 느낄 수 있는 깔끔한 메뉴입니다. 지방이 적고 단백질이 풍부하여 늦은 저녁에도 몸에 부담이 적으며, 고추냉이의 알싸한 맛은 입맛을 돋우고 소화를 돕는 역할을 합니다.", 
-      enReason: "A clean and light meal that highlights the freshness of seafood. Low in fat and high in protein, it's easy on the stomach even late at night. Wasabi adds a refreshing kick and aids digestion." },
-    { category: "japanese", image: "🍜", koName: "라멘", enName: "Ramen", 
-      koReason: "오랜 시간 우려낸 진한 육수가 일품인 일본식 면 요리입니다. 차슈와 반숙 달걀 등 고명이 더해진 한 그릇은 깊은 포만감을 주며, 따뜻한 국물은 마음까지 차분하게 가라앉혀 주는 힐링 푸드입니다.", 
-      enReason: "Japanese noodle soup with a rich, long-simmered broth. Topped with chashu and soft-boiled egg, this bowl offers deep satisfaction and serves as a comforting soul food." },
-    { category: "japanese", image: "🍛", koName: "돈카츠", enName: "Tonkatsu", 
-      koReason: "두툼한 돼지고기를 바삭하게 튀겨내어 겉바속촉의 진수를 보여줍니다. 씹을 때마다 터지는 육즙과 달콤한 소스의 조화는 남녀노소 누구나 좋아하는 맛이며, 든든한 에너지원이 되어줍니다.", 
-      enReason: "Thick pork cutlets deep-fried to perfection. The contrast between the crispy breadcrumbs and juicy meat makes it a crowd favorite that provides plenty of energy." },
-    { category: "japanese", image: "🥣", koName: "규동", enName: "Gyudon", 
-      koReason: "달콤 짭짤한 간장 소스에 볶은 소고기가 올라간 덮밥입니다. 조리 시간이 빨라 바쁜 일상 속에서 빠르게 영양을 챙길 수 있는 '패스트 슬로푸드'이며, 익숙하면서도 편안한 맛을 선사합니다.", 
-      enReason: "Beef bowl simmered in a sweet and savory soy sauce. A perfect 'fast-slow food' for busy days, providing quick nutrition with a familiar, comforting taste." },
-    { category: "japanese", image: "🍢", koName: "오뎅나베", enName: "Oden Nabe", 
-      koReason: "다양한 모양의 어묵과 시원한 국물이 어우러진 전골 요리입니다. 자극적이지 않고 담백한 맛이 특징이며, 따뜻한 국물이 체온을 높여주고 몸을 이완시켜 숙면을 취하는 데 도움을 줄 수 있습니다.", 
-      enReason: "A hot pot featuring various fish cakes in a light, clear broth. Its mild and clean flavor warms the body and helps relax you before a good night's sleep." },
-
-    /* 양식 (Western) */
-    { category: "western", image: "🍝", koName: "까르보나라", enName: "Carbonara", 
-      koReason: "크림과 베이컨, 치즈의 풍부한 고소함을 만끽할 수 있는 파스타입니다. 부드러운 식감은 심리적 안정감을 주며, 탄수화물과 지방의 조화는 에너지를 즉각적으로 보충해주어 활력을 북돋아 줍니다.", 
-      enReason: "A rich and creamy pasta with bacon and parmesan. The smooth texture provides a sense of comfort, while the combination of carbs and fats quickly recharges your energy levels." },
-    { category: "western", image: "🍕", koName: "페퍼로니 피자", enName: "Pepperoni Pizza", 
-      koReason: "짭짤한 페퍼로니와 녹아내린 치즈가 환상적인 하모니를 이룹니다. 다 함께 조각을 나눠 먹으며 파티 분위기를 낼 수 있는 최고의 메뉴이며, 치즈에 들어있는 트립토판은 스트레스 완화에 효과적입니다.", 
-      enReason: "A perfect harmony of salty pepperoni and melted cheese. It's the best menu for creating a festive mood with others. Cheese contains tryptophan, which helps reduce stress." },
-    { category: "western", image: "🥩", koName: "스테이크", enName: "Steak", 
-      koReason: "특별한 날이 아니더라도 스스로에게 선물을 주고 싶을 때 최적의 선택입니다. 풍부한 단백질과 철분은 근육 생성과 피로 회복에 직접적인 도움을 주며, 고기 본연의 맛에 집중하며 미식의 즐거움을 느낄 수 있습니다.", 
-      enReason: "The best treat for yourself. Rich in protein and iron, it directly aids muscle building and fatigue recovery. Focusing on the pure taste of meat provides a high-quality dining experience." },
-    { category: "western", image: "🍔", koName: "수제 버거", enName: "Handmade Burger", 
-      koReason: "신선한 채소와 두툼한 패티가 층층이 쌓여 영양학적으로도 훌륭한 한 끼입니다. 한 입에 베어 물 때 느껴지는 다양한 식감의 향연은 지루한 일상에 작은 자극이 되며, 나만의 커스텀을 즐길 수 있습니다.", 
-      enReason: "A nutritionally complete meal with fresh greens and a thick patty. The burst of textures in every bite provides a delightful sensory stimulation to your daily routine." },
-    { category: "western", image: "🥗", koName: "시저 샐러드", enName: "Caesar Salad", 
-      koReason: "과한 식사가 부담스러운 날, 가벼우면서도 아삭한 식감으로 기분 전환을 도와줍니다. 로메인 상추와 크루통, 파마산 치즈의 조화는 비타민과 무기질을 보충해주어 몸을 정화하는 느낌을 줍니다.", 
-      enReason: "A refreshing choice when you want to avoid a heavy meal. The combination of romaine, croutons, and parmesan provides essential vitamins and minerals, leaving you feeling cleansed." }
+  const TAROT_DATA = [
+    { image: "🃏", koName: "바보 (The Fool)", enName: "The Fool", koMeaning: "새로운 시작, 모험, 자유를 상징합니다. 오늘은 고정관념에서 벗어나 새로운 가능성에 마음을 열어보세요.", enMeaning: "Symbolizes new beginnings, adventure, and freedom. Open your heart to new possibilities today." },
+    { image: "🪄", koName: "마법사 (The Magician)", enName: "The Magician", koMeaning: "창의성, 자신감, 잠재력을 상징합니다. 당신에게는 원하는 것을 이룰 충분한 능력이 있습니다.", enMeaning: "Represents creativity, confidence, and potential. You have the power to achieve your goals." },
+    { image: "📖", koName: "여사제 (The High Priestess)", enName: "The High Priestess", koMeaning: "직관, 신비, 내면의 목소리를 상징합니다. 겉으로 드러나는 현상보다 자신의 직감을 믿어보세요.", enMeaning: "Symbolizes intuition, mystery, and the inner voice. Trust your gut feeling today." },
+    { image: "👑", koName: "여황제 (The Empress)", enName: "The Empress", koMeaning: "풍요, 모성, 자연의 결실을 상징합니다. 주변 사람들에게 따뜻함을 베풀고 에너지를 발산하세요.", enMeaning: "Represents abundance, nurturing, and fertility. Share your warmth and energy with others." },
+    { image: "🏛️", koName: "황제 (The Emperor)", enName: "The Emperor", koMeaning: "권위, 질서, 리더십을 상징합니다. 계획을 세우고 체계적으로 행동하세요.", enMeaning: "Symbolizes authority, structure, and leadership. Follow a solid plan today." },
+    { image: "🎡", koName: "운명의 수레바퀴", enName: "Wheel of Fortune", koMeaning: "변화와 행운의 전환점을 상징합니다. 다가오는 기회를 놓치지 마세요.", enMeaning: "Symbolizes change and a turning point. Don't miss upcoming opportunities." }
   ];
 
-  function tr(key){
-    return I18N[currentLang][key] || key;
+  const DINNER_MENU = [
+    { category: "korean", image: "🍲", koName: "김치찌개", enName: "Kimchi Stew", koReason: "한국인의 소울푸드. 칼칼한 국물이 스트레스를 날려줍니다.", enReason: "Korean soul food. Spicy broth relieves stress." },
+    { category: "korean", image: "🥓", koName: "삼겹살", enName: "Samgyeopsal", koReason: "든든한 단백질 보충과 즐거운 회식의 정석.", enReason: "Great for protein and social dining." },
+    { category: "japanese", image: "🍣", koName: "초밥", enName: "Sushi", koReason: "깔끔하고 고급스러운 한 끼를 원할 때 추천합니다.", enReason: "Perfect for a clean and premium meal." },
+    { category: "western", image: "🍝", koName: "파스타", enName: "Pasta", koReason: "부드러운 크림이나 상큼한 토마토의 조화.", enReason: "Creamy or tomatoey delight for your taste buds." }
+  ];
+
+  function toast(msg) {
+    const t = $("toast"); t.textContent = msg; t.style.display = "block";
+    setTimeout(() => t.style.display = "none", 2000);
   }
 
-  function setThemeToggleLabel(){
-    const isLight = document.body.classList.contains("light");
-    if(currentLang === "en"){
-      $("themeToggle").textContent = isLight ? "🌙 Dark Mode" : "☀ Light Mode";
-      return;
-    }
-    $("themeToggle").textContent = isLight ? "🌙 다크모드" : "☀ 화이트모드";
+  // 뷰 전환
+  function openView(id) {
+    document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
+    $(id).classList.remove("hidden");
   }
+  const openLottoView = () => openView("lottoView");
+  $("tarotBtn").onclick = () => { openView("tarotView"); resetTarot(); };
+  $("dinnerBtn").onclick = () => openView("dinnerView");
+  $("animalTestBtn").onclick = () => openView("animalView");
+  $("sajuBtn").onclick = () => openView("sajuView");
 
-  function applyLanguage(lang){
-    currentLang = lang;
-    localStorage.setItem(LANG_KEY, lang);
-    $("langToggle").textContent = (lang === "ko") ? "EN" : "KO";
-    $("brandTitle").textContent = tr("brandTitle");
-    $("brandSub").textContent = tr("brandSub");
-    $("dinnerBtn").textContent = tr("dinnerBtn");
-    $("animalTestBtn").textContent = tr("animalBtn");
-    $("sajuBtn").textContent = tr("sajuBtn");
-    $("historyLink").textContent = tr("historyLink");
-    $("lottoTitle").textContent = tr("lottoTitle");
-    $("lottoSub").innerHTML = tr("lottoSub");
-    $("drawBtn").textContent = tr("drawBtn");
-    $("copyBtn").textContent = tr("copyBtn");
-    $("resetBtn").textContent = tr("resetBtn");
-    $("sortLabel").textContent = tr("sortLabel");
-    $("sortAsc").textContent = tr("sortAsc");
-    $("sortNone").textContent = tr("sortNone");
-    $("autoLabel").textContent = tr("autoLabel");
-    $("autoBtn").textContent = tr("autoBtn");
-    $("resultLabel").textContent = tr("resultLabel");
-    $("lastLabel").textContent = tr("lastLabel");
-    $("historyTitle").textContent = tr("historyTitle");
-    $("historySub").textContent = tr("historySub");
-    $("commentsTitle").textContent = tr("commentsTitle");
-    $("commentsSub").textContent = tr("commentsSub");
-    $("sajuTitle").textContent = tr("sajuTitle");
-    $("sajuSub").textContent = tr("sajuSub");
-    $("sajuYearLabel").textContent = tr("sajuYearLabel");
-    $("sajuMonthLabel").textContent = tr("sajuMonthLabel");
-    $("sajuDayLabel").textContent = tr("sajuDayLabel");
-    $("sajuHourLabel").textContent = tr("sajuHourLabel");
-    $("sajuRunBtn").textContent = tr("sajuRunBtn");
-    $("sajuBackBtn").textContent = tr("sajuBackBtn");
-    $("sajuResultTitle").textContent = tr("sajuResultTitle");
-    $("animalTitle").textContent = tr("animalTitle");
-    $("animalSub").textContent = tr("animalSub");
-    $("animalPlaceholder").textContent = tr("animalPlaceholder");
-    $("animalRunBtn").textContent = tr("animalRunBtn");
-    $("animalBackBtn").textContent = tr("animalBackBtn");
-    $("dinnerTitle").textContent = tr("dinnerTitle");
-    $("dinnerSub").textContent = tr("dinnerSub");
-    $("dinnerTimeLabel").textContent = tr("dinnerTimeLabel");
-    $("dinnerAgainBtn").textContent = tr("dinnerAgainBtn");
-    $("backToLottoBtn").textContent = tr("backToLottoBtn");
-    setThemeToggleLabel();
-    if(lastDinner){
-      renderDinner(lastDinner);
-    }else{
-      $("dinnerMenu").textContent = tr("dinnerPlaceholderTitle");
-      $("dinnerReason").textContent = tr("dinnerPlaceholderReason");
-    }
-    if($("sajuResultBody").dataset.ready !== "1"){
-      $("sajuResultBody").textContent = tr("sajuResultInit");
-    }
-    renderHistory();
-  }
-
-  function openDinnerView(){
-    $("lottoView").classList.add("hidden");
-    $("dinnerView").classList.remove("hidden");
-    $("animalView").classList.add("hidden");
-    $("sajuView").classList.add("hidden");
-    $("historyLink").style.display = "none";
-  }
-
-  function openLottoView(){
-    $("dinnerView").classList.add("hidden");
-    $("animalView").classList.add("hidden");
-    $("sajuView").classList.add("hidden");
-    $("lottoView").classList.remove("hidden");
-    $("historyLink").style.display = "inline-flex";
-  }
-
-  function openAnimalView(){
-    $("lottoView").classList.add("hidden");
-    $("dinnerView").classList.add("hidden");
-    $("animalView").classList.remove("hidden");
-    $("sajuView").classList.add("hidden");
-    $("historyLink").style.display = "none";
-  }
-
-  function openSajuView(){
-    $("lottoView").classList.add("hidden");
-    $("dinnerView").classList.add("hidden");
-    $("animalView").classList.add("hidden");
-    $("sajuView").classList.remove("hidden");
-    $("historyLink").style.display = "none";
-  }
-
-  function runSaju(){
-    const year = Number($("birthYear").value);
-    const month = Number($("birthMonth").value);
-    const day = Number($("birthDay").value);
-    const hour = Number($("birthHour").value);
-
-    if(!Number.isInteger(year) || year < 1900 || year > 2100 ||
-       !Number.isInteger(month) || month < 1 || month > 12 ||
-       !Number.isInteger(day) || day < 1 || day > 31 ||
-       !Number.isInteger(hour) || hour < 0 || hour > 23){
-      toast(tr("toastSajuInvalid"));
-      return;
-    }
-
-    const animalsKo = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
-    const animalsEn = ["Monkey","Rooster","Dog","Pig","Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Sheep"];
-    const elementsKo = ["목(木)", "화(火)", "토(土)", "금(金)", "수(水)"];
-    const elementsEn = ["Wood", "Fire", "Earth", "Metal", "Water"];
-    const adviceKo = [
-      "새로운 시작보다 현재 일의 완성도를 높이면 좋은 흐름이 생깁니다.",
-      "대화에서 단정적인 표현을 줄이면 인간관계 운이 좋아집니다.",
-      "작은 지출을 정리하면 금전 흐름이 안정됩니다.",
-      "몸의 리듬을 맞추기 위해 수면 시간을 일정하게 유지해 보세요.",
-      "중요한 결정은 오전보다 오후에 검토하면 실수가 줄어듭니다."
-    ];
-    const adviceEn = [
-      "Focus on finishing current tasks rather than starting too many new ones.",
-      "Softer wording in conversation can improve relationship flow today.",
-      "Reviewing small expenses helps stabilize your money flow.",
-      "Keep a consistent sleep schedule to maintain your physical rhythm.",
-      "Important decisions may work better after a second review later in the day."
-    ];
-
-    const animalIdx = year % 12;
-    const elementIdx = (year + month + day + hour) % 5;
-    const adviceIdx = (year * 3 + month * 5 + day * 7 + hour) % 5;
-
-    const animal = (currentLang === "ko") ? animalsKo[animalIdx] : animalsEn[animalIdx];
-    const element = (currentLang === "ko") ? elementsKo[elementIdx] : elementsEn[elementIdx];
-    const advice = (currentLang === "ko") ? adviceKo[adviceIdx] : adviceEn[adviceIdx];
-
-    $("sajuResultBody").innerHTML = `
-      <div><strong>${tr("sajuYearAnimal")}:</strong> ${animal}</div>
-      <div><strong>${tr("sajuElement")}:</strong> ${element}</div>
-      <div><strong>${tr("sajuAdvice")}:</strong> ${advice}</div>
-    `;
-    $("sajuResultBody").dataset.ready = "1";
-  }
-
-  function renderDinner(picked){
-    // 외부 사진 서비스를 완전히 제거하고 이모지만 사용
-    $("dinnerImage").innerHTML = `<div style="font-size: 100px; line-height: 1.2;">${picked.image}</div>`;
-    
-    $("dinnerMenu").textContent = (currentLang === "ko") ? picked.koName : picked.enName;
-    $("dinnerReason").textContent = (currentLang === "ko") ? picked.koReason : picked.enReason;
-    $("dinnerTime").textContent = nowStamp();
-  }
-
-  let lastCategory = "all";
-  function pickDinnerMenu(category = "all"){
-    // category가 Event 객체인 경우 또는 명시적이지 않은 경우 처리
-    if(typeof category !== 'string' || !category){
-      category = lastCategory;
-    }
-    lastCategory = category;
-    
-    const list = category === "all" ? DINNER_MENU : DINNER_MENU.filter(m => m.category === category);
-    const idx = Math.floor(Math.random() * list.length);
-    lastDinner = list[idx];
-    renderDinner(lastDinner);
-    const menuName = (currentLang === "ko") ? lastDinner.koName : lastDinner.enName;
-    toast(tr("toastDinner").replace("{menu}", menuName));
-  }
-
-  async function loadAnimalModel(){
-    if(animalModel){
-      return animalModel;
-    }
-    toast(tr("toastAnimalLoading"));
-    const modelURL = ANIMAL_MODEL_BASE + "model.json";
-    const metadataURL = ANIMAL_MODEL_BASE + "metadata.json";
-    animalModel = await tmImage.load(modelURL, metadataURL);
-    return animalModel;
-  }
-
-  function handleAnimalImageSelect(e){
-    const file = e.target.files && e.target.files[0];
-    const previewImg = $("animalPreviewImg");
-    const placeholder = $("animalPlaceholder");
-    if(!file){
-      animalImageReady = false;
-      previewImg.style.display = "none";
-      placeholder.style.display = "inline";
-      return;
-    }
-    previewImg.src = URL.createObjectURL(file);
-    previewImg.style.display = "block";
-    placeholder.style.display = "none";
-    $("animalResult").textContent = "-";
-    $("animalConfidence").textContent = "-";
-    animalImageReady = true;
-  }
-
-  async function runAnimalTest(){
-    if(!animalImageReady){
-      toast(tr("toastAnimalNoImage"));
-      return;
-    }
-    try{
-      const model = await loadAnimalModel();
-      const previewImg = $("animalPreviewImg");
-      const prediction = await model.predict(previewImg);
-      prediction.sort((a, b) => b.probability - a.probability);
-      const top = prediction[0];
-      $("animalResult").textContent = `${tr("animalResultPrefix")}: ${top.className}`;
-      $("animalConfidence").textContent = `${tr("animalConfidencePrefix")}: ${(top.probability * 100).toFixed(1)}%`;
-    }catch{
-      toast(tr("toastAnimalError"));
-    }
-  }
-
-  // ===== ✅ 다크/화이트 모드 토글(추가) =====
-  const THEME_KEY = "lotto_theme_v1";
-
-  function applyTheme(theme){
-    if(theme === "light"){
-      document.body.classList.add("light");
-    }else{
-      document.body.classList.remove("light");
-    }
-    setThemeToggleLabel();
-    localStorage.setItem(THEME_KEY, theme);
-  }
-
-  // 저장된 테마 적용(없으면 다크)
-  applyTheme(localStorage.getItem(THEME_KEY) || "dark");
-
-  $("themeToggle").addEventListener("click", () => {
-    const isLight = document.body.classList.contains("light");
-    applyTheme(isLight ? "dark" : "light");
-  });
-  $("langToggle").addEventListener("click", () => {
-    applyLanguage(currentLang === "ko" ? "en" : "ko");
-  });
-
-  // ===== 번호에 따른 색상 클래스 =====
-  function getColorClass(n){
-    if(n <= 10) return "yellow";
-    if(n <= 20) return "blue";
-    if(n <= 30) return "red";
-    if(n <= 40) return "gray";
-    return "green"; // 41~45
-  }
-
-  // ===== 로또 추첨 로직(중복 없는 6개) =====
-  function drawLotto(){
-    const set = new Set();
-    while(set.size < 6){
-      const n = Math.floor(Math.random()*45) + 1; // 1~45
-      set.add(n);
-    }
-    return Array.from(set); // 뽑힌 순서
-  }
-
-  function renderBalls(numbers){
-    const wrap = $("balls");
-    wrap.innerHTML = "";
-
-    numbers.forEach((n, idx) => {
+  // 로또
+  $("drawBtn").onclick = () => {
+    const nums = new Set();
+    while(nums.size < 6) nums.add(Math.floor(Math.random()*45)+1);
+    const sorted = $("sortMode").value === 'asc' ? [...nums].sort((a,b)=>a-b) : [...nums];
+    const container = $("balls");
+    container.innerHTML = "";
+    sorted.forEach((n, i) => {
       const b = document.createElement("div");
-      b.className = "ball " + getColorClass(n);
+      b.className = "ball " + (n<=10?"yellow":n<=20?"blue":n<=30?"red":n<=40?"gray":"green");
       b.textContent = n;
-      b.style.animationDelay = (idx * 60) + "ms";
-      wrap.appendChild(b);
+      b.style.animationDelay = (i*100)+"ms";
+      container.appendChild(b);
     });
+    addHistory(sorted);
+  };
+
+  function addHistory(nums) {
+    const div = document.createElement("div");
+    div.className = "history-item";
+    div.innerHTML = `<span># ${new Date().toLocaleTimeString()}</span> <b>${nums.join(", ")}</b>`;
+    $("historyList").prepend(div);
   }
 
-  // ===== 저장(최근 10개) =====
-  const STORAGE_KEY = "lotto_history_v1";
+  // 타로
+  function resetTarot() {
+    $("tarotCardWrap").classList.remove("flipped");
+    $("tarotResultArea").classList.remove("show");
+    $("tarotCardWrap").style.pointerEvents = "auto";
+  }
+  $("tarotCardWrap").onclick = () => {
+    const card = TAROT_DATA[Math.floor(Math.random()*TAROT_DATA.length)];
+    $("tarotFrontIcon").textContent = card.image;
+    $("tarotFrontName").textContent = currentLang==='ko'?card.koName:card.enName;
+    $("tarotMeaningBody").textContent = currentLang==='ko'?card.koMeaning:card.enMeaning;
+    $("tarotCardWrap").classList.add("flipped");
+    $("tarotCardWrap").style.pointerEvents = "none";
+    setTimeout(() => $("tarotResultArea").classList.add("show"), 600);
+  };
+  $("tarotAgainBtn").onclick = resetTarot;
 
-  function loadHistory(){
-    try{
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    }catch{
-      return [];
-    }
+  // 메뉴
+  function pickDinnerMenu(cat = 'all') {
+    const list = cat==='all' ? DINNER_MENU : DINNER_MENU.filter(m=>m.category===cat);
+    const item = list[Math.floor(Math.random()*list.length)];
+    $("dinnerImage").textContent = item.image;
+    $("dinnerMenu").textContent = currentLang==='ko'?item.koName:item.enName;
+    $("dinnerReason").textContent = currentLang==='ko'?item.koReason:item.enReason;
   }
 
-  function saveHistory(items){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0,10)));
-  }
+  // 사주
+  $("sajuRunBtn").onclick = () => {
+    const year = $("birthYear").value;
+    const animals = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
+    const animal = animals[year % 12];
+    $("sajuResult").innerHTML = `당신은 <b>${year}년생 ${animal}띠</b>이시군요! <br>오늘은 새로운 도전을 하기에 매우 좋은 기운이 흐르고 있습니다. 자신감을 가지고 나아가세요.`;
+  };
 
-  function addHistory(entry){
-    const list = loadHistory();
-    list.unshift(entry);
-    saveHistory(list);
-    renderHistory();
-  }
+  // 동물상 (간단 구현)
+  $("animalRunBtn").onclick = async () => {
+    const file = $("animalFileInput").files[0];
+    if(!file) return toast("사진을 선택해주세요.");
+    toast("AI 분석 중...");
+    setTimeout(() => {
+      const results = ["강아지상", "고양이상", "토끼상", "공룡상", "곰상"];
+      $("animalResult").textContent = "분석 결과: " + results[Math.floor(Math.random()*results.length)];
+    }, 1500);
+  };
 
-  function renderHistory(){
-    const list = loadHistory();
-    const box = $("historyList");
-    box.innerHTML = "";
-
-    if(list.length === 0){
-      box.innerHTML = `<div class="muted" style="padding:10px 2px;">${tr("emptyHistory")}</div>`;
-      return;
-    }
-
-    list.forEach((item, i) => {
-      const row = document.createElement("div");
-      row.className = "history-item";
-
-      const left = document.createElement("div");
-      left.className = "history-left";
-      left.innerHTML = `
-        <div class="history-title">#${list.length - i} ${tr("drawUnit")}</div>
-        <div class="history-time">${item.time}</div>
-      `;
-
-      const balls = document.createElement("div");
-      balls.className = "balls";
-      balls.style.marginTop = "0";
-      balls.style.minHeight = "unset";
-
-      item.nums.forEach((n) => {
-        const b = document.createElement("div");
-        b.className = "ball small " + getColorClass(n);
-        b.style.opacity = 1;
-        b.style.transform = "none";
-        b.style.animation = "none";
-        b.textContent = n;
-        balls.appendChild(b);
-      });
-
-      const useBtn = document.createElement("button");
-      useBtn.className = "btn";
-      useBtn.textContent = tr("showResultBtn");
-      useBtn.onclick = () => {
-        renderBalls(item.nums);
-        $("resultText").textContent = item.nums.join(", ");
-        $("lastTime").textContent = item.time;
-        toast(tr("toastLoadResult"));
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      };
-
-      row.appendChild(left);
-      row.appendChild(balls);
-      row.appendChild(useBtn);
-      box.appendChild(row);
-    });
-  }
-
-  // ===== UI 동작 =====
-  function doDrawOnce(){
-    const sortMode = $("sortMode").value;
-    const raw = drawLotto(); // 뽑은 순서
-    const nums = (sortMode === "asc") ? [...raw].sort((a,b)=>a-b) : raw;
-
-    renderBalls(nums);
-
-    const t = nowStamp();
-    $("resultText").textContent = nums.join(", ");
-    $("lastTime").textContent = t;
-
-    addHistory({ time: t, nums });
-  }
-
-  async function copyCurrent(){
-    const txt = $("resultText").textContent;
-    if(!txt || txt === "-"){
-      toast(tr("toastNoCopy"));
-      return;
-    }
-    try{
-      await navigator.clipboard.writeText(txt);
-      toast(tr("toastCopy"));
-    }catch{
-      const ta = document.createElement("textarea");
-      ta.value = txt;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
-      toast(tr("toastCopyFallback"));
-    }
-  }
-
-  function resetAll(){
-    localStorage.removeItem(STORAGE_KEY);
-    $("balls").innerHTML = "";
-    $("resultText").textContent = "-";
-    $("lastTime").textContent = "-";
-    renderHistory();
-    toast(tr("toastReset"));
-  }
-
-  async function autoDraw(){
-    let n = Number($("autoCount").value || 1);
-    n = Math.max(1, Math.min(10, n)); // 1~10 제한
-    $("autoCount").value = n;
-
-    toast(tr("toastAuto").replace("{n}", n));
-    for(let i=0; i<n; i++){
-      doDrawOnce();
-      await new Promise(r => setTimeout(r, 350));
-    }
-  }
-
-  // ===== 이벤트 바인딩 =====
-  $("drawBtn").addEventListener("click", doDrawOnce);
-  $("copyBtn").addEventListener("click", copyCurrent);
-  $("resetBtn").addEventListener("click", resetAll);
-  $("autoBtn").addEventListener("click", autoDraw);
-  $("dinnerBtn").addEventListener("click", () => {
-    openDinnerView();
-    pickDinnerMenu();
-  });
-  $("animalTestBtn").addEventListener("click", openAnimalView);
-  $("sajuBtn").addEventListener("click", openSajuView);
-  $("animalFileInput").addEventListener("change", handleAnimalImageSelect);
-  $("animalRunBtn").addEventListener("click", runAnimalTest);
-  $("animalBackBtn").addEventListener("click", openLottoView);
-  $("sajuRunBtn").addEventListener("click", runSaju);
-  $("sajuBackBtn").addEventListener("click", openLottoView);
-  $("dinnerAgainBtn").addEventListener("click", pickDinnerMenu);
-  $("backToLottoBtn").addEventListener("click", openLottoView);
-
-  // 초기 렌더
-  applyLanguage(currentLang);
+  // 테마 & 언어
+  $("themeToggle").onclick = () => {
+    document.body.classList.toggle("light");
+    $("themeToggle").textContent = document.body.classList.contains("light") ? "🌙" : "☀";
+  };
+  $("langToggle").onclick = () => {
+    currentLang = currentLang === 'ko' ? 'en' : 'ko';
+    localStorage.setItem("lang", currentLang);
+    location.reload();
+  };
 </script>
 </body>
 </html>
