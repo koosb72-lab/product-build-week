@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="로또 번호 생성기, 저녁메뉴 추천, 동물상 테스트, 오늘의 타로와 함께 행운 가이드를 제공하는 정보형 웹사이트입니다." />
+  <meta name="description" content="로또 번호 생성기, 저녁메뉴 추천, 동물상 테스트, AI 타로와 함께 확률/책임 이용 가이드를 제공하는 정보형 웹사이트입니다." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://koosb72-lab.github.io/product-build-week/" />
   <meta name="google-adsense-account" content="ca-pub-7981059984083694" />
@@ -11,6 +11,7 @@
   <title>행운의 도구함 | Product Build Week</title>
   <style>
     :root{
+      /* ===== 다크모드(기본) ===== */
       --bg1:#070a18;
       --bg2:#0b1020;
       --card: rgba(255,255,255,0.06);
@@ -19,10 +20,11 @@
       --muted: rgba(255,255,255,0.72);
       --shadow: 0 14px 45px rgba(0,0,0,0.35);
       --radius: 18px;
-      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       --primary: #7c5cff;
       --secondary: #2dd4bf;
       --gold: #ffd700;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
     }
 
     body.light{
@@ -40,394 +42,661 @@
       margin:0; min-height:100vh;
       font-family: var(--sans);
       color: var(--text);
-      background: linear-gradient(180deg, var(--bg1), var(--bg2) 40%, var(--bg1));
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(124,92,255,0.35), transparent 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(45,212,191,0.22), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 40%, var(--bg1));
       transition: background .25s ease, color .25s ease;
     }
     .container{ max-width: 980px; margin:0 auto; padding: 20px 16px 80px; }
 
     header{
-      position: sticky; top:0; z-index: 100;
-      padding: 12px 16px; backdrop-filter: blur(12px);
-      background: rgba(6,8,22,0.7); border-bottom: 1px solid var(--line);
-      display:flex; align-items:center; justify-content:space-between;
+      position: sticky; top:0; z-index: 50;
+      padding: 14px 16px;
+      backdrop-filter: blur(12px);
+      background: rgba(6,8,22,0.55);
+      border-bottom: 1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      transition: background .25s ease, border-color .25s ease;
     }
-    body.light header{ background: rgba(255,255,255,0.8); }
+    body.light header{ background: rgba(255,255,255,0.70); }
 
-    .brand{ display:flex; align-items:center; gap:10px; font-weight:900; }
-    .logo{ width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-    .chip{ padding: 6px 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 999px; font-size: 13px; color: var(--text); cursor:pointer; text-decoration:none; }
-    .theme-toggle{ padding: 6px 10px; border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 999px; cursor: pointer; }
-
-    .card{ margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
-    .view.hidden{ display:none; }
-
-    /* 타로 3카드 스프레드 스타일 */
-    .tarot-deck {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 10px; margin: 20px 0; justify-items: center;
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:-0.4px; cursor:pointer; }
+    .logo{
+      width: 36px; height: 36px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: var(--shadow);
     }
-    .deck-card {
-      width: 60px; height: 100px; background: linear-gradient(45deg, #2c3e50, #000);
-      border: 1px solid var(--line); border-radius: 6px; cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s; position: relative;
+    .nav-scroll { display:flex; gap:8px; overflow-x: auto; padding-bottom: 2px; }
+    .chip{
+      padding: 8px 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.05);
+      border-radius: 999px; font-size: 13px; color: var(--muted); text-decoration:none; cursor:pointer; white-space: nowrap;
+      transition: 0.2s;
     }
-    .deck-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(124,92,255,0.4); }
-    .deck-card.selected { border: 2px solid var(--gold); transform: translateY(-10px); box-shadow: 0 0 15px var(--gold); }
-    .deck-card.selected::after {
-      content: attr(data-order); position: absolute; top: -10px; right: -10px;
-      background: var(--gold); color: #000; width: 20px; height: 20px;
-      border-radius: 50%; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center;
-    }
-
-    .tarot-result-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px;
-    }
-    .result-card-item { text-align: center; }
-    .result-card-label { font-size: 13px; color: var(--gold); margin-bottom: 8px; font-weight: bold; }
+    .chip.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: bold; }
     
-    .tarot-card {
-      width: 100%; aspect-ratio: 2/3.5; position: relative; transform-style: preserve-3d;
-      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin-bottom: 15px;
+    .theme-toggle{
+      padding: 8px; border: 1px solid var(--line); background: rgba(255,255,255,0.05);
+      border-radius: 50%; font-size: 14px; color: var(--text); cursor: pointer;
+      display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px;
     }
-    .tarot-card.flipped { transform: rotateY(180deg); }
-    .tarot-card-front, .tarot-card-back {
-      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-      border-radius: 10px; border: 2px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
-    .tarot-card-back { background: linear-gradient(45deg, #2c3e50, #000); }
-    .tarot-card-front { background: linear-gradient(135deg, #1a1a2e, #16213e); transform: rotateY(180deg); border-color: var(--gold); }
-    .tarot-icon { font-size: 40px; margin-bottom: 10px; }
-    .tarot-name { font-size: 14px; font-weight: 900; color: var(--gold); }
+    body.light .theme-toggle{ background: rgba(0,0,0,0.04); }
 
-    .tarot-meaning-box {
-      margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03);
-      border-radius: 12px; border: 1px solid var(--line); font-size: 14px; line-height: 1.6; text-align: left;
+    .card{
+      margin-top: 18px; background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px;
     }
 
-    /* 버튼 스타일 */
-    .btn {
-      padding: 10px 20px; border-radius: 12px; border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06); color: var(--text); font-weight: bold; cursor: pointer; transition: 0.2s;
-    }
-    .btn.primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    h1{ margin: 0; font-size: 20px; font-weight: 800; }
+    .sub{ margin: 8px 0 0; color: var(--muted); line-height: 1.6; font-size: 14px; }
 
-    .balls { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; min-height: 50px; }
-    .ball {
-      width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-weight: 900; color: #111; box-shadow: 0 4px 10px rgba(0,0,0,0.3); opacity: 0; animation: pop 0.3s forwards;
+    .btn{
+      border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: var(--text);
+      padding: 10px 14px; border-radius: 12px; cursor:pointer; font-weight: 700; font-size: 14px;
+      transition: transform .15s ease, border-color .15s ease;
+      display:inline-flex; align-items:center; gap:8px;
     }
-    @keyframes pop { to { opacity: 1; transform: scale(1); } }
+    body.light .btn{ background: rgba(0,0,0,0.04); }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.3); }
+    .btn:active{ transform: translateY(0); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(124,92,255,0.9), rgba(45,212,191,0.5));
+      border-color: rgba(255,255,255,0.18); color: #fff;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* 로또 스타일 */
+    .balls{ display:flex; flex-wrap:wrap; gap:10px; margin-top: 20px; min-height: 60px; align-items:center; }
+    .ball{
+      width: 50px; height: 50px; border-radius: 50%; display:flex; align-items:center; justify-content:center;
+      font-weight: 900; font-size: 18px; border: 2px solid rgba(255,255,255,0.15);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      color: #333; position: relative; overflow: hidden;
+    }
+    .ball::after { content:''; position:absolute; top:5%; left:5%; width:40%; height:40%; border-radius:50%; background: linear-gradient(135deg, rgba(255,255,255,0.8), transparent); pointer-events:none; }
+    @keyframes pop{ from{ transform: translateY(10px) scale(0.8); opacity:0; } to{ transform: translateY(0) scale(1); opacity:1; } }
     .ball.yellow { background: #fbc400; }
     .ball.blue   { background: #69c8f2; }
     .ball.red    { background: #ff7272; }
     .ball.gray   { background: #aaaaaa; }
     .ball.green  { background: #b0d840; }
 
+    /* 타로 스타일 (고급화) */
+    .tarot-stage { text-align: center; }
+    .tarot-deck {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+      gap: 8px; margin: 25px 0; justify-items: center; max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+    .deck-card {
+      width: 60px; height: 100px; border-radius: 8px; cursor: pointer;
+      background: linear-gradient(135deg, #2a2a3a 0%, #111 100%);
+      border: 1px solid rgba(255,255,255,0.1); position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    /* 카드 뒷면 패턴 */
+    .deck-card::before {
+      content: ""; position: absolute; inset: 4px; border: 1px dashed rgba(255,215,0,0.3); border-radius: 4px;
+      background-image: radial-gradient(var(--primary) 1px, transparent 1px); background-size: 8px 8px; opacity: 0.5;
+    }
+    .deck-card:hover { transform: translateY(-6px); border-color: var(--primary); box-shadow: 0 8px 20px rgba(124,92,255,0.25); }
+    .deck-card.selected {
+      transform: translateY(-12px); border: 2px solid var(--gold);
+      box-shadow: 0 0 15px rgba(255,215,0,0.4);
+    }
+    .deck-card.selected::after {
+      content: attr(data-order); position: absolute; top: -8px; right: -8px;
+      width: 22px; height: 22px; background: var(--gold); color: #000;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 12px; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .tarot-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
+    .tarot-slot { text-align: center; perspective: 1000px; }
+    .tarot-slot-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    
+    .tarot-card {
+      width: 100%; aspect-ratio: 2/3.4; position: relative; transform-style: preserve-3d;
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 auto;
+    }
+    .tarot-card.flipped { transform: rotateY(180deg); }
+    .tarot-face {
+      position: absolute; inset: 0; backface-visibility: hidden; border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .tarot-back {
+      background: #1a1a2e;
+      background-image: 
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px),
+        radial-gradient(circle at 50% 50%, rgba(124,92,255,0.1), transparent 70%);
+    }
+    .tarot-back::after { content: "✨"; font-size: 24px; opacity: 0.7; }
+    
+    .tarot-front {
+      transform: rotateY(180deg); background: linear-gradient(160deg, #20202c, #000);
+      border: 2px solid var(--gold);
+    }
+    .tarot-icon-large { font-size: 42px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.3)); }
+    .tarot-name { font-size: 13px; font-weight: 900; color: var(--gold); text-align: center; padding: 0 4px; }
+    
+    .tarot-desc {
+      margin-top: 15px; font-size: 13px; line-height: 1.6; text-align: left;
+      background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px;
+      border: 1px solid var(--line); color: var(--text); min-height: 100px;
+    }
+
+    /* 저녁 메뉴 스타일 (복구) */
+    .dinner-stage { text-align: center; }
+    .dinner-icon {
+      width: 140px; height: 140px; border-radius: 50%; margin: 20px auto;
+      background: var(--card); border: 2px solid var(--line);
+      display:flex; align-items:center; justify-content:center; font-size: 70px;
+      box-shadow: var(--shadow);
+    }
+    .dinner-name { font-size: 28px; font-weight: 900; margin: 10px 0; }
+    .dinner-desc { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 600px; margin: 0 auto 20px; }
+
+    /* 동물상 스타일 (복구) */
+    .animal-stage { text-align: center; }
+    .upload-box {
+      border: 2px dashed var(--line); border-radius: 16px; padding: 30px; margin: 20px 0;
+      cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.02);
+    }
+    .upload-box:hover { border-color: var(--primary); background: rgba(124,92,255,0.05); }
+    .preview-img { max-width: 100%; max-height: 300px; border-radius: 12px; display: none; margin: 0 auto; box-shadow: var(--shadow); }
+    .animal-result { font-size: 24px; font-weight: 900; margin-top: 20px; color: var(--primary); }
+    .animal-conf { color: var(--muted); font-size: 14px; margin-top: 5px; }
+
+    /* 유틸리티 */
+    .view.hidden { display: none; }
+    .history-item {
+      display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--line);
+      font-size: 13px; color: var(--muted);
+    }
+    .history-item b { color: var(--text); letter-spacing: 1px; }
+
+    .site-footer{ margin-top: 40px; padding: 20px; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .footer-links a { color: var(--text); text-decoration: none; margin: 0 8px; }
+
     @media (max-width: 600px) {
-      .tarot-result-grid { grid-template-columns: 1fr; }
-      .tarot-card { width: 120px; margin: 0 auto 15px; }
+      .tarot-result-grid { grid-template-columns: 1fr; gap: 20px; }
+      .tarot-card { width: 140px; }
+      .tarot-desc { min-height: auto; }
     }
   </style>
 </head>
 
 <body>
 <header>
-  <div class="brand" onclick="openLottoView()" style="cursor:pointer;">
+  <div class="brand" onclick="goHome()">
     <div class="logo"></div>
-    <div id="brandTitle">행운의 도구함</div>
+    <div>
+      <div style="font-size:15px;">행운의 도구함</div>
+      <div style="font-size:11px; color:var(--muted);">Product Build Week</div>
+    </div>
   </div>
-  <div style="display:flex; gap:6px;">
-    <button class="chip" id="tarotNav">🔮 타로</button>
-    <button class="chip" id="dinnerNav">🍽 식사</button>
-    <button class="chip" id="animalNav">🐶 동물상</button>
-    <button class="theme-toggle" id="themeToggle">☀</button>
+  <div style="display:flex; align-items:center; gap:8px;">
     <button class="chip" id="langToggle">EN</button>
+    <button class="theme-toggle" id="themeToggle">☀</button>
   </div>
 </header>
 
 <main class="container">
-  <!-- 로또 뷰 -->
-  <div class="view" id="lottoView">
+  <!-- 네비게이션 -->
+  <nav class="nav-scroll">
+    <button class="chip active" onclick="switchTab('lotto', this)">🎰 로또</button>
+    <button class="chip" onclick="switchTab('tarot', this)">🔮 타로</button>
+    <button class="chip" onclick="switchTab('dinner', this)">🍽 저녁메뉴</button>
+    <button class="chip" onclick="switchTab('animal', this)">🐶 동물상</button>
+    <button class="chip" onclick="switchTab('saju', this)">📜 사주</button>
+  </nav>
+
+  <!-- 1. 로또 뷰 -->
+  <div id="view-lotto" class="view">
     <section class="card">
-      <h1 id="lottoTitle">로또 번호 추첨</h1>
-      <p class="sub">1~45 사이의 중복 없는 6개 숫자를 뽑습니다.</p>
-      <div class="controls">
-        <button class="btn primary" id="drawBtn">🎲 번호 뽑기</button>
-        <button class="btn" id="copyBtn">📋 복사하기</button>
+      <h1>로또 번호 추첨기</h1>
+      <p class="sub">1부터 45까지의 숫자 중 중복 없이 6개를 무작위로 추첨합니다.</p>
+      
+      <div class="controls" style="justify-content: space-between;">
+        <div style="display:flex; gap:8px;">
+          <button class="btn primary" id="lottoDrawBtn">🎲 번호 뽑기</button>
+          <button class="btn" id="lottoCopyBtn">📋 복사</button>
+        </div>
+        <select id="lottoSort" style="padding:8px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text);">
+          <option value="asc">오름차순</option>
+          <option value="raw">뽑은 순서</option>
+        </select>
       </div>
-      <div class="balls" id="balls"></div>
+
+      <div class="balls" id="lottoBalls"></div>
     </section>
-    <section class="card">
-      <h2 id="historyTitle">최근 기록</h2>
-      <div id="historyList"></div>
+
+    <section class="card" id="lottoHistory" style="display:none;">
+      <h1>최근 추첨 기록</h1>
+      <div id="lottoHistoryList"></div>
     </section>
   </div>
 
-  <!-- 타로 뷰 -->
-  <div class="view hidden" id="tarotView">
-    <section class="card" style="text-align:center;">
-      <h1 id="tarotTitle">AI 3카드 타로 스프레드</h1>
-      <p id="tarotSub" class="sub">마음을 비우고 아래의 카드 중 <b>3장</b>을 순서대로 선택해 주세요.</p>
+  <!-- 2. 타로 뷰 (3카드 스프레드) -->
+  <div id="view-tarot" class="view hidden">
+    <section class="card tarot-stage">
+      <h1>AI 타로 (3-Card Spread)</h1>
+      <p class="sub" id="tarotInstruction">마음을 비우고 아래 카드 중 <b>3장</b>을 선택하세요.<br>(순서대로 과거, 현재, 미래를 상징합니다)</p>
       
       <div class="tarot-deck" id="tarotDeck">
-        <!-- 22장의 카드가 자바스크립트로 생성됨 -->
+        <!-- JS로 22장 생성 -->
       </div>
 
-      <div id="tarotActionArea" style="margin-top:20px;">
-        <button class="btn primary" id="revealBtn" disabled>🔮 운명 확인하기</button>
-        <button class="btn" id="tarotResetBtn">🧹 다시 선택</button>
+      <div id="tarotControls" style="margin-top:20px;">
+        <button class="btn primary" id="tarotRevealBtn" disabled>✨ 운명 확인하기</button>
+        <button class="btn" onclick="resetTarot()">🔄 다시 선택</button>
       </div>
 
-      <div class="tarot-result-area view hidden" id="tarotResultArea">
+      <div id="tarotResult" class="hidden">
         <div class="tarot-result-grid">
-          <div class="result-card-item">
-            <div class="result-card-label" id="labelPast">과거 / 상황</div>
-            <div class="tarot-card" id="card0">
-              <div class="tarot-card-back"></div>
-              <div class="tarot-card-front"><div class="tarot-icon"></div><div class="tarot-name"></div></div>
+          <!-- 과거 -->
+          <div class="tarot-slot">
+            <div class="tarot-slot-label">Past / Situation</div>
+            <div class="tarot-card" id="tarotCard0">
+              <div class="tarot-face tarot-back"></div>
+              <div class="tarot-face tarot-front">
+                <div class="tarot-icon-large"></div>
+                <div class="tarot-name"></div>
+              </div>
             </div>
-            <div class="tarot-meaning-box" id="meaning0"></div>
+            <div class="tarot-desc" id="tarotDesc0"></div>
           </div>
-          <div class="result-card-item">
-            <div class="result-card-label" id="labelPresent">현재 / 조언</div>
-            <div class="tarot-card" id="card1">
-              <div class="tarot-card-back"></div>
-              <div class="tarot-card-front"><div class="tarot-icon"></div><div class="tarot-name"></div></div>
+          <!-- 현재 -->
+          <div class="tarot-slot">
+            <div class="tarot-slot-label">Present / Advice</div>
+            <div class="tarot-card" id="tarotCard1">
+              <div class="tarot-face tarot-back"></div>
+              <div class="tarot-face tarot-front">
+                <div class="tarot-icon-large"></div>
+                <div class="tarot-name"></div>
+              </div>
             </div>
-            <div class="tarot-meaning-box" id="meaning1"></div>
+            <div class="tarot-desc" id="tarotDesc1"></div>
           </div>
-          <div class="result-card-item">
-            <div class="result-card-label" id="labelFuture">미래 / 결과</div>
-            <div class="tarot-card" id="card2">
-              <div class="tarot-card-back"></div>
-              <div class="tarot-card-front"><div class="tarot-icon"></div><div class="tarot-name"></div></div>
+          <!-- 미래 -->
+          <div class="tarot-slot">
+            <div class="tarot-slot-label">Future / Outcome</div>
+            <div class="tarot-card" id="tarotCard2">
+              <div class="tarot-face tarot-back"></div>
+              <div class="tarot-face tarot-front">
+                <div class="tarot-icon-large"></div>
+                <div class="tarot-name"></div>
+              </div>
             </div>
-            <div class="tarot-meaning-box" id="meaning2"></div>
+            <div class="tarot-desc" id="tarotDesc2"></div>
           </div>
         </div>
-        <button class="btn primary" style="margin-top:30px;" onclick="initTarotDeck()">🎴 새 점 보기</button>
+        <button class="btn primary" style="margin-top:30px;" onclick="resetTarot()">🎴 새로운 점 보기</button>
       </div>
     </section>
   </div>
 
-  <!-- 메뉴 추천 뷰 -->
-  <div class="view hidden" id="dinnerView">
-    <section class="card" style="text-align:center;">
-      <h1 id="dinnerTitle">오늘 저녁 메뉴 추천</h1>
-      <div style="display:flex; justify-content:center; gap:8px; margin:15px 0;">
-        <button class="chip" onclick="pickDinner('korean')">한식</button>
-        <button class="chip" onclick="pickDinner('japanese')">일식</button>
-        <button class="chip" onclick="pickDinner('western')">양식</button>
-        <button class="chip" onclick="pickDinner('all')">랜덤</button>
+  <!-- 3. 저녁메뉴 뷰 (상세 복구) -->
+  <div id="view-dinner" class="view hidden">
+    <section class="card dinner-stage">
+      <h1>오늘 저녁 뭐 먹지?</h1>
+      <p class="sub">카테고리를 선택하면 메뉴와 추천 이유를 알려드립니다.</p>
+      
+      <div style="display:flex; justify-content:center; gap:8px; margin-top:20px; flex-wrap:wrap;">
+        <button class="chip" onclick="recommendDinner('all')">🎲 전체 랜덤</button>
+        <button class="chip" onclick="recommendDinner('korean')">🇰🇷 한식</button>
+        <button class="chip" onclick="recommendDinner('japanese')">🇯🇵 일식</button>
+        <button class="chip" onclick="recommendDinner('western')">🇺🇸 양식</button>
       </div>
-      <div id="dinnerImage" style="font-size:80px; margin:20px 0;">🍽</div>
-      <div id="dinnerMenu" style="font-size:24px; font-weight:900;">추천을 시작하세요</div>
-      <p id="dinnerReason" style="color:var(--muted); margin-top:10px;"></p>
+
+      <div class="dinner-icon" id="dinnerIcon">🍽</div>
+      <div class="dinner-name" id="dinnerName">메뉴를 추천해드릴게요</div>
+      <p class="dinner-desc" id="dinnerDesc">위 버튼을 눌러 추천을 받아보세요.</p>
+      
+      <button class="btn primary" onclick="recommendDinner()">🔄 다시 추천받기</button>
     </section>
   </div>
 
-  <!-- 가이드 링크 -->
-  <section class="card" id="guides">
-    <h2 id="guideTitle">지식 가이드</h2>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-      <a href="./guide-lotto.html" class="chip" style="text-align:center;">로또와 확률</a>
-      <a href="./guide-tarot.html" class="chip" style="text-align:center;">타로의 심리학</a>
-      <a href="./guide-dinner.html" class="chip" style="text-align:center;">메뉴 선택 장애</a>
-      <a href="./guide-animal-test.html" class="chip" style="text-align:center;">AI 이미지 인식</a>
+  <!-- 4. 동물상 테스트 (Teachable Machine 복구) -->
+  <div id="view-animal" class="view hidden">
+    <section class="card animal-stage">
+      <h1>AI 동물상 테스트</h1>
+      <p class="sub">얼굴 사진을 올리면 인공지능이 강아지상/고양이상을 분석합니다.<br>(사진은 서버로 전송되지 않습니다)</p>
+
+      <label class="upload-box">
+        <input type="file" id="animalInput" accept="image/*" style="display:none">
+        <div id="animalPlaceholder">📁 이미지를 선택하거나 여기로 드래그하세요</div>
+        <img id="animalPreview" class="preview-img" />
+      </label>
+
+      <div id="animalResultArea" class="hidden">
+        <div class="animal-result" id="animalResultText"></div>
+        <div class="animal-conf" id="animalConfText"></div>
+      </div>
+
+      <button class="btn primary" id="animalPredictBtn" disabled>🔎 분석하기</button>
+    </section>
+  </div>
+
+  <!-- 5. 사주 뷰 (복구) -->
+  <div id="view-saju" class="view hidden">
+    <section class="card">
+      <h1>오늘의 사주 & 성향</h1>
+      <p class="sub">생년월일을 입력하면 오행과 오늘의 조언을 드립니다.</p>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:20px;">
+        <label>
+          <span style="font-size:12px; color:var(--muted);">출생 연도</span>
+          <input type="number" id="sajuYear" class="btn" style="width:100%; text-align:left; cursor:text;" value="1995">
+        </label>
+        <label>
+          <span style="font-size:12px; color:var(--muted);">출생 월</span>
+          <input type="number" id="sajuMonth" class="btn" style="width:100%; text-align:left; cursor:text;" value="1">
+        </label>
+        <label>
+          <span style="font-size:12px; color:var(--muted);">출생 일</span>
+          <input type="number" id="sajuDay" class="btn" style="width:100%; text-align:left; cursor:text;" value="1">
+        </label>
+        <label>
+          <span style="font-size:12px; color:var(--muted);">시간 (0~23)</span>
+          <input type="number" id="sajuTime" class="btn" style="width:100%; text-align:left; cursor:text;" value="12">
+        </label>
+      </div>
+
+      <button class="btn primary" style="width:100%; justify-content:center; margin-top:20px;" onclick="analyzeSaju()">📜 사주 풀이 보기</button>
+
+      <div id="sajuResult" class="card hidden" style="background:rgba(0,0,0,0.2); margin-top:20px;">
+        <h3 style="margin:0 0 10px 0; color:var(--gold);">분석 결과</h3>
+        <div id="sajuContent" style="line-height:1.8; font-size:14px;"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:30px;">
+    <h1>📚 지식 가이드</h1>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-top:15px;">
+      <a href="./guide-lotto.html" class="btn">🎱 로또의 확률</a>
+      <a href="./guide-dinner.html" class="btn">🧠 메뉴 선택 심리</a>
+      <a href="./guide-animal-test.html" class="btn">🤖 AI 원리</a>
+      <a href="./guide-tarot.html" class="btn">🃏 타로와 무의식</a>
     </div>
   </section>
 
   <footer class="site-footer">
     <div class="footer-links">
-      <a href="./about.html">소개</a> | <a href="./privacy.html">개인정보</a> | <a href="./terms.html">약관</a>
+      <a href="./about.html">서비스 소개</a>
+      <a href="./contact.html">문의하기</a>
+      <a href="./privacy.html">개인정보처리방침</a>
+      <a href="./terms.html">이용약관</a>
     </div>
-    <p style="font-size:11px; margin-top:10px;">© 2026 Product Build Week. All tools are for entertainment only.</p>
+    <p>© 2026 Product Build Week. All rights reserved.</p>
   </footer>
 </main>
 
-<div id="toast" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:8px 16px; border-radius:20px; display:none; z-index:1000;"></div>
+<div id="toast" style="position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#fff; padding:10px 20px; border-radius:30px; font-size:14px; z-index:9999; display:none;"></div>
+
+<!-- AI 라이브러리 -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
 <script>
-  const $ = (id) => document.getElementById(id);
-  let currentLang = localStorage.getItem("lang") || "ko";
-  let selectedCards = [];
+/* ================= GLOBAL & UTIL ================= */
+const $ = (id) => document.getElementById(id);
+function showToast(msg) {
+  const t = $("toast"); t.innerText = msg; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2500);
+}
+let currentLang = "ko"; // 간단화: 이번 버전은 한글 우선
 
-  const TAROT_DATA = [
-    { image: "🃏", koName: "바보", enName: "The Fool", koMeaning: "새로운 시작과 모험. 두려움 없이 나아가세요.", enMeaning: "New beginnings and adventure. Step forward without fear." },
-    { image: "🪄", koName: "마법사", enName: "The Magician", koMeaning: "잠재력과 창의성. 당신의 능력을 발휘할 때입니다.", enMeaning: "Potential and creativity. Time to use your skills." },
-    { image: "📖", koName: "여사제", enName: "High Priestess", koMeaning: "직관과 지혜. 내면의 목소리에 귀를 기울이세요.", enMeaning: "Intuition and wisdom. Listen to your inner voice." },
-    { image: "👑", koName: "여황제", enName: "The Empress", koMeaning: "풍요와 결실. 주변과 따뜻함을 나누세요.", enMeaning: "Abundance and fertility. Share warmth with others." },
-    { image: "🏛️", koName: "황제", enName: "The Emperor", koMeaning: "권위와 질서. 체계적인 계획이 필요합니다.", enMeaning: "Authority and structure. Solid planning is needed." },
-    { image: "⛪", koName: "교황", enName: "The Hierophant", koMeaning: "전통과 조언. 스승이나 선배의 지혜를 구하세요.", enMeaning: "Tradition and advice. Seek wisdom from elders." },
-    { image: "❤️", koName: "연인", enName: "The Lovers", koMeaning: "선택과 조화. 진심 어린 소통이 중요합니다.", enMeaning: "Choices and harmony. Sincere communication is key." },
-    { image: "⚔️", koName: "전차", enName: "The Chariot", koMeaning: "의지와 승리. 장애물을 뚫고 전진하세요.", enMeaning: "Willpower and victory. Push through obstacles." },
-    { image: "⚖️", koName: "정의", enName: "Justice", koMeaning: "균형과 진실. 공정한 판단이 요구되는 시기입니다.", enMeaning: "Balance and truth. Fair judgment is required." },
-    { image: "🧘", koName: "은둔자", enName: "The Hermit", koMeaning: "성찰과 고독. 혼자만의 시간이 답을 줍니다.", enMeaning: "Reflection and solitude. Inner time brings answers." },
-    { image: "🎡", koName: "운명의 수레바퀴", enName: "Wheel of Fortune", koMeaning: "변화와 행운. 다가오는 기회를 잡으세요.", enMeaning: "Change and luck. Catch the upcoming opportunity." },
-    { image: "💪", koName: "힘", enName: "Strength", koMeaning: "인내와 용기. 부드러운 힘이 강함을 이깁니다.", enMeaning: "Patience and courage. Soft power overcomes hardness." },
-    { image: "👣", koName: "매달린 사람", enName: "Hanged Man", koMeaning: "희생과 새로운 관점. 다르게 생각해보세요.", enMeaning: "Sacrifice and perspective. Think differently." },
-    { image: "💀", koName: "죽음", enName: "Death", koMeaning: "종결과 변화. 새로운 문이 열리고 있습니다.", enMeaning: "Ending and transition. A new door is opening." },
-    { image: "🍷", koName: "절제", enName: "Temperance", koMeaning: "조화와 인내. 감정의 조절이 필요한 날입니다.", enMeaning: "Balance and patience. Control your emotions." },
-    { image: "😈", koName: "악마", enName: "The Devil", koMeaning: "구속과 유혹. 중독이나 나쁜 습관을 경계하세요.", enMeaning: "Bondage and temptation. Watch out for bad habits." },
-    { image: "⚡", koName: "탑", enName: "The Tower", koMeaning: "붕괴와 충격. 갑작스러운 변화가 성장을 돕습니다.", enMeaning: "Collapse and shock. Sudden change helps growth." },
-    { image: "⭐", koName: "별", enName: "The Star", koMeaning: "희망과 영감. 당신의 꿈이 곧 이루어질 것입니다.", enMeaning: "Hope and inspiration. Your dreams are coming true." },
-    { image: "🌙", koName: "달", enName: "The Moon", koMeaning: "혼란과 불안. 진실은 안개 속에 있습니다.", enMeaning: "Confusion and anxiety. Truth is behind the fog." },
-    { image: "☀️", koName: "태양", enName: "The Sun", koMeaning: "성공과 활력. 모든 것이 밝고 명확해집니다.", enMeaning: "Success and vitality. Everything becomes clear." },
-    { image: "🔔", koName: "심판", enName: "Judgement", koMeaning: "부활과 보상. 과거의 노력이 결실을 맺습니다.", enMeaning: "Rebirth and reward. Past efforts bear fruit." },
-    { image: "🌍", koName: "세계", enName: "The World", koMeaning: "완성과 통합. 목표를 달성하고 만족을 누립니다.", enMeaning: "Completion and unity. You've reached your goal." }
+/* ================= 1. TAB SWITCHING ================= */
+function switchTab(tabName, btn) {
+  document.querySelectorAll(".view").forEach(el => el.classList.add("hidden"));
+  document.querySelectorAll(".nav-scroll .chip").forEach(el => el.classList.remove("active"));
+  
+  $(`view-${tabName}`).classList.remove("hidden");
+  if(btn) btn.classList.add("active");
+}
+function goHome() { switchTab("lotto", document.querySelector(".nav-scroll .chip:first-child")); }
+
+/* ================= 2. LOTTO LOGIC ================= */
+$("lottoDrawBtn").onclick = () => {
+  const nums = new Set();
+  while(nums.size < 6) nums.add(Math.floor(Math.random()*45)+1);
+  
+  const arr = Array.from(nums);
+  const isAsc = $("lottoSort").value === "asc";
+  if(isAsc) arr.sort((a,b) => a-b);
+
+  const container = $("lottoBalls");
+  container.innerHTML = "";
+  
+  arr.forEach((n, i) => {
+    const ball = document.createElement("div");
+    ball.className = `ball ${n<=10?'yellow':n<=20?'blue':n<=30?'red':n<=40?'gray':'green'}`;
+    ball.textContent = n;
+    ball.style.animationDelay = `${i * 0.1}s`;
+    container.appendChild(ball);
+  });
+
+  // 기록 저장
+  const historyBox = $("lottoHistory");
+  historyBox.style.display = "block";
+  const row = document.createElement("div");
+  row.className = "history-item";
+  row.innerHTML = `<span>${new Date().toLocaleTimeString()}</span> <b>${arr.join(", ")}</b>`;
+  $("lottoHistoryList").prepend(row);
+  if($("lottoHistoryList").childElementCount > 5) $("lottoHistoryList").lastChild.remove();
+};
+
+$("lottoCopyBtn").onclick = () => {
+  const txt = Array.from(document.querySelectorAll("#lottoBalls .ball")).map(b => b.textContent).join(", ");
+  if(!txt) return showToast("먼저 번호를 뽑아주세요.");
+  navigator.clipboard.writeText(txt).then(() => showToast("번호가 복사되었습니다!"));
+};
+
+/* ================= 3. TAROT LOGIC (3-Card Spread) ================= */
+const TAROT_CARDS = [
+  {name:"바보", en:"The Fool", icon:"🃏", desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요."},
+  {name:"마법사", en:"The Magician", icon:"🪄", desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다."},
+  {name:"여사제", en:"The High Priestess", icon:"📖", desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요."},
+  {name:"여황제", en:"The Empress", icon:"👑", desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다."},
+  {name:"황제", en:"The Emperor", icon:"🏛️", desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다."},
+  {name:"교황", en:"The Hierophant", icon:"⛪", desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다."},
+  {name:"연인", en:"The Lovers", icon:"❤️", desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요."},
+  {name:"전차", en:"The Chariot", icon:"⚔️", desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다."},
+  {name:"힘", en:"Strength", icon:"💪", desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다."},
+  {name:"은둔자", en:"The Hermit", icon:"🧘", desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다."},
+  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요."},
+  {name:"정의", en:"Justice", icon:"⚖️", desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요."},
+  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요."},
+  {name:"죽음", en:"Death", icon:"💀", desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요."},
+  {name:"절제", en:"Temperance", icon:"🥛", desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다."},
+  {name:"악마", en:"The Devil", icon:"😈", desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요."},
+  {name:"탑", en:"The Tower", icon:"⚡", desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다."},
+  {name:"별", en:"The Star", icon:"⭐", desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요."},
+  {name:"달", en:"The Moon", icon:"🌙", desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요."},
+  {name:"태양", en:"The Sun", icon:"☀️", desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다."},
+  {name:"심판", en:"Judgement", icon:"🎺", desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요."},
+  {name:"세계", en:"The World", icon:"🌍", desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다."}
+];
+
+let selectedIndices = [];
+
+function initTarot() {
+  const deck = $("tarotDeck");
+  deck.innerHTML = "";
+  selectedIndices = [];
+  $("tarotRevealBtn").disabled = true;
+  $("tarotRevealBtn").innerText = "카드 3장을 선택하세요";
+  
+  for(let i=0; i<22; i++) {
+    const c = document.createElement("div");
+    c.className = "deck-card";
+    c.onclick = () => pickCard(c, i);
+    deck.appendChild(c);
+  }
+}
+
+function pickCard(el, idx) {
+  if(selectedIndices.includes(idx)) return;
+  if(selectedIndices.length >= 3) return showToast("이미 3장을 모두 선택했습니다.");
+  
+  el.classList.add("selected");
+  selectedIndices.push(idx);
+  el.setAttribute("data-order", selectedIndices.length); // 1, 2, 3 순서 표시
+
+  if(selectedIndices.length === 3) {
+    $("tarotRevealBtn").disabled = false;
+    $("tarotRevealBtn").innerText = "✨ 운명 확인하기";
+  }
+}
+
+$("tarotRevealBtn").onclick = () => {
+  $("tarotDeck").style.display = "none";
+  $("tarotControls").style.display = "none";
+  $("tarotInstruction").style.display = "none";
+  $("tarotResult").classList.remove("hidden");
+
+  // 선택한 카드 인덱스에 해당하는 데이터 매핑 (랜덤 아님, 사용자가 고른 것)
+  // *실제 타로는 덱 섞기가 선행되어야 하지만, 여기선 인덱스를 매핑해 보여줌
+  // 더 재미를 위해: 사용자가 고른 인덱스 -> 셔플된 배열의 인덱스로 매핑
+  const shuffledData = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
+  
+  selectedIndices.forEach((_, i) => {
+    const cardData = shuffledData[i]; // 랜덤성 부여
+    const slot = $(`tarotCard${i}`);
+    
+    // 데이터 채우기
+    slot.querySelector(".tarot-icon-large").textContent = cardData.icon;
+    slot.querySelector(".tarot-name").textContent = cardData.name;
+    $(`tarotDesc${i}`).innerText = cardData.desc;
+
+    // 뒤집기 애니메이션 (순차적)
+    setTimeout(() => {
+      slot.classList.add("flipped");
+    }, i * 400 + 200);
+  });
+};
+
+function resetTarot() {
+  $("tarotResult").classList.add("hidden");
+  $("tarotDeck").style.display = "grid";
+  $("tarotControls").style.display = "block";
+  $("tarotInstruction").style.display = "block";
+  
+  // 카드 초기화
+  document.querySelectorAll(".tarot-card").forEach(el => el.classList.remove("flipped"));
+  initTarot();
+}
+
+/* ================= 4. DINNER LOGIC (복구) ================= */
+const DINNER_DATA = [
+  {cat:'korean', icon:'🍲', name:'김치찌개', desc:'한국인의 소울푸드. 잘 익은 김치와 돼지고기의 조화가 일품입니다.'},
+  {cat:'korean', icon:'🥓', name:'삼겹살', desc:'지글지글 굽는 소리부터 맛있는 국민 외식 메뉴. 소주 한 잔 어떠세요?'},
+  {cat:'korean', icon:'🥘', name:'부대찌개', desc:'햄, 소시지, 라면사리의 풍성한 맛. 여럿이 함께 먹기 좋습니다.'},
+  {cat:'japanese', icon:'🍣', name:'초밥', desc:'신선한 생선과 밥의 조화. 깔끔하고 든든한 한 끼입니다.'},
+  {cat:'japanese', icon:'🍜', name:'라멘', desc:'진한 육수와 쫄깃한 면발. 따뜻한 국물이 생각날 때 최고입니다.'},
+  {cat:'japanese', icon:'🍛', name:'돈카츠', desc:'바삭한 튀김옷과 두툼한 고기. 남녀노소 누구나 좋아하는 메뉴.'},
+  {cat:'western', icon:'🍕', name:'피자', desc:'치즈가 듬뿍 들어간 피자. 친구들과 나눠 먹으며 파티 분위기를 내보세요.'},
+  {cat:'western', icon:'🍝', name:'파스타', desc:'크림, 토마토, 오일 등 취향대로 골라 즐기는 이탈리아의 맛.'},
+  {cat:'western', icon:'🍔', name:'수제버거', desc:'육즙 가득한 패티와 신선한 야채. 간편하지만 든든합니다.'},
+];
+let lastDinnerCat = 'all';
+
+function recommendDinner(cat) {
+  if(cat) lastDinnerCat = cat;
+  else cat = lastDinnerCat;
+
+  const list = cat === 'all' ? DINNER_DATA : DINNER_DATA.filter(d => d.cat === cat);
+  const picked = list[Math.floor(Math.random() * list.length)];
+
+  $("dinnerIcon").innerText = picked.icon;
+  $("dinnerName").innerText = picked.name;
+  $("dinnerDesc").innerText = picked.desc;
+}
+
+/* ================= 5. ANIMAL FACE (Teachable Machine) ================= */
+let animalModel;
+const URL_MODEL = "https://teachablemachine.withgoogle.com/models/8lfLdOYC9/"; // 예시 모델
+
+$("animalInput").onchange = function(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    $("animalPreview").src = event.target.result;
+    $("animalPreview").style.display = "block";
+    $("animalPlaceholder").style.display = "none";
+    $("animalPredictBtn").disabled = false;
+    $("animalResultArea").classList.add("hidden");
+  };
+  reader.readAsDataURL(file);
+};
+
+$("animalPredictBtn").onclick = async function() {
+  if(!animalModel) {
+    showToast("AI 모델을 불러오는 중입니다...");
+    animalModel = await tmImage.load(URL_MODEL + "model.json", URL_MODEL + "metadata.json");
+  }
+  
+  const img = $("animalPreview");
+  const prediction = await animalModel.predict(img);
+  prediction.sort((a,b) => b.probability - a.probability);
+  
+  const best = prediction[0];
+  const conf = (best.probability * 100).toFixed(1);
+  
+  $("animalResultText").innerText = `당신은 "${best.className}" 상입니다!`;
+  $("animalConfText").innerText = `확신도: ${conf}%`;
+  $("animalResultArea").classList.remove("hidden");
+};
+
+/* ================= 6. SAJU LOGIC ================= */
+function analyzeSaju() {
+  const y = parseInt($("sajuYear").value);
+  if(!y) return showToast("연도를 입력해주세요");
+
+  const animals = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
+  const animal = animals[y % 12];
+  
+  const elements = ["목(나무)", "화(불)", "토(흙)", "금(쇠)", "수(물)"];
+  // 간단 로직: 연도 끝자리에 따른 오행 (실제 명리학 약식)
+  const lastDigit = y % 10;
+  let element = "";
+  if(lastDigit===0 || lastDigit===1) element = "금(Metal) - 결단력과 의리";
+  else if(lastDigit===2 || lastDigit===3) element = "수(Water) - 지혜와 유연함";
+  else if(lastDigit===4 || lastDigit===5) element = "목(Wood) - 성장과 의욕";
+  else if(lastDigit===6 || lastDigit===7) element = "화(Fire) - 열정과 예의";
+  else element = "토(Earth) - 신뢰와 포용";
+
+  const advices = [
+    "오늘은 서두르지 말고 차분히 계획을 점검하세요.",
+    "주변 사람들에게 베푼 친절이 큰 행운으로 돌아옵니다.",
+    "새로운 도전을 하기에 아주 좋은 기운이 들어와 있습니다.",
+    "건강 관리에 유의하고 충분한 휴식을 취하는 것이 좋습니다.",
+    "예상치 못한 곳에서 귀인을 만날 수 있으니 대인관계에 힘쓰세요."
   ];
+  const advice = advices[Math.floor(Math.random() * advices.length)];
 
-  const DINNER_DATA = [
-    { category: "korean", image: "🍲", koName: "김치찌개", enName: "Kimchi Stew", koReason: "한국인의 소울푸드. 얼큰한 국물이 피로를 날려줍니다.", enReason: "Korean soul food. Spicy broth relieves fatigue." },
-    { category: "korean", image: "🥓", koName: "삼겹살", enName: "Samgyeopsal", koReason: "든든한 단백질 보충과 즐거운 회식 메뉴.", enReason: "Great for protein and social dining." },
-    { category: "japanese", image: "🍣", koName: "초밥", enName: "Sushi", koReason: "깔끔하고 고급스러운 한 끼가 필요할 때.", enReason: "When you need a clean and premium meal." },
-    { category: "western", image: "🍝", koName: "파스타", enName: "Pasta", koReason: "부드러운 크림이나 상큼한 토마토의 조화.", enReason: "Creamy or tomatoey delight." }
-  ];
+  $("sajuContent").innerHTML = `
+    <b>띠:</b> ${animal}띠<br>
+    <b>오행 성향:</b> ${element}<br>
+    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">
+    <b>오늘의 운세:</b><br>${advice}
+  `;
+  $("sajuResult").classList.remove("hidden");
+}
 
-  const I18N = {
-    ko: {
-      brandTitle: "행운의 도구함", tarotTitle: "AI 3카드 타로", lottoTitle: "로또 번호 추첨",
-      dinnerTitle: "저녁 메뉴 추천", guideTitle: "지식 가이드", historyTitle: "최근 기록",
-      revealBtn: "🔮 운명 확인하기", tarotResetBtn: "🧹 다시 선택",
-      labelPast: "과거 / 상황", labelPresent: "현재 / 조언", labelFuture: "미래 / 결과"
-    },
-    en: {
-      brandTitle: "Lucky Toolbox", tarotTitle: "AI 3-Card Tarot", lottoTitle: "Lotto Draw",
-      dinnerTitle: "Dinner Suggestion", guideTitle: "Guides", historyTitle: "Recent Draws",
-      revealBtn: "🔮 Reveal My Destiny", tarotResetBtn: "🧹 Reset Selection",
-      labelPast: "Past / Situation", labelPresent: "Present / Advice", labelFuture: "Future / Outcome"
-    }
-  };
+/* ================= COMMON ================= */
+$("themeToggle").onclick = () => {
+  document.body.classList.toggle("light");
+  $("themeToggle").textContent = document.body.classList.contains("light") ? "🌙" : "☀";
+};
 
-  function applyLanguage() {
-    const lang = currentLang;
-    $("brandTitle").textContent = I18N[lang].brandTitle;
-    $("tarotTitle").textContent = I18N[lang].tarotTitle;
-    $("lottoTitle").textContent = I18N[lang].lottoTitle;
-    $("dinnerTitle").textContent = I18N[lang].dinnerTitle;
-    $("guideTitle").textContent = I18N[lang].guideTitle;
-    $("historyTitle").textContent = I18N[lang].historyTitle;
-    $("revealBtn").textContent = I18N[lang].revealBtn;
-    $("tarotResetBtn").textContent = I18N[lang].tarotResetBtn;
-    $("labelPast").textContent = I18N[lang].labelPast;
-    $("labelPresent").textContent = I18N[lang].labelPresent;
-    $("labelFuture").textContent = I18N[lang].labelFuture;
-    $("langToggle").textContent = lang === "ko" ? "EN" : "KO";
-  }
-
-  // 타로 데크 초기화
-  function initTarotDeck() {
-    const deck = $("tarotDeck");
-    deck.innerHTML = "";
-    selectedCards = [];
-    $("revealBtn").disabled = true;
-    $("tarotResultArea").classList.add("hidden");
-    $("tarotDeck").classList.remove("hidden");
-    $("tarotSub").classList.remove("hidden");
-
-    for(let i=0; i<22; i++) {
-      const card = document.createElement("div");
-      card.className = "deck-card";
-      card.onclick = () => selectCard(card, i);
-      deck.appendChild(card);
-    }
-  }
-
-  function selectCard(cardEl, index) {
-    if (cardEl.classList.contains("selected")) return;
-    if (selectedCards.length >= 3) return;
-
-    selectedCards.push(index);
-    cardEl.classList.add("selected");
-    cardEl.setAttribute("data-order", selectedCards.length);
-
-    if (selectedCards.length === 3) {
-      $("revealBtn").disabled = false;
-    }
-  }
-
-  $("revealBtn").onclick = () => {
-    $("tarotDeck").classList.add("hidden");
-    $("tarotSub").classList.add("hidden");
-    $("tarotResultArea").classList.remove("hidden");
-
-    // 랜덤으로 중복되지 않는 3장의 데이터 선정 (선택한 인덱스와 매핑)
-    const shuffled = [...TAROT_DATA].sort(() => 0.5 - Math.random());
-    const picked = shuffled.slice(0, 3);
-
-    for(let i=0; i<3; i++) {
-      const card = picked[i];
-      const cardUI = $(`card${i}`);
-      const front = cardUI.querySelector(".tarot-card-front");
-      front.querySelector(".tarot-icon").textContent = card.image;
-      front.querySelector(".tarot-name").textContent = currentLang === "ko" ? card.koName : card.enName;
-      $(`meaning${i}`).textContent = currentLang === "ko" ? card.koMeaning : card.enMeaning;
-      
-      cardUI.classList.remove("flipped");
-      setTimeout(() => cardUI.classList.add("flipped"), 200 * i + 100);
-    }
-  };
-
-  $("tarotResetBtn").onclick = initTarotDeck;
-
-  // 뷰 전환
-  function openView(id) {
-    document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
-    $(id).classList.remove("hidden");
-    if(id === 'tarotView') initTarotDeck();
-  }
-
-  const openLottoView = () => openView("lottoView");
-  $("tarotNav").onclick = () => openView("tarotView");
-  $("dinnerNav").onclick = () => openView("dinnerView");
-  $("animalNav").onclick = () => openView("animalView");
-
-  // 로또 추첨
-  $("drawBtn").onclick = () => {
-    const nums = new Set();
-    while(nums.size < 6) nums.add(Math.floor(Math.random()*45)+1);
-    const sorted = [...nums].sort((a,b)=>a-b);
-    const balls = $("balls");
-    balls.innerHTML = "";
-    sorted.forEach((n, i) => {
-      const b = document.createElement("div");
-      b.className = "ball " + (n<=10?"yellow":n<=20?"blue":n<=30?"red":n<=40?"gray":"green");
-      b.textContent = n;
-      b.style.animationDelay = (i*100)+"ms";
-      balls.appendChild(b);
-    });
-    const history = document.createElement("div");
-    history.style.fontSize = "13px";
-    history.innerHTML = `[${new Date().toLocaleTimeString()}] <b>${sorted.join(", ")}</b>`;
-    $("historyList").prepend(history);
-  };
-
-  // 메뉴 추천
-  window.pickDinner = (cat) => {
-    const list = cat === 'all' ? DINNER_DATA : DINNER_DATA.filter(d => d.category === cat);
-    const item = list[Math.floor(Math.random()*list.length)];
-    $("dinnerImage").textContent = item.image;
-    $("dinnerMenu").textContent = currentLang === 'ko' ? item.koName : item.enName;
-    $("dinnerReason").textContent = currentLang === 'ko' ? item.koReason : item.enReason;
-  };
-
-  // 공통
-  $("themeToggle").onclick = () => {
-    document.body.classList.toggle("light");
-    $("themeToggle").textContent = document.body.classList.contains("light") ? "🌙" : "☀";
-  };
-  $("langToggle").onclick = () => {
-    currentLang = currentLang === 'ko' ? 'en' : 'ko';
-    localStorage.setItem("lang", currentLang);
-    applyLanguage();
-    if(!$("tarotResultArea").classList.contains("hidden")) {
-       // 결과 화면 중이면 다시 그리기 (간단하게 초기화로 처리하거나 텍스트만 변경 가능)
-    }
-  };
-
-  applyLanguage();
-  initTarotDeck();
+// 초기화
+initTarot();
 </script>
 </body>
 </html>
