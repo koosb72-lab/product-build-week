@@ -30,6 +30,7 @@ jobs:
           cp contact.html public/
           cp privacy.html public/
           cp terms.html public/
+          cp -r assets public/
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

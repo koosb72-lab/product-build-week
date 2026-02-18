@@ -268,8 +268,8 @@
   <div class="brand" onclick="goHome()">
     <div class="logo"></div>
     <div>
-      <div style="font-size:15px;">행운의 도구함</div>
-      <div style="font-size:11px; color:var(--muted);">Product Build Week</div>
+      <div id="brandTitle" style="font-size:15px;">행운의 도구함</div>
+      <div id="brandSub" style="font-size:11px; color:var(--muted);">Product Build Week</div>
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:8px;">
@@ -281,18 +281,18 @@
 <main class="container">
   <!-- 네비게이션 -->
   <nav class="nav-scroll">
-    <button class="chip active" onclick="switchTab('lotto', this)">🎰 로또</button>
-    <button class="chip" onclick="switchTab('tarot', this)">🔮 타로</button>
-    <button class="chip" onclick="switchTab('dinner', this)">🍽 저녁메뉴</button>
-    <button class="chip" onclick="switchTab('animal', this)">🐶 동물상</button>
-    <button class="chip" onclick="switchTab('saju', this)">📜 사주</button>
+    <button id="tabLotto" class="chip active" onclick="switchTab('lotto', this)">🎰 로또</button>
+    <button id="tabTarot" class="chip" onclick="switchTab('tarot', this)">🔮 타로</button>
+    <button id="tabDinner" class="chip" onclick="switchTab('dinner', this)">🍽 저녁메뉴</button>
+    <button id="tabAnimal" class="chip" onclick="switchTab('animal', this)">🐶 동물상</button>
+    <button id="tabSaju" class="chip" onclick="switchTab('saju', this)">📜 사주</button>
   </nav>
 
   <!-- 1. 로또 뷰 -->
   <div id="view-lotto" class="view">
     <section class="card">
-      <h1>로또 번호 추첨기</h1>
-      <p class="sub">1부터 45까지의 숫자 중 중복 없이 6개를 무작위로 추첨합니다.</p>
+      <h1 id="lottoTitle">로또 번호 추첨기</h1>
+      <p id="lottoSub" class="sub">1부터 45까지의 숫자 중 중복 없이 6개를 무작위로 추첨합니다.</p>
       
       <div class="controls" style="justify-content: space-between; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -318,7 +318,7 @@
     </section>
 
     <section class="card" id="lottoHistory">
-      <h1>최근 추첨 기록</h1>
+      <h1 id="lottoHistoryTitle">최근 추첨 기록</h1>
       <div id="lottoHistoryList"></div>
     </section>
   </div>
@@ -326,7 +326,7 @@
   <!-- 2. 타로 뷰 (3카드 스프레드) -->
   <div id="view-tarot" class="view hidden">
     <section class="card tarot-stage">
-      <h1>AI 타로 (3-Card Spread)</h1>
+      <h1 id="tarotTitle">AI 타로 (3-Card Spread)</h1>
       <p class="sub" id="tarotInstruction">마음을 비우고 아래 카드 중 <b>3장</b>을 선택하세요.<br>(순서대로 과거, 현재, 미래를 상징합니다)</p>
       
       <div class="tarot-deck" id="tarotDeck">
@@ -335,7 +335,7 @@
 
       <div id="tarotControls" style="margin-top:20px;">
         <button class="btn primary" id="tarotRevealBtn" disabled>✨ 운명 확인하기</button>
-        <button class="btn" onclick="resetTarot()">🔄 다시 선택</button>
+        <button class="btn" id="tarotResetBtnTop" onclick="resetTarot()">🔄 다시 선택</button>
       </div>
 
       <div id="tarotResult" class="hidden">
@@ -377,7 +377,7 @@
             <div class="tarot-desc" id="tarotDesc2"></div>
           </div>
         </div>
-        <button class="btn primary" style="margin-top:30px;" onclick="resetTarot()">🎴 새로운 점 보기</button>
+        <button class="btn primary" id="tarotResetBtnBottom" style="margin-top:30px;" onclick="resetTarot()">🎴 새로운 점 보기</button>
       </div>
     </section>
   </div>
@@ -385,29 +385,29 @@
   <!-- 3. 저녁메뉴 뷰 (상세 복구) -->
   <div id="view-dinner" class="view hidden">
     <section class="card dinner-stage">
-      <h1>오늘 저녁 뭐 먹지?</h1>
-      <p class="sub">카테고리를 선택하면 메뉴와 추천 이유를 알려드립니다.</p>
+      <h1 id="dinnerTitle">오늘 저녁 뭐 먹지?</h1>
+      <p id="dinnerSub" class="sub">카테고리를 선택하면 메뉴와 추천 이유를 알려드립니다.</p>
       
       <div style="display:flex; justify-content:center; gap:8px; margin-top:20px; flex-wrap:wrap;">
-        <button class="chip" onclick="recommendDinner('all')">🎲 전체 랜덤</button>
-        <button class="chip" onclick="recommendDinner('korean')">🇰🇷 한식</button>
-        <button class="chip" onclick="recommendDinner('japanese')">🇯🇵 일식</button>
-        <button class="chip" onclick="recommendDinner('western')">🇺🇸 양식</button>
+        <button id="dinnerAllBtn" class="chip" onclick="recommendDinner('all')">🎲 전체 랜덤</button>
+        <button id="dinnerKoBtn" class="chip" onclick="recommendDinner('korean')">🇰🇷 한식</button>
+        <button id="dinnerJaBtn" class="chip" onclick="recommendDinner('japanese')">🇯🇵 일식</button>
+        <button id="dinnerWeBtn" class="chip" onclick="recommendDinner('western')">🇺🇸 양식</button>
       </div>
 
       <div class="dinner-icon" id="dinnerIcon">🍽</div>
       <div class="dinner-name" id="dinnerName">메뉴를 추천해드릴게요</div>
       <p class="dinner-desc" id="dinnerDesc">위 버튼을 눌러 추천을 받아보세요.</p>
       
-      <button class="btn primary" onclick="recommendDinner()">🔄 다시 추천받기</button>
+      <button class="btn primary" id="dinnerRefreshBtn" onclick="recommendDinner()">🔄 다시 추천받기</button>
     </section>
   </div>
 
   <!-- 4. 동물상 테스트 (Teachable Machine 복구) -->
   <div id="view-animal" class="view hidden">
     <section class="card animal-stage">
-      <h1>AI 동물상 테스트</h1>
-      <p class="sub">얼굴 사진을 올리면 인공지능이 강아지상/고양이상을 분석합니다.<br>(사진은 서버로 전송되지 않습니다)</p>
+      <h1 id="animalTitle">AI 동물상 테스트</h1>
+      <p id="animalSub" class="sub">얼굴 사진을 올리면 인공지능이 강아지상/고양이상을 분석합니다.<br>(사진은 서버로 전송되지 않습니다)</p>
 
       <label class="upload-box">
         <input type="file" id="animalInput" accept="image/*" style="display:none">
@@ -427,8 +427,8 @@
   <!-- 5. 사주 뷰 (복구) -->
   <div id="view-saju" class="view hidden">
     <section class="card">
-      <h1>오늘의 사주 & 성향</h1>
-      <p class="sub">생년월일을 입력하면 오행과 오늘의 조언을 드립니다.</p>
+      <h1 id="sajuTitle">오늘의 사주 & 성향</h1>
+      <p id="sajuSub" class="sub">생년월일을 입력하면 오행과 오늘의 조언을 드립니다.</p>
       
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:20px;">
         <label>
@@ -449,7 +449,7 @@
         </label>
       </div>
 
-      <button class="btn primary" style="width:100%; justify-content:center; margin-top:20px;" onclick="analyzeSaju()">📜 사주 풀이 보기</button>
+      <button class="btn primary" id="sajuAnalyzeBtn" style="width:100%; justify-content:center; margin-top:20px;" onclick="analyzeSaju()">📜 사주 풀이 보기</button>
 
       <div id="sajuResult" class="card hidden" style="background:rgba(0,0,0,0.2); margin-top:20px;">
         <h3 style="margin:0 0 10px 0; color:var(--gold);">분석 결과</h3>
@@ -459,7 +459,7 @@
   </div>
 
   <section class="card" style="margin-top:30px;">
-    <h1>📚 지식 가이드</h1>
+    <h1 id="guideTitle">📚 지식 가이드</h1>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-top:15px;">
       <a href="./guide-lotto.html" class="btn">🎱 로또의 확률</a>
       <a href="./guide-dinner.html" class="btn">🧠 메뉴 선택 심리</a>
@@ -492,7 +492,122 @@ function showToast(msg) {
   const t = $("toast"); t.innerText = msg; t.style.display = "block";
   setTimeout(() => t.style.display = "none", 2500);
 }
-let currentLang = "ko"; // 간단화: 이번 버전은 한글 우선
+let currentLang = "ko";
+const I18N = {
+  ko: {
+    brandTitle: "행운의 도구함",
+    tabLotto: "🎰 로또",
+    tabTarot: "🔮 타로",
+    tabDinner: "🍽 저녁메뉴",
+    tabAnimal: "🐶 동물상",
+    tabSaju: "📜 사주",
+    lottoTitle: "로또 번호 추첨기",
+    lottoSub: "1부터 45까지의 숫자 중 중복 없이 6개를 무작위로 추첨합니다.",
+    lottoDrawBtn: "🎲 번호 뽑기",
+    lottoCopyBtn: "📋 복사",
+    lottoResetBtn: "🧹 기록 초기화",
+    autoBtn: "⚡ 자동 실행",
+    lottoHistoryTitle: "최근 추첨 기록",
+    tarotTitle: "AI 타로 (3-Card Spread)",
+    tarotInstruction: "마음을 비우고 아래 카드 중 <b>3장</b>을 선택하세요.<br>(순서대로 과거, 현재, 미래를 상징합니다)",
+    tarotReveal: "✨ 운명 확인하기",
+    tarotSelect3: "카드 3장을 선택하세요",
+    tarotResetTop: "🔄 다시 선택",
+    tarotResetBottom: "🎴 새로운 점 보기",
+    dinnerTitle: "오늘 저녁 뭐 먹지?",
+    dinnerSub: "카테고리를 선택하면 메뉴와 추천 이유를 알려드립니다.",
+    dinnerAllBtn: "🎲 전체 랜덤",
+    dinnerKoBtn: "🇰🇷 한식",
+    dinnerJaBtn: "🇯🇵 일식",
+    dinnerWeBtn: "🇺🇸 양식",
+    dinnerRefreshBtn: "🔄 다시 추천받기",
+    animalTitle: "AI 동물상 테스트",
+    animalSub: "얼굴 사진을 올리면 인공지능이 강아지상/고양이상을 분석합니다.<br>(사진은 서버로 전송되지 않습니다)",
+    animalPlaceholder: "📁 이미지를 선택하거나 여기로 드래그하세요",
+    animalPredictBtn: "🔎 분석하기",
+    sajuTitle: "오늘의 사주 & 성향",
+    sajuSub: "생년월일을 입력하면 오행과 오늘의 조언을 드립니다.",
+    sajuAnalyzeBtn: "📜 사주 풀이 보기",
+    guideTitle: "📚 지식 가이드",
+    toastPickFirst: "먼저 번호를 뽑아주세요.",
+    toastCopied: "번호가 복사되었습니다!",
+    toastLottoReset: "로또 기록을 초기화했습니다.",
+    toastAuto: (n) => `자동 추첨 ${n}회 실행합니다.`,
+    toastTarot3: "이미 3장을 모두 선택했습니다.",
+    lottoEmptyHistory: "아직 추첨 기록이 없습니다.",
+    animalLoading: "AI 모델을 불러오는 중입니다...",
+    animalResult: (name) => `당신은 "${name}" 상입니다!`,
+    animalConf: (v) => `확신도: ${v}%`
+  },
+  en: {
+    brandTitle: "Lucky Toolbox",
+    tabLotto: "🎰 Lotto",
+    tabTarot: "🔮 Tarot",
+    tabDinner: "🍽 Dinner",
+    tabAnimal: "🐶 Face Type",
+    tabSaju: "📜 Saju",
+    lottoTitle: "Lotto Number Generator",
+    lottoSub: "Draw 6 unique numbers randomly from 1 to 45.",
+    lottoDrawBtn: "🎲 Draw Numbers",
+    lottoCopyBtn: "📋 Copy",
+    lottoResetBtn: "🧹 Reset History",
+    autoBtn: "⚡ Auto Draw",
+    lottoHistoryTitle: "Recent Draws",
+    tarotTitle: "AI Tarot (3-Card Spread)",
+    tarotInstruction: "Clear your mind and choose <b>3 cards</b> below.<br>(They represent past, present, and future in order)",
+    tarotReveal: "✨ Reveal Fate",
+    tarotSelect3: "Select 3 cards",
+    tarotResetTop: "🔄 Reset Selection",
+    tarotResetBottom: "🎴 New Reading",
+    dinnerTitle: "What Should I Eat Tonight?",
+    dinnerSub: "Choose a category to get a menu suggestion with a reason.",
+    dinnerAllBtn: "🎲 All Random",
+    dinnerKoBtn: "🇰🇷 Korean",
+    dinnerJaBtn: "🇯🇵 Japanese",
+    dinnerWeBtn: "🇺🇸 Western",
+    dinnerRefreshBtn: "🔄 Recommend Again",
+    animalTitle: "AI Animal Face Test",
+    animalSub: "Upload a face photo and AI will estimate a dog/cat-like type.<br>(Photos are not uploaded to our server)",
+    animalPlaceholder: "📁 Select an image or drag it here",
+    animalPredictBtn: "🔎 Analyze",
+    sajuTitle: "Today's Saju & Traits",
+    sajuSub: "Enter birth info to see a simple five-elements profile and advice.",
+    sajuAnalyzeBtn: "📜 View Saju Reading",
+    guideTitle: "📚 Knowledge Guides",
+    toastPickFirst: "Please draw numbers first.",
+    toastCopied: "Numbers copied!",
+    toastLottoReset: "Lotto history has been reset.",
+    toastAuto: (n) => `Running auto draw ${n} times.`,
+    toastTarot3: "You already selected 3 cards.",
+    lottoEmptyHistory: "No draw history yet.",
+    animalLoading: "Loading AI model...",
+    animalResult: (name) => `You are "${name}" type!`,
+    animalConf: (v) => `Confidence: ${v}%`
+  }
+};
+
+function t(key) { return I18N[currentLang][key]; }
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  const keys = [
+    "brandTitle","tabLotto","tabTarot","tabDinner","tabAnimal","tabSaju",
+    "lottoTitle","lottoSub","lottoDrawBtn","lottoCopyBtn","lottoResetBtn","autoBtn","lottoHistoryTitle",
+    "tarotTitle","tarotResetTop","tarotResetBottom",
+    "dinnerTitle","dinnerSub","dinnerAllBtn","dinnerKoBtn","dinnerJaBtn","dinnerWeBtn","dinnerRefreshBtn",
+    "animalTitle","animalSub","animalPredictBtn","sajuTitle","sajuSub","sajuAnalyzeBtn","guideTitle"
+  ];
+  keys.forEach((k) => {
+    const el = $(k);
+    if (!el) return;
+    if (k === "lottoSub" || k === "animalSub") el.innerHTML = t(k);
+    else el.textContent = t(k);
+  });
+  $("tarotInstruction").innerHTML = t("tarotInstruction");
+  $("animalPlaceholder").textContent = t("animalPlaceholder");
+  $("langToggle").textContent = currentLang === "ko" ? "EN" : "KO";
+  $("tarotRevealBtn").innerText = selectedIndices.length === 3 ? t("tarotReveal") : t("tarotSelect3");
+}
 
 /* ================= 1. TAB SWITCHING ================= */
 function switchTab(tabName, btn) {
@@ -548,7 +663,7 @@ function renderLottoHistory() {
   const list = $("lottoHistoryList");
   list.innerHTML = "";
   if (!items.length) {
-    list.innerHTML = `<div style="color:var(--muted); font-size:13px;">아직 추첨 기록이 없습니다.</div>`;
+    list.innerHTML = `<div style="color:var(--muted); font-size:13px;">${t("lottoEmptyHistory")}</div>`;
     return;
   }
 
@@ -579,10 +694,10 @@ $("lottoDrawBtn").onclick = doDrawOnce;
 
 $("lottoCopyBtn").onclick = async () => {
   const txt = $("lottoResultText").textContent;
-  if(!txt || txt === "-") return showToast("먼저 번호를 뽑아주세요.");
+  if(!txt || txt === "-") return showToast(t("toastPickFirst"));
   try {
     await navigator.clipboard.writeText(txt);
-    showToast("번호가 복사되었습니다!");
+    showToast(t("toastCopied"));
   } catch {
     const ta = document.createElement("textarea");
     ta.value = txt;
@@ -590,7 +705,7 @@ $("lottoCopyBtn").onclick = async () => {
     ta.select();
     document.execCommand("copy");
     ta.remove();
-    showToast("번호가 복사되었습니다!");
+    showToast(t("toastCopied"));
   }
 };
 
@@ -600,14 +715,14 @@ $("lottoResetBtn").onclick = () => {
   $("lottoResultText").textContent = "-";
   $("lottoLastTime").textContent = "-";
   renderLottoHistory();
-  showToast("로또 기록을 초기화했습니다.");
+  showToast(t("toastLottoReset"));
 };
 
 $("autoBtn").onclick = async () => {
   let n = Number($("autoCount").value || 1);
   n = Math.max(1, Math.min(10, n));
   $("autoCount").value = n;
-  showToast(`자동 추첨 ${n}회 실행합니다.`);
+  showToast(t("toastAuto")(n));
   for (let i = 0; i < n; i += 1) {
     doDrawOnce();
     await new Promise((r) => setTimeout(r, 350));
@@ -615,30 +730,29 @@ $("autoBtn").onclick = async () => {
 };
 
 /* ================= 3. TAROT LOGIC (3-Card Spread) ================= */
-const TAROT_IMAGE_BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
 const TAROT_CARDS = [
-  {name:"바보", en:"The Fool", icon:"🃏", img:`${TAROT_IMAGE_BASE}RWS_Tarot_00_Fool.jpg`, desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요."},
-  {name:"마법사", en:"The Magician", icon:"🪄", img:`${TAROT_IMAGE_BASE}RWS_Tarot_01_Magician.jpg`, desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다."},
-  {name:"여사제", en:"The High Priestess", icon:"📖", img:`${TAROT_IMAGE_BASE}RWS_Tarot_02_High_Priestess.jpg`, desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요."},
-  {name:"여황제", en:"The Empress", icon:"👑", img:`${TAROT_IMAGE_BASE}RWS_Tarot_03_Empress.jpg`, desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다."},
-  {name:"황제", en:"The Emperor", icon:"🏛️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_04_Emperor.jpg`, desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다."},
-  {name:"교황", en:"The Hierophant", icon:"⛪", img:`${TAROT_IMAGE_BASE}RWS_Tarot_05_Hierophant.jpg`, desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다."},
-  {name:"연인", en:"The Lovers", icon:"❤️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_06_Lovers.jpg`, desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요."},
-  {name:"전차", en:"The Chariot", icon:"⚔️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_07_Chariot.jpg`, desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다."},
-  {name:"힘", en:"Strength", icon:"💪", img:`${TAROT_IMAGE_BASE}RWS_Tarot_08_Strength.jpg`, desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다."},
-  {name:"은둔자", en:"The Hermit", icon:"🧘", img:`${TAROT_IMAGE_BASE}RWS_Tarot_09_Hermit.jpg`, desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다."},
-  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", img:`${TAROT_IMAGE_BASE}RWS_Tarot_10_Wheel_of_Fortune.jpg`, desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요."},
-  {name:"정의", en:"Justice", icon:"⚖️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_11_Justice.jpg`, desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요."},
-  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", img:`${TAROT_IMAGE_BASE}RWS_Tarot_12_Hanged_Man.jpg`, desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요."},
-  {name:"죽음", en:"Death", icon:"💀", img:`${TAROT_IMAGE_BASE}RWS_Tarot_13_Death.jpg`, desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요."},
-  {name:"절제", en:"Temperance", icon:"🥛", img:`${TAROT_IMAGE_BASE}RWS_Tarot_14_Temperance.jpg`, desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다."},
-  {name:"악마", en:"The Devil", icon:"😈", img:`${TAROT_IMAGE_BASE}RWS_Tarot_15_Devil.jpg`, desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요."},
-  {name:"탑", en:"The Tower", icon:"⚡", img:`${TAROT_IMAGE_BASE}RWS_Tarot_16_Tower.jpg`, desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다."},
-  {name:"별", en:"The Star", icon:"⭐", img:`${TAROT_IMAGE_BASE}RWS_Tarot_17_Star.jpg`, desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요."},
-  {name:"달", en:"The Moon", icon:"🌙", img:`${TAROT_IMAGE_BASE}RWS_Tarot_18_Moon.jpg`, desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요."},
-  {name:"태양", en:"The Sun", icon:"☀️", img:`${TAROT_IMAGE_BASE}RWS_Tarot_19_Sun.jpg`, desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다."},
-  {name:"심판", en:"Judgement", icon:"🎺", img:`${TAROT_IMAGE_BASE}RWS_Tarot_20_Judgement.jpg`, desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요."},
-  {name:"세계", en:"The World", icon:"🌍", img:`${TAROT_IMAGE_BASE}RWS_Tarot_21_World.jpg`, desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다."}
+  {name:"바보", en:"The Fool", icon:"🃏", img:"./assets/tarot/00.jpg", desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요."},
+  {name:"마법사", en:"The Magician", icon:"🪄", img:"./assets/tarot/01.jpg", desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다."},
+  {name:"여사제", en:"The High Priestess", icon:"📖", img:"./assets/tarot/02.jpg", desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요."},
+  {name:"여황제", en:"The Empress", icon:"👑", img:"./assets/tarot/03.jpg", desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다."},
+  {name:"황제", en:"The Emperor", icon:"🏛️", img:"./assets/tarot/04.jpg", desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다."},
+  {name:"교황", en:"The Hierophant", icon:"⛪", img:"./assets/tarot/05.jpg", desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다."},
+  {name:"연인", en:"The Lovers", icon:"❤️", img:"./assets/tarot/06.jpg", desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요."},
+  {name:"전차", en:"The Chariot", icon:"⚔️", img:"./assets/tarot/07.jpg", desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다."},
+  {name:"힘", en:"Strength", icon:"💪", img:"./assets/tarot/08.jpg", desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다."},
+  {name:"은둔자", en:"The Hermit", icon:"🧘", img:"./assets/tarot/09.jpg", desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다."},
+  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", img:"./assets/tarot/10.jpg", desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요."},
+  {name:"정의", en:"Justice", icon:"⚖️", img:"./assets/tarot/11.jpg", desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요."},
+  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", img:"./assets/tarot/12.jpg", desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요."},
+  {name:"죽음", en:"Death", icon:"💀", img:"./assets/tarot/13.jpg", desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요."},
+  {name:"절제", en:"Temperance", icon:"🥛", img:"./assets/tarot/14.jpg", desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다."},
+  {name:"악마", en:"The Devil", icon:"😈", img:"./assets/tarot/15.jpg", desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요."},
+  {name:"탑", en:"The Tower", icon:"⚡", img:"./assets/tarot/16.jpg", desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다."},
+  {name:"별", en:"The Star", icon:"⭐", img:"./assets/tarot/17.jpg", desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요."},
+  {name:"달", en:"The Moon", icon:"🌙", img:"./assets/tarot/18.jpg", desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요."},
+  {name:"태양", en:"The Sun", icon:"☀️", img:"./assets/tarot/19.jpg", desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다."},
+  {name:"심판", en:"Judgement", icon:"🎺", img:"./assets/tarot/20.jpg", desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요."},
+  {name:"세계", en:"The World", icon:"🌍", img:"./assets/tarot/21.jpg", desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다."}
 ];
 
 let selectedIndices = [];
@@ -648,7 +762,7 @@ function initTarot() {
   deck.innerHTML = "";
   selectedIndices = [];
   $("tarotRevealBtn").disabled = true;
-  $("tarotRevealBtn").innerText = "카드 3장을 선택하세요";
+  $("tarotRevealBtn").innerText = t("tarotSelect3");
   
   for(let i=0; i<22; i++) {
     const c = document.createElement("div");
@@ -660,7 +774,7 @@ function initTarot() {
 
 function pickCard(el, idx) {
   if(selectedIndices.includes(idx)) return;
-  if(selectedIndices.length >= 3) return showToast("이미 3장을 모두 선택했습니다.");
+  if(selectedIndices.length >= 3) return showToast(t("toastTarot3"));
   
   el.classList.add("selected");
   selectedIndices.push(idx);
@@ -668,7 +782,7 @@ function pickCard(el, idx) {
 
   if(selectedIndices.length === 3) {
     $("tarotRevealBtn").disabled = false;
-    $("tarotRevealBtn").innerText = "✨ 운명 확인하기";
+    $("tarotRevealBtn").innerText = t("tarotReveal");
   }
 }
 
@@ -757,7 +871,7 @@ $("animalInput").onchange = function(e) {
 
 $("animalPredictBtn").onclick = async function() {
   if(!animalModel) {
-    showToast("AI 모델을 불러오는 중입니다...");
+    showToast(t("animalLoading"));
     animalModel = await tmImage.load(URL_MODEL + "model.json", URL_MODEL + "metadata.json");
   }
   
@@ -768,8 +882,8 @@ $("animalPredictBtn").onclick = async function() {
   const best = prediction[0];
   const conf = (best.probability * 100).toFixed(1);
   
-  $("animalResultText").innerText = `당신은 "${best.className}" 상입니다!`;
-  $("animalConfText").innerText = `확신도: ${conf}%`;
+  $("animalResultText").innerText = t("animalResult")(best.className);
+  $("animalConfText").innerText = t("animalConf")(conf);
   $("animalResultArea").classList.remove("hidden");
 };
 
@@ -811,6 +925,7 @@ function analyzeSaju() {
 
 /* ================= COMMON ================= */
 const THEME_KEY = "pbw_theme_v1";
+const LANG_KEY = "pbw_lang_v1";
 function applyTheme(theme) {
   if (theme === "light") {
     document.body.classList.add("light");
@@ -827,8 +942,15 @@ $("themeToggle").onclick = () => {
   applyTheme(current === "light" ? "dark" : "light");
 };
 
+$("langToggle").onclick = () => {
+  const next = currentLang === "ko" ? "en" : "ko";
+  applyLanguage(next);
+  localStorage.setItem(LANG_KEY, next);
+};
+
 // 초기화
 applyTheme(localStorage.getItem(THEME_KEY) || "light");
+applyLanguage(localStorage.getItem(LANG_KEY) || "ko");
 renderLottoHistory();
 initTarot();
 </script>
