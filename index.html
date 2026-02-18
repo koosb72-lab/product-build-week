@@ -538,11 +538,18 @@
   <div class="view hidden" id="dinnerView">
     <section class="card dinner-card">
       <h1 id="dinnerTitle">오늘 저녁 뭐 먹지?</h1>
-      <p class="sub" id="dinnerSub">버튼을 누르면 메뉴와 추천 이유를 랜덤으로 보여드립니다.</p>
+      <p class="sub" id="dinnerSub">취향에 맞는 카테고리를 선택하거나 랜덤으로 추천받아 보세요.</p>
+
+      <div class="dinner-categories" style="display:flex; justify-content:center; gap:8px; margin-top:15px; flex-wrap:wrap;">
+        <button class="chip" onclick="pickDinnerMenu('all')">🎲 전체 랜덤</button>
+        <button class="chip" onclick="pickDinnerMenu('korean')">🇰🇷 한식</button>
+        <button class="chip" onclick="pickDinnerMenu('japanese')">🇯🇵 일식</button>
+        <button class="chip" onclick="pickDinnerMenu('western')">🇺🇸 양식</button>
+      </div>
 
       <div class="dinner-image" id="dinnerImage" aria-hidden="true">🍽</div>
       <div class="dinner-menu" id="dinnerMenu">저녁메뉴를 추천해드릴게요</div>
-      <p class="dinner-reason" id="dinnerReason">오른쪽 위 버튼 또는 아래 버튼으로 추천을 시작해보세요.</p>
+      <p class="dinner-reason" id="dinnerReason">위의 카테고리를 선택하여 추천을 시작해보세요.</p>
       <div class="dinner-meta"><span id="dinnerTimeLabel">추천 시각</span>: <b id="dinnerTime">-</b></div>
 
       <div class="dinner-actions">
@@ -820,15 +827,56 @@
   };
 
   const DINNER_MENU = [
-    { image: "🍲", koName: "김치찌개", enName: "Kimchi Stew", koReason: "칼칼한 국물이라 하루 피로를 풀면서 든든하게 마무리하기 좋습니다.", enReason: "Spicy warm soup helps you unwind and finish the day with comfort." },
-    { image: "🥓", koName: "삼겹살", enName: "Samgyeopsal", koReason: "굽는 재미가 있어 식사 시간이 더 즐겁고, 포만감도 확실합니다.", enReason: "It is fun to grill and gives a very satisfying dinner." },
-    { image: "🥗", koName: "비빔밥", enName: "Bibimbap", koReason: "채소와 단백질을 균형 있게 먹을 수 있어 부담이 적습니다.", enReason: "Balanced ingredients make it a healthy and not-too-heavy option." },
-    { image: "🍛", koName: "돈까스", enName: "Pork Cutlet", koReason: "바삭한 식감으로 만족감이 높고 남녀노소 선호도가 높습니다.", enReason: "The crispy texture is crowd-pleasing and reliably satisfying." },
-    { image: "🍣", koName: "초밥", enName: "Sushi", koReason: "깔끔한 맛으로 늦은 저녁에도 비교적 가볍게 즐길 수 있습니다.", enReason: "Clean flavors make it easier to enjoy even at a late dinner time." },
-    { image: "🍝", koName: "파스타", enName: "Pasta", koReason: "소스 선택 폭이 넓어서 그날 기분에 맞춰 즐기기 좋습니다.", enReason: "With many sauces to choose from, it fits different moods." },
-    { image: "🌶️", koName: "마라탕", enName: "Mala Tang", koReason: "재료를 취향대로 고를 수 있어 커스터마이징 만족도가 높습니다.", enReason: "You can customize ingredients freely, so satisfaction is high." },
-    { image: "🍗", koName: "치킨", enName: "Fried Chicken", koReason: "혼밥부터 모임까지 모두 어울리고 실패 확률이 낮은 메뉴입니다.", enReason: "Works for solo meals and groups, and it is hard to go wrong." },
-    { image: "🥘", koName: "샤브샤브", enName: "Shabu-shabu", koReason: "신선한 재료를 빠르게 익혀 먹어 깔끔하고 따뜻한 한 끼가 됩니다.", enReason: "Fresh ingredients in hot broth make a warm and clean meal." }
+    /* 한식 (Korean) */
+    { category: "korean", image: "🍲", koName: "김치찌개", enName: "Kimchi Stew", 
+      koReason: "한국인의 소울푸드입니다. 잘 익은 김치와 돼지고기가 어우러진 칼칼한 국물은 하루의 피로를 씻어주며, 갓 지은 흰쌀밥과 환상의 궁합을 자랑합니다. 비타민 C와 유산균이 풍부한 김치는 면역력 강화에도 도움을 줍니다.", 
+      enReason: "The ultimate Korean soul food. This spicy stew with aged kimchi and pork perfectly relieves daily stress. It pairs wonderfully with steamed rice and offers probiotics and Vitamin C from the fermented kimchi." },
+    { category: "korean", image: "🥓", koName: "삼겹살", enName: "Samgyeopsal", 
+      koReason: "지글지능 굽는 소리부터 즐거운 대표 외식 메뉴입니다. 고소한 육즙과 쌈 채소의 조화는 단백질 보충에 최적이며, 동료나 가족과 함께 담소를 나누며 즐기기에 이보다 더 좋은 메뉴는 없습니다. 피로 해소에 좋은 비타민 B1이 풍부합니다.", 
+      enReason: "The sound of sizzling pork belly is pure joy. It's the best menu for protein charging and socializing with friends or family. High in Vitamin B1, it helps recover from physical fatigue." },
+    { category: "korean", image: "🥗", koName: "비빔밥", enName: "Bibimbap", 
+      koReason: "각종 나물과 고기, 고추장이 어우러진 영양 균형의 결정체입니다. 식이섬유가 풍부하여 소화가 잘 되고, 시각적으로도 아름다워 먹는 즐거움을 더합니다. 가볍지만 든든한 한 끼를 원하시는 분들에게 최고의 선택입니다.", 
+      enReason: "A masterpiece of nutritional balance with assorted vegetables, beef, and chili paste. High in fiber and easy to digest, it's perfect for those seeking a healthy yet satisfying meal." },
+    { category: "korean", image: "🥘", koName: "부대찌개", enName: "Budae Jjigae", 
+      koReason: "햄, 소시지, 라면사리 등 다양한 재료가 만들어내는 풍성한 맛이 일품입니다. 여러 재료가 어우러진 깊은 국물 맛은 스트레스를 날려주기에 충분하며, 친구들과 함께 나눠 먹는 재미가 있는 메뉴입니다.", 
+      enReason: "A rich army base stew with ham, sausages, and ramen noodles. The complex flavors of various ingredients provide a deep, comforting taste that's great for group dining." },
+    { category: "korean", image: "🍗", koName: "양념치킨", enName: "Seasoned Chicken", 
+      koReason: "달콤하고 매콤한 소스가 바삭한 튀김옷과 만난 거부할 수 없는 유혹입니다. '치맥'이라는 단어가 생길 정도로 야식과 저녁 메뉴로 사랑받으며, 특유의 감칠맛은 엔도르핀을 생성해 기분 전환에 도움을 줍니다.", 
+      enReason: "Irresistible crispy chicken coated in sweet and spicy sauce. Famous worldwide as 'K-Chicken,' its addictive flavor is perfect for boosting your mood after a long day." },
+
+    /* 일식 (Japanese) */
+    { category: "japanese", image: "🍣", koName: "초밥", enName: "Sushi", 
+      koReason: "신선한 해산물의 풍미를 그대로 느낄 수 있는 깔끔한 메뉴입니다. 지방이 적고 단백질이 풍부하여 늦은 저녁에도 몸에 부담이 적으며, 고추냉이의 알싸한 맛은 입맛을 돋우고 소화를 돕는 역할을 합니다.", 
+      enReason: "A clean and light meal that highlights the freshness of seafood. Low in fat and high in protein, it's easy on the stomach even late at night. Wasabi adds a refreshing kick and aids digestion." },
+    { category: "japanese", image: "🍜", koName: "라멘", enName: "Ramen", 
+      koReason: "오랜 시간 우려낸 진한 육수가 일품인 일본식 면 요리입니다. 차슈와 반숙 달걀 등 고명이 더해진 한 그릇은 깊은 포만감을 주며, 따뜻한 국물은 마음까지 차분하게 가라앉혀 주는 힐링 푸드입니다.", 
+      enReason: "Japanese noodle soup with a rich, long-simmered broth. Topped with chashu and soft-boiled egg, this bowl offers deep satisfaction and serves as a comforting soul food." },
+    { category: "japanese", image: "🍛", koName: "돈카츠", enName: "Tonkatsu", 
+      koReason: "두툼한 돼지고기를 바삭하게 튀겨내어 겉바속촉의 진수를 보여줍니다. 씹을 때마다 터지는 육즙과 달콤한 소스의 조화는 남녀노소 누구나 좋아하는 맛이며, 든든한 에너지원이 되어줍니다.", 
+      enReason: "Thick pork cutlets deep-fried to perfection. The contrast between the crispy breadcrumbs and juicy meat makes it a crowd favorite that provides plenty of energy." },
+    { category: "japanese", image: "🥣", koName: "규동", enName: "Gyudon", 
+      koReason: "달콤 짭짤한 간장 소스에 볶은 소고기가 올라간 덮밥입니다. 조리 시간이 빨라 바쁜 일상 속에서 빠르게 영양을 챙길 수 있는 '패스트 슬로푸드'이며, 익숙하면서도 편안한 맛을 선사합니다.", 
+      enReason: "Beef bowl simmered in a sweet and savory soy sauce. A perfect 'fast-slow food' for busy days, providing quick nutrition with a familiar, comforting taste." },
+    { category: "japanese", image: "🍢", koName: "오뎅나베", enName: "Oden Nabe", 
+      koReason: "다양한 모양의 어묵과 시원한 국물이 어우러진 전골 요리입니다. 자극적이지 않고 담백한 맛이 특징이며, 따뜻한 국물이 체온을 높여주고 몸을 이완시켜 숙면을 취하는 데 도움을 줄 수 있습니다.", 
+      enReason: "A hot pot featuring various fish cakes in a light, clear broth. Its mild and clean flavor warms the body and helps relax you before a good night's sleep." },
+
+    /* 양식 (Western) */
+    { category: "western", image: "🍝", koName: "까르보나라", enName: "Carbonara", 
+      koReason: "크림과 베이컨, 치즈의 풍부한 고소함을 만끽할 수 있는 파스타입니다. 부드러운 식감은 심리적 안정감을 주며, 탄수화물과 지방의 조화는 에너지를 즉각적으로 보충해주어 활력을 북돋아 줍니다.", 
+      enReason: "A rich and creamy pasta with bacon and parmesan. The smooth texture provides a sense of comfort, while the combination of carbs and fats quickly recharges your energy levels." },
+    { category: "western", image: "🍕", koName: "페퍼로니 피자", enName: "Pepperoni Pizza", 
+      koReason: "짭짤한 페퍼로니와 녹아내린 치즈가 환상적인 하모니를 이룹니다. 다 함께 조각을 나눠 먹으며 파티 분위기를 낼 수 있는 최고의 메뉴이며, 치즈에 들어있는 트립토판은 스트레스 완화에 효과적입니다.", 
+      enReason: "A perfect harmony of salty pepperoni and melted cheese. It's the best menu for creating a festive mood with others. Cheese contains tryptophan, which helps reduce stress." },
+    { category: "western", image: "🥩", koName: "스테이크", enName: "Steak", 
+      koReason: "특별한 날이 아니더라도 스스로에게 선물을 주고 싶을 때 최적의 선택입니다. 풍부한 단백질과 철분은 근육 생성과 피로 회복에 직접적인 도움을 주며, 고기 본연의 맛에 집중하며 미식의 즐거움을 느낄 수 있습니다.", 
+      enReason: "The best treat for yourself. Rich in protein and iron, it directly aids muscle building and fatigue recovery. Focusing on the pure taste of meat provides a high-quality dining experience." },
+    { category: "western", image: "🍔", koName: "수제 버거", enName: "Handmade Burger", 
+      koReason: "신선한 채소와 두툼한 패티가 층층이 쌓여 영양학적으로도 훌륭한 한 끼입니다. 한 입에 베어 물 때 느껴지는 다양한 식감의 향연은 지루한 일상에 작은 자극이 되며, 나만의 커스텀을 즐길 수 있습니다.", 
+      enReason: "A nutritionally complete meal with fresh greens and a thick patty. The burst of textures in every bite provides a delightful sensory stimulation to your daily routine." },
+    { category: "western", image: "🥗", koName: "시저 샐러드", enName: "Caesar Salad", 
+      koReason: "과한 식사가 부담스러운 날, 가벼우면서도 아삭한 식감으로 기분 전환을 도와줍니다. 로메인 상추와 크루통, 파마산 치즈의 조화는 비타민과 무기질을 보충해주어 몸을 정화하는 느낌을 줍니다.", 
+      enReason: "A refreshing choice when you want to avoid a heavy meal. The combination of romaine, croutons, and parmesan provides essential vitamins and minerals, leaving you feeling cleansed." }
   ];
 
   function tr(key){
@@ -990,9 +1038,12 @@
     $("dinnerTime").textContent = nowStamp();
   }
 
-  function pickDinnerMenu(){
-    const idx = Math.floor(Math.random() * DINNER_MENU.length);
-    lastDinner = DINNER_MENU[idx];
+  let lastCategory = "all";
+  function pickDinnerMenu(category = "all"){
+    lastCategory = category;
+    const list = category === "all" ? DINNER_MENU : DINNER_MENU.filter(m => m.category === category);
+    const idx = Math.floor(Math.random() * list.length);
+    lastDinner = list[idx];
     renderDinner(lastDinner);
     const menuName = (currentLang === "ko") ? lastDinner.koName : lastDinner.enName;
     toast(tr("toastDinner").replace("{menu}", menuName));
