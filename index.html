@@ -1032,9 +1032,8 @@
   }
 
   function renderDinner(picked){
-    // 아이콘(이모지) 모드로 복구
-    $("dinnerImage").textContent = picked.image;
-    $("dinnerImage").innerHTML = picked.image; // 텍스트로도 확실히 설정
+    // 외부 사진 서비스를 완전히 제거하고 이모지만 사용
+    $("dinnerImage").innerHTML = `<div style="font-size: 100px; line-height: 1.2;">${picked.image}</div>`;
     
     $("dinnerMenu").textContent = (currentLang === "ko") ? picked.koName : picked.enName;
     $("dinnerReason").textContent = (currentLang === "ko") ? picked.koReason : picked.enReason;
@@ -1043,8 +1042,8 @@
 
   let lastCategory = "all";
   function pickDinnerMenu(category = "all"){
-    // category가 Event 객체인 경우 처리
-    if(category instanceof Event || typeof category !== 'string'){
+    // category가 Event 객체인 경우 또는 명시적이지 않은 경우 처리
+    if(typeof category !== 'string' || !category){
       category = lastCategory;
     }
     lastCategory = category;
