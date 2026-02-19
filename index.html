@@ -261,6 +261,15 @@
       .tarot-desc { min-height: auto; }
     }
   </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-J2NL023FYK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-J2NL023FYK');
+  </script>
 </head>
 
 <body>
@@ -302,8 +311,8 @@
         </div>
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <select id="lottoSort" style="padding:8px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text);">
-            <option value="asc">오름차순</option>
-            <option value="raw">뽑은 순서</option>
+            <option id="lottoSortAsc" value="asc">오름차순</option>
+            <option id="lottoSortRaw" value="raw">뽑은 순서</option>
           </select>
           <input id="autoCount" type="number" min="1" max="10" value="1" class="btn" style="width:88px; text-align:left; cursor:text;" />
           <button class="btn" id="autoBtn">⚡ 자동 실행</button>
@@ -312,8 +321,8 @@
 
       <div class="balls" id="lottoBalls"></div>
       <div style="margin-top:12px; color:var(--muted); font-size:13px; display:flex; gap:12px; flex-wrap:wrap;">
-        <span>결과: <b id="lottoResultText" style="color:var(--text);">-</b></span>
-        <span>마지막 추첨: <b id="lottoLastTime" style="color:var(--text);">-</b></span>
+        <span><span id="lottoResultLabel">결과</span>: <b id="lottoResultText" style="color:var(--text);">-</b></span>
+        <span><span id="lottoLastTimeLabel">마지막 추첨</span>: <b id="lottoLastTime" style="color:var(--text);">-</b></span>
       </div>
     </section>
 
@@ -432,19 +441,19 @@
       
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:20px;">
         <label>
-          <span style="font-size:12px; color:var(--muted);">출생 연도</span>
+          <span id="sajuYearLabel" style="font-size:12px; color:var(--muted);">출생 연도</span>
           <input type="number" id="sajuYear" class="btn" style="width:100%; text-align:left; cursor:text;" value="1995">
         </label>
         <label>
-          <span style="font-size:12px; color:var(--muted);">출생 월</span>
+          <span id="sajuMonthLabel" style="font-size:12px; color:var(--muted);">출생 월</span>
           <input type="number" id="sajuMonth" class="btn" style="width:100%; text-align:left; cursor:text;" value="1">
         </label>
         <label>
-          <span style="font-size:12px; color:var(--muted);">출생 일</span>
+          <span id="sajuDayLabel" style="font-size:12px; color:var(--muted);">출생 일</span>
           <input type="number" id="sajuDay" class="btn" style="width:100%; text-align:left; cursor:text;" value="1">
         </label>
         <label>
-          <span style="font-size:12px; color:var(--muted);">시간 (0~23)</span>
+          <span id="sajuTimeLabel" style="font-size:12px; color:var(--muted);">시간 (0~23)</span>
           <input type="number" id="sajuTime" class="btn" style="width:100%; text-align:left; cursor:text;" value="12">
         </label>
       </div>
@@ -452,7 +461,7 @@
       <button class="btn primary" id="sajuAnalyzeBtn" style="width:100%; justify-content:center; margin-top:20px;" onclick="analyzeSaju()">📜 사주 풀이 보기</button>
 
       <div id="sajuResult" class="card hidden" style="background:rgba(0,0,0,0.2); margin-top:20px;">
-        <h3 style="margin:0 0 10px 0; color:var(--gold);">분석 결과</h3>
+        <h3 id="sajuResultTitle" style="margin:0 0 10px 0; color:var(--gold);">분석 결과</h3>
         <div id="sajuContent" style="line-height:1.8; font-size:14px;"></div>
       </div>
     </section>
@@ -461,19 +470,19 @@
   <section class="card" style="margin-top:30px;">
     <h1 id="guideTitle">📚 지식 가이드</h1>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-top:15px;">
-      <a href="./guide-lotto.html" class="btn">🎱 로또의 확률</a>
-      <a href="./guide-dinner.html" class="btn">🧠 메뉴 선택 심리</a>
-      <a href="./guide-animal-test.html" class="btn">🤖 AI 원리</a>
-      <a href="./guide-tarot.html" class="btn">🃏 타로와 무의식</a>
+      <a id="guideLottoLink" href="./guide-lotto.html" class="btn">🎱 로또의 확률</a>
+      <a id="guideDinnerLink" href="./guide-dinner.html" class="btn">🧠 메뉴 선택 심리</a>
+      <a id="guideAnimalLink" href="./guide-animal-test.html" class="btn">🤖 AI 원리</a>
+      <a id="guideTarotLink" href="./guide-tarot.html" class="btn">🃏 타로와 무의식</a>
     </div>
   </section>
 
   <footer class="site-footer">
     <div class="footer-links">
-      <a href="./about.html">서비스 소개</a>
-      <a href="./contact.html">문의하기</a>
-      <a href="./privacy.html">개인정보처리방침</a>
-      <a href="./terms.html">이용약관</a>
+      <a id="footerAbout" href="./about.html">서비스 소개</a>
+      <a id="footerContact" href="./contact.html">문의하기</a>
+      <a id="footerPrivacy" href="./privacy.html">개인정보처리방침</a>
+      <a id="footerTerms" href="./terms.html">이용약관</a>
     </div>
     <p>© 2026 Product Build Week. All rights reserved.</p>
   </footer>
@@ -506,7 +515,11 @@ const I18N = {
     lottoDrawBtn: "🎲 번호 뽑기",
     lottoCopyBtn: "📋 복사",
     lottoResetBtn: "🧹 기록 초기화",
+    lottoSortAsc: "오름차순",
+    lottoSortRaw: "뽑은 순서",
     autoBtn: "⚡ 자동 실행",
+    lottoResultLabel: "결과",
+    lottoLastTimeLabel: "마지막 추첨",
     lottoHistoryTitle: "최근 추첨 기록",
     tarotTitle: "AI 타로 (3-Card Spread)",
     tarotInstruction: "마음을 비우고 아래 카드 중 <b>3장</b>을 선택하세요.<br>(순서대로 과거, 현재, 미래를 상징합니다)",
@@ -520,6 +533,8 @@ const I18N = {
     dinnerKoBtn: "🇰🇷 한식",
     dinnerJaBtn: "🇯🇵 일식",
     dinnerWeBtn: "🇺🇸 양식",
+    dinnerName: "메뉴를 추천해드릴게요",
+    dinnerDesc: "위 버튼을 눌러 추천을 받아보세요.",
     dinnerRefreshBtn: "🔄 다시 추천받기",
     animalTitle: "AI 동물상 테스트",
     animalSub: "얼굴 사진을 올리면 인공지능이 강아지상/고양이상을 분석합니다.<br>(사진은 서버로 전송되지 않습니다)",
@@ -527,11 +542,28 @@ const I18N = {
     animalPredictBtn: "🔎 분석하기",
     sajuTitle: "오늘의 사주 & 성향",
     sajuSub: "생년월일을 입력하면 오행과 오늘의 조언을 드립니다.",
+    sajuYearLabel: "출생 연도",
+    sajuMonthLabel: "출생 월",
+    sajuDayLabel: "출생 일",
+    sajuTimeLabel: "시간 (0~23)",
     sajuAnalyzeBtn: "📜 사주 풀이 보기",
+    sajuResultTitle: "분석 결과",
+    sajuAnimalLabel: "띠",
+    sajuElementLabel: "오행 성향",
+    sajuFortuneLabel: "오늘의 운세",
     guideTitle: "📚 지식 가이드",
+    guideLottoLink: "🎱 로또의 확률",
+    guideDinnerLink: "🧠 메뉴 선택 심리",
+    guideAnimalLink: "🤖 AI 원리",
+    guideTarotLink: "🃏 타로와 무의식",
+    footerAbout: "서비스 소개",
+    footerContact: "문의하기",
+    footerPrivacy: "개인정보처리방침",
+    footerTerms: "이용약관",
     toastPickFirst: "먼저 번호를 뽑아주세요.",
     toastCopied: "번호가 복사되었습니다!",
     toastLottoReset: "로또 기록을 초기화했습니다.",
+    toastYearRequired: "연도를 입력해주세요.",
     toastAuto: (n) => `자동 추첨 ${n}회 실행합니다.`,
     toastTarot3: "이미 3장을 모두 선택했습니다.",
     lottoEmptyHistory: "아직 추첨 기록이 없습니다.",
@@ -551,7 +583,11 @@ const I18N = {
     lottoDrawBtn: "🎲 Draw Numbers",
     lottoCopyBtn: "📋 Copy",
     lottoResetBtn: "🧹 Reset History",
+    lottoSortAsc: "Ascending",
+    lottoSortRaw: "Draw Order",
     autoBtn: "⚡ Auto Draw",
+    lottoResultLabel: "Result",
+    lottoLastTimeLabel: "Last Draw",
     lottoHistoryTitle: "Recent Draws",
     tarotTitle: "AI Tarot (3-Card Spread)",
     tarotInstruction: "Clear your mind and choose <b>3 cards</b> below.<br>(They represent past, present, and future in order)",
@@ -565,6 +601,8 @@ const I18N = {
     dinnerKoBtn: "🇰🇷 Korean",
     dinnerJaBtn: "🇯🇵 Japanese",
     dinnerWeBtn: "🇺🇸 Western",
+    dinnerName: "I can suggest a menu for you",
+    dinnerDesc: "Tap one of the buttons above to get a recommendation.",
     dinnerRefreshBtn: "🔄 Recommend Again",
     animalTitle: "AI Animal Face Test",
     animalSub: "Upload a face photo and AI will estimate a dog/cat-like type.<br>(Photos are not uploaded to our server)",
@@ -572,11 +610,28 @@ const I18N = {
     animalPredictBtn: "🔎 Analyze",
     sajuTitle: "Today's Saju & Traits",
     sajuSub: "Enter birth info to see a simple five-elements profile and advice.",
+    sajuYearLabel: "Birth Year",
+    sajuMonthLabel: "Birth Month",
+    sajuDayLabel: "Birth Day",
+    sajuTimeLabel: "Hour (0-23)",
     sajuAnalyzeBtn: "📜 View Saju Reading",
+    sajuResultTitle: "Analysis Result",
+    sajuAnimalLabel: "Zodiac",
+    sajuElementLabel: "Element Trait",
+    sajuFortuneLabel: "Today's Fortune",
     guideTitle: "📚 Knowledge Guides",
+    guideLottoLink: "🎱 Lotto Probability",
+    guideDinnerLink: "🧠 Menu Choice Psychology",
+    guideAnimalLink: "🤖 How AI Works",
+    guideTarotLink: "🃏 Tarot and the Unconscious",
+    footerAbout: "About",
+    footerContact: "Contact",
+    footerPrivacy: "Privacy Policy",
+    footerTerms: "Terms of Use",
     toastPickFirst: "Please draw numbers first.",
     toastCopied: "Numbers copied!",
     toastLottoReset: "Lotto history has been reset.",
+    toastYearRequired: "Please enter a birth year.",
     toastAuto: (n) => `Running auto draw ${n} times.`,
     toastTarot3: "You already selected 3 cards.",
     lottoEmptyHistory: "No draw history yet.",
@@ -586,27 +641,33 @@ const I18N = {
   }
 };
 
-function t(key) { return I18N[currentLang][key]; }
+function t(key) { return I18N[currentLang][key] ?? I18N.ko[key] ?? key; }
 
 function applyLanguage(lang) {
   currentLang = lang;
+  document.documentElement.lang = lang;
   const keys = [
     "brandTitle","tabLotto","tabTarot","tabDinner","tabAnimal","tabSaju",
-    "lottoTitle","lottoSub","lottoDrawBtn","lottoCopyBtn","lottoResetBtn","autoBtn","lottoHistoryTitle",
+    "lottoTitle","lottoSub","lottoDrawBtn","lottoCopyBtn","lottoResetBtn","lottoSortAsc","lottoSortRaw","autoBtn","lottoResultLabel","lottoLastTimeLabel","lottoHistoryTitle",
     "tarotTitle","tarotResetTop","tarotResetBottom",
-    "dinnerTitle","dinnerSub","dinnerAllBtn","dinnerKoBtn","dinnerJaBtn","dinnerWeBtn","dinnerRefreshBtn",
-    "animalTitle","animalSub","animalPredictBtn","sajuTitle","sajuSub","sajuAnalyzeBtn","guideTitle"
+    "dinnerTitle","dinnerSub","dinnerAllBtn","dinnerKoBtn","dinnerJaBtn","dinnerWeBtn","dinnerRefreshBtn","dinnerName","dinnerDesc",
+    "animalTitle","animalSub","animalPredictBtn","sajuTitle","sajuSub","sajuYearLabel","sajuMonthLabel","sajuDayLabel","sajuTimeLabel","sajuAnalyzeBtn","sajuResultTitle",
+    "guideTitle","guideLottoLink","guideDinnerLink","guideAnimalLink","guideTarotLink","footerAbout","footerContact","footerPrivacy","footerTerms"
   ];
   keys.forEach((k) => {
     const el = $(k);
     if (!el) return;
-    if (k === "lottoSub" || k === "animalSub") el.innerHTML = t(k);
+    if (k === "lottoSub" || k === "animalSub" || k === "dinnerName" || k === "dinnerDesc") el.innerHTML = t(k);
     else el.textContent = t(k);
   });
   $("tarotInstruction").innerHTML = t("tarotInstruction");
   $("animalPlaceholder").textContent = t("animalPlaceholder");
   $("langToggle").textContent = currentLang === "ko" ? "EN" : "KO";
   $("tarotRevealBtn").innerText = selectedIndices.length === 3 ? t("tarotReveal") : t("tarotSelect3");
+  if (currentDinner) renderDinner(currentDinner);
+  if (currentTarotReading.length) renderTarotReading();
+  if (lastAnimalPrediction && !$("animalResultArea").classList.contains("hidden")) renderAnimalResult(lastAnimalPrediction);
+  if (lastSajuResult) renderSajuResult(lastSajuResult);
 }
 
 /* ================= 1. TAB SWITCHING ================= */
@@ -731,31 +792,32 @@ $("autoBtn").onclick = async () => {
 
 /* ================= 3. TAROT LOGIC (3-Card Spread) ================= */
 const TAROT_CARDS = [
-  {name:"바보", en:"The Fool", icon:"🃏", img:"./assets/tarot/00.jpg", desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요."},
-  {name:"마법사", en:"The Magician", icon:"🪄", img:"./assets/tarot/01.jpg", desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다."},
-  {name:"여사제", en:"The High Priestess", icon:"📖", img:"./assets/tarot/02.jpg", desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요."},
-  {name:"여황제", en:"The Empress", icon:"👑", img:"./assets/tarot/03.jpg", desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다."},
-  {name:"황제", en:"The Emperor", icon:"🏛️", img:"./assets/tarot/04.jpg", desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다."},
-  {name:"교황", en:"The Hierophant", icon:"⛪", img:"./assets/tarot/05.jpg", desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다."},
-  {name:"연인", en:"The Lovers", icon:"❤️", img:"./assets/tarot/06.jpg", desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요."},
-  {name:"전차", en:"The Chariot", icon:"⚔️", img:"./assets/tarot/07.jpg", desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다."},
-  {name:"힘", en:"Strength", icon:"💪", img:"./assets/tarot/08.jpg", desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다."},
-  {name:"은둔자", en:"The Hermit", icon:"🧘", img:"./assets/tarot/09.jpg", desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다."},
-  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", img:"./assets/tarot/10.jpg", desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요."},
-  {name:"정의", en:"Justice", icon:"⚖️", img:"./assets/tarot/11.jpg", desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요."},
-  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", img:"./assets/tarot/12.jpg", desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요."},
-  {name:"죽음", en:"Death", icon:"💀", img:"./assets/tarot/13.jpg", desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요."},
-  {name:"절제", en:"Temperance", icon:"🥛", img:"./assets/tarot/14.jpg", desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다."},
-  {name:"악마", en:"The Devil", icon:"😈", img:"./assets/tarot/15.jpg", desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요."},
-  {name:"탑", en:"The Tower", icon:"⚡", img:"./assets/tarot/16.jpg", desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다."},
-  {name:"별", en:"The Star", icon:"⭐", img:"./assets/tarot/17.jpg", desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요."},
-  {name:"달", en:"The Moon", icon:"🌙", img:"./assets/tarot/18.jpg", desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요."},
-  {name:"태양", en:"The Sun", icon:"☀️", img:"./assets/tarot/19.jpg", desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다."},
-  {name:"심판", en:"Judgement", icon:"🎺", img:"./assets/tarot/20.jpg", desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요."},
-  {name:"세계", en:"The World", icon:"🌍", img:"./assets/tarot/21.jpg", desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다."}
+  {name:"바보", en:"The Fool", icon:"🃏", img:"./assets/tarot/00.jpg", desc:"새로운 시작, 순수함, 자유로운 모험. 두려움 없이 첫발을 내디디세요.", descEn:"A new beginning, innocence, and free adventure. Take your first step without fear."},
+  {name:"마법사", en:"The Magician", icon:"🪄", img:"./assets/tarot/01.jpg", desc:"창조적인 힘, 잠재력, 자신감. 당신은 이미 필요한 능력을 갖추고 있습니다.", descEn:"Creative power, potential, and confidence. You already have what you need."},
+  {name:"여사제", en:"The High Priestess", icon:"📖", img:"./assets/tarot/02.jpg", desc:"직관, 신비, 내면의 지혜. 행동하기보다 마음의 소리를 들으세요.", descEn:"Intuition, mystery, and inner wisdom. Listen to your inner voice before acting."},
+  {name:"여황제", en:"The Empress", icon:"👑", img:"./assets/tarot/03.jpg", desc:"풍요, 모성, 자연의 결실. 주변 사람들과 따뜻함을 나누기 좋은 시기입니다.", descEn:"Abundance, nurturing, and growth. It is a good time to share warmth with others."},
+  {name:"황제", en:"The Emperor", icon:"🏛️", img:"./assets/tarot/04.jpg", desc:"권위, 구조, 리더십. 감정보다는 이성적이고 체계적인 계획이 필요합니다.", descEn:"Authority, structure, and leadership. A rational and organized plan is needed."},
+  {name:"교황", en:"The Hierophant", icon:"⛪", img:"./assets/tarot/05.jpg", desc:"전통, 교육, 영적인 조언. 멘토나 선배의 조언이 도움이 될 것입니다.", descEn:"Tradition, learning, and spiritual guidance. Advice from a mentor can help."},
+  {name:"연인", en:"The Lovers", icon:"❤️", img:"./assets/tarot/06.jpg", desc:"사랑, 조화, 중요한 선택. 가슴이 시키는 대로, 진심을 다해 선택하세요.", descEn:"Love, harmony, and meaningful choices. Choose sincerely from your heart."},
+  {name:"전차", en:"The Chariot", icon:"⚔️", img:"./assets/tarot/07.jpg", desc:"승리, 의지, 장애물 돌파. 목표를 향해 거침없이 전진해야 할 때입니다.", descEn:"Victory, willpower, and momentum. Push forward boldly toward your goal."},
+  {name:"힘", en:"Strength", icon:"💪", img:"./assets/tarot/08.jpg", desc:"용기, 인내, 부드러운 힘. 강압적인 태도보다 포용력이 더 큰 힘을 발휘합니다.", descEn:"Courage, patience, and gentle strength. Compassion is stronger than force."},
+  {name:"은둔자", en:"The Hermit", icon:"🧘", img:"./assets/tarot/09.jpg", desc:"성찰, 고독, 진리 탐구. 잠시 멈춰 서서 자신을 돌아보는 시간이 필요합니다.", descEn:"Reflection, solitude, and seeking truth. Pause and take time to look inward."},
+  {name:"운명의 수레바퀴", en:"Wheel of Fortune", icon:"🎡", img:"./assets/tarot/10.jpg", desc:"변화, 기회, 운명적인 흐름. 상황이 바뀌고 있습니다. 흐름에 몸을 맡기세요.", descEn:"Change, opportunity, and cycles of fate. Circumstances are shifting; go with the flow."},
+  {name:"정의", en:"Justice", icon:"⚖️", img:"./assets/tarot/11.jpg", desc:"공정함, 진실, 균형. 감정에 치우치지 말고 객관적인 시각을 유지하세요.", descEn:"Fairness, truth, and balance. Stay objective rather than emotional."},
+  {name:"매달린 사람", en:"The Hanged Man", icon:"🙃", img:"./assets/tarot/12.jpg", desc:"희생, 새로운 관점, 정체. 억지로 움직이려 하지 말고 다른 각도에서 상황을 보세요.", descEn:"Pause, sacrifice, and a new perspective. Stop forcing it and see it differently."},
+  {name:"죽음", en:"Death", icon:"💀", img:"./assets/tarot/13.jpg", desc:"종결, 새로운 시작, 변화. 끝은 곧 새로운 시작입니다. 과거를 놓아주세요.", descEn:"Endings, renewal, and transformation. Let go of the past to begin anew."},
+  {name:"절제", en:"Temperance", icon:"🥛", img:"./assets/tarot/14.jpg", desc:"균형, 조화, 인내. 극단을 피하고 중용을 지키는 것이 해결책입니다.", descEn:"Balance, harmony, and patience. Avoid extremes and seek moderation."},
+  {name:"악마", en:"The Devil", icon:"😈", img:"./assets/tarot/15.jpg", desc:"유혹, 집착, 구속. 나를 옭아매는 부정적인 생각이나 습관에서 벗어나세요.", descEn:"Temptation, attachment, and limitation. Break free from unhealthy patterns."},
+  {name:"탑", en:"The Tower", icon:"⚡", img:"./assets/tarot/16.jpg", desc:"갑작스런 변화, 붕괴, 깨달음. 견고해 보이던 것이 무너질 수 있지만, 이는 성장의 기회입니다.", descEn:"Sudden upheaval and awakening. What falls apart can become your growth point."},
+  {name:"별", en:"The Star", icon:"⭐", img:"./assets/tarot/17.jpg", desc:"희망, 영감, 치유. 어두운 밤하늘에도 별은 빛납니다. 긍정적인 미래를 꿈꾸세요.", descEn:"Hope, inspiration, and healing. Keep faith in a bright future."},
+  {name:"달", en:"The Moon", icon:"🌙", img:"./assets/tarot/18.jpg", desc:"불안, 환상, 무의식. 눈에 보이는 것이 전부가 아닙니다. 내면의 두려움을 직시하세요.", descEn:"Uncertainty, illusion, and the subconscious. Face your hidden fears."},
+  {name:"태양", en:"The Sun", icon:"☀️", img:"./assets/tarot/19.jpg", desc:"성공, 활력, 기쁨. 모든 것이 명확해지고 긍정적인 에너지가 넘치는 시기입니다.", descEn:"Success, vitality, and joy. Clarity and positive energy are on your side."},
+  {name:"심판", en:"Judgement", icon:"🎺", img:"./assets/tarot/20.jpg", desc:"부활, 보상, 결단. 과거의 노력에 대한 보상이 찾아옵니다. 중요한 결정을 내리세요.", descEn:"Awakening, reward, and decisions. Your past efforts can now pay off."},
+  {name:"세계", en:"The World", icon:"🌍", img:"./assets/tarot/21.jpg", desc:"완성, 통합, 성취. 하나의 여정이 성공적으로 마무리되었습니다. 완벽한 타이밍입니다.", descEn:"Completion, integration, and achievement. A journey closes at the right time."}
 ];
 
 let selectedIndices = [];
+let currentTarotReading = [];
 
 function initTarot() {
   const deck = $("tarotDeck");
@@ -797,27 +859,36 @@ $("tarotRevealBtn").onclick = () => {
   // 더 재미를 위해: 사용자가 고른 인덱스 -> 셔플된 배열의 인덱스로 매핑
   const shuffledData = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
   
-  selectedIndices.forEach((_, i) => {
-    const cardData = shuffledData[i]; // 랜덤성 부여
+  currentTarotReading = selectedIndices.map((_, i) => shuffledData[i]);
+  renderTarotReading();
+};
+
+function renderTarotReading() {
+  currentTarotReading.forEach((cardData, i) => {
+    const cardName = currentLang === "ko" ? cardData.name : cardData.en;
+    const cardDesc = currentLang === "ko" ? cardData.desc : cardData.descEn;
     const slot = $(`tarotCard${i}`);
     
     // 데이터 채우기
-    slot.querySelector(".tarot-icon-large").innerHTML = `<img class="tarot-image" loading="lazy" src="${cardData.img}" alt="${cardData.name} 카드 이미지" onerror="this.remove(); this.parentElement.textContent='${cardData.icon}'; this.parentElement.style.fontSize='42px';">`;
-    slot.querySelector(".tarot-name").textContent = cardData.name;
-    $(`tarotDesc${i}`).innerText = cardData.desc;
+    slot.querySelector(".tarot-icon-large").innerHTML = `<img class="tarot-image" loading="lazy" src="${cardData.img}" alt="${cardName} card image" onerror="this.remove(); this.parentElement.textContent='${cardData.icon}'; this.parentElement.style.fontSize='42px';">`;
+    slot.querySelector(".tarot-name").textContent = cardName;
+    $(`tarotDesc${i}`).innerText = cardDesc;
 
     // 뒤집기 애니메이션 (순차적)
-    setTimeout(() => {
-      slot.classList.add("flipped");
-    }, i * 400 + 200);
+    if (!slot.classList.contains("flipped")) {
+      setTimeout(() => {
+        slot.classList.add("flipped");
+      }, i * 400 + 200);
+    }
   });
-};
+}
 
 function resetTarot() {
   $("tarotResult").classList.add("hidden");
   $("tarotDeck").style.display = "grid";
   $("tarotControls").style.display = "block";
   $("tarotInstruction").style.display = "block";
+  currentTarotReading = [];
   
   // 카드 초기화
   document.querySelectorAll(".tarot-card").forEach(el => el.classList.remove("flipped"));
@@ -826,33 +897,45 @@ function resetTarot() {
 
 /* ================= 4. DINNER LOGIC (복구) ================= */
 const DINNER_DATA = [
-  {cat:'korean', icon:'🍲', name:'김치찌개', desc:'한국인의 소울푸드. 잘 익은 김치와 돼지고기의 조화가 일품입니다.'},
-  {cat:'korean', icon:'🥓', name:'삼겹살', desc:'지글지글 굽는 소리부터 맛있는 국민 외식 메뉴. 소주 한 잔 어떠세요?'},
-  {cat:'korean', icon:'🥘', name:'부대찌개', desc:'햄, 소시지, 라면사리의 풍성한 맛. 여럿이 함께 먹기 좋습니다.'},
-  {cat:'japanese', icon:'🍣', name:'초밥', desc:'신선한 생선과 밥의 조화. 깔끔하고 든든한 한 끼입니다.'},
-  {cat:'japanese', icon:'🍜', name:'라멘', desc:'진한 육수와 쫄깃한 면발. 따뜻한 국물이 생각날 때 최고입니다.'},
-  {cat:'japanese', icon:'🍛', name:'돈카츠', desc:'바삭한 튀김옷과 두툼한 고기. 남녀노소 누구나 좋아하는 메뉴.'},
-  {cat:'western', icon:'🍕', name:'피자', desc:'치즈가 듬뿍 들어간 피자. 친구들과 나눠 먹으며 파티 분위기를 내보세요.'},
-  {cat:'western', icon:'🍝', name:'파스타', desc:'크림, 토마토, 오일 등 취향대로 골라 즐기는 이탈리아의 맛.'},
-  {cat:'western', icon:'🍔', name:'수제버거', desc:'육즙 가득한 패티와 신선한 야채. 간편하지만 든든합니다.'},
+  {cat:'korean', icon:'🍲', name:'김치찌개', enName:'Kimchi Stew', desc:'한국인의 소울푸드. 잘 익은 김치와 돼지고기의 조화가 일품입니다.', enDesc:'A Korean comfort classic with aged kimchi and pork.'},
+  {cat:'korean', icon:'🥓', name:'삼겹살', enName:'Samgyeopsal', desc:'지글지글 굽는 소리부터 맛있는 국민 외식 메뉴. 소주 한 잔 어떠세요?', enDesc:'Grilled pork belly, a popular social meal with rich flavor.'},
+  {cat:'korean', icon:'🥘', name:'부대찌개', enName:'Budae Jjigae', desc:'햄, 소시지, 라면사리의 풍성한 맛. 여럿이 함께 먹기 좋습니다.', enDesc:'A hearty spicy stew with ham, sausage, and noodles.'},
+  {cat:'japanese', icon:'🍣', name:'초밥', enName:'Sushi', desc:'신선한 생선과 밥의 조화. 깔끔하고 든든한 한 끼입니다.', enDesc:'Fresh fish and rice for a clean and satisfying meal.'},
+  {cat:'japanese', icon:'🍜', name:'라멘', enName:'Ramen', desc:'진한 육수와 쫄깃한 면발. 따뜻한 국물이 생각날 때 최고입니다.', enDesc:'Rich broth and springy noodles, perfect for a warm meal.'},
+  {cat:'japanese', icon:'🍛', name:'돈카츠', enName:'Tonkatsu', desc:'바삭한 튀김옷과 두툼한 고기. 남녀노소 누구나 좋아하는 메뉴.', enDesc:'Crispy breaded pork cutlet loved by all ages.'},
+  {cat:'western', icon:'🍕', name:'피자', enName:'Pizza', desc:'치즈가 듬뿍 들어간 피자. 친구들과 나눠 먹으며 파티 분위기를 내보세요.', enDesc:'Cheesy pizza that is perfect to share with friends.'},
+  {cat:'western', icon:'🍝', name:'파스타', enName:'Pasta', desc:'크림, 토마토, 오일 등 취향대로 골라 즐기는 이탈리아의 맛.', enDesc:'Italian pasta in cream, tomato, or oil-based sauces.'},
+  {cat:'western', icon:'🍔', name:'수제버거', enName:'Handmade Burger', desc:'육즙 가득한 패티와 신선한 야채. 간편하지만 든든합니다.', enDesc:'A juicy burger with fresh veggies, simple but filling.'},
 ];
 let lastDinnerCat = 'all';
+let currentDinner = null;
+
+function renderDinner(picked) {
+  $("dinnerIcon").innerText = picked.icon;
+  $("dinnerName").innerText = currentLang === "ko" ? picked.name : picked.enName;
+  $("dinnerDesc").innerText = currentLang === "ko" ? picked.desc : picked.enDesc;
+}
 
 function recommendDinner(cat) {
   if(cat) lastDinnerCat = cat;
   else cat = lastDinnerCat;
 
   const list = cat === 'all' ? DINNER_DATA : DINNER_DATA.filter(d => d.cat === cat);
-  const picked = list[Math.floor(Math.random() * list.length)];
-
-  $("dinnerIcon").innerText = picked.icon;
-  $("dinnerName").innerText = picked.name;
-  $("dinnerDesc").innerText = picked.desc;
+  currentDinner = list[Math.floor(Math.random() * list.length)];
+  renderDinner(currentDinner);
 }
 
 /* ================= 5. ANIMAL FACE (Teachable Machine) ================= */
 let animalModel;
+let lastAnimalPrediction = null;
 const URL_MODEL = "https://teachablemachine.withgoogle.com/models/8lfLdOYC9/"; // 예시 모델
+
+function renderAnimalResult(result) {
+  const animalName = currentLang === "ko" ? result.nameKo : result.nameEn;
+  $("animalResultText").innerText = t("animalResult")(animalName);
+  $("animalConfText").innerText = t("animalConf")(result.conf);
+  $("animalResultArea").classList.remove("hidden");
+}
 
 $("animalInput").onchange = function(e) {
   const file = e.target.files[0];
@@ -864,6 +947,7 @@ $("animalInput").onchange = function(e) {
     $("animalPreview").style.display = "block";
     $("animalPlaceholder").style.display = "none";
     $("animalPredictBtn").disabled = false;
+    lastAnimalPrediction = null;
     $("animalResultArea").classList.add("hidden");
   };
   reader.readAsDataURL(file);
@@ -881,46 +965,91 @@ $("animalPredictBtn").onclick = async function() {
   
   const best = prediction[0];
   const conf = (best.probability * 100).toFixed(1);
-  
-  $("animalResultText").innerText = t("animalResult")(best.className);
-  $("animalConfText").innerText = t("animalConf")(conf);
-  $("animalResultArea").classList.remove("hidden");
+  const labels = {
+    "강아지상": "Dog-like",
+    "고양이상": "Cat-like",
+    "토끼상": "Rabbit-like",
+    "여우상": "Fox-like"
+  };
+  lastAnimalPrediction = {
+    nameKo: best.className,
+    nameEn: labels[best.className] || best.className,
+    conf
+  };
+  renderAnimalResult(lastAnimalPrediction);
 };
 
 /* ================= 6. SAJU LOGIC ================= */
+let lastSajuResult = null;
+const SAJU_ANIMALS_KO = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
+const SAJU_ANIMALS_EN = ["Monkey","Rooster","Dog","Pig","Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Goat"];
+
+function renderSajuResult(result) {
+  const animal = currentLang === "ko" ? result.animalKo : result.animalEn;
+  const element = currentLang === "ko" ? result.elementKo : result.elementEn;
+  const advice = currentLang === "ko" ? result.adviceKo : result.adviceEn;
+  const suffix = currentLang === "ko" ? "띠" : "";
+  $("sajuContent").innerHTML = `
+    <b>${t("sajuAnimalLabel")}:</b> ${animal}${suffix}<br>
+    <b>${t("sajuElementLabel")}:</b> ${element}<br>
+    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">
+    <b>${t("sajuFortuneLabel")}:</b><br>${advice}
+  `;
+  $("sajuResult").classList.remove("hidden");
+}
+
 function analyzeSaju() {
   const y = parseInt($("sajuYear").value);
-  if(!y) return showToast("연도를 입력해주세요");
+  if(!y) return showToast(t("toastYearRequired"));
 
-  const animals = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
-  const animal = animals[y % 12];
-  
-  const elements = ["목(나무)", "화(불)", "토(흙)", "금(쇠)", "수(물)"];
+  const animalKo = SAJU_ANIMALS_KO[y % 12];
+  const animalEn = SAJU_ANIMALS_EN[y % 12];
+
   // 간단 로직: 연도 끝자리에 따른 오행 (실제 명리학 약식)
   const lastDigit = y % 10;
-  let element = "";
-  if(lastDigit===0 || lastDigit===1) element = "금(Metal) - 결단력과 의리";
-  else if(lastDigit===2 || lastDigit===3) element = "수(Water) - 지혜와 유연함";
-  else if(lastDigit===4 || lastDigit===5) element = "목(Wood) - 성장과 의욕";
-  else if(lastDigit===6 || lastDigit===7) element = "화(Fire) - 열정과 예의";
-  else element = "토(Earth) - 신뢰와 포용";
+  let elementKo = "";
+  let elementEn = "";
+  if(lastDigit===0 || lastDigit===1) {
+    elementKo = "금(Metal) - 결단력과 의리";
+    elementEn = "Metal - decisiveness and loyalty";
+  } else if(lastDigit===2 || lastDigit===3) {
+    elementKo = "수(Water) - 지혜와 유연함";
+    elementEn = "Water - wisdom and flexibility";
+  } else if(lastDigit===4 || lastDigit===5) {
+    elementKo = "목(Wood) - 성장과 의욕";
+    elementEn = "Wood - growth and drive";
+  } else if(lastDigit===6 || lastDigit===7) {
+    elementKo = "화(Fire) - 열정과 예의";
+    elementEn = "Fire - passion and vitality";
+  } else {
+    elementKo = "토(Earth) - 신뢰와 포용";
+    elementEn = "Earth - trust and stability";
+  }
 
-  const advices = [
+  const advicesKo = [
     "오늘은 서두르지 말고 차분히 계획을 점검하세요.",
     "주변 사람들에게 베푼 친절이 큰 행운으로 돌아옵니다.",
     "새로운 도전을 하기에 아주 좋은 기운이 들어와 있습니다.",
     "건강 관리에 유의하고 충분한 휴식을 취하는 것이 좋습니다.",
     "예상치 못한 곳에서 귀인을 만날 수 있으니 대인관계에 힘쓰세요."
   ];
-  const advice = advices[Math.floor(Math.random() * advices.length)];
-
-  $("sajuContent").innerHTML = `
-    <b>띠:</b> ${animal}띠<br>
-    <b>오행 성향:</b> ${element}<br>
-    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:10px 0;">
-    <b>오늘의 운세:</b><br>${advice}
-  `;
-  $("sajuResult").classList.remove("hidden");
+  const advicesEn = [
+    "Move calmly today and review your plans before rushing.",
+    "Kindness you gave to others can return as good luck.",
+    "This is a strong day to start a new challenge.",
+    "Pay attention to your health and get enough rest.",
+    "A helpful person may appear unexpectedly, so stay social."
+  ];
+  const idx = Math.floor(Math.random() * advicesKo.length);
+  lastSajuResult = {
+    animalKo,
+    animalEn,
+    elementKo,
+    elementEn,
+    adviceKo: advicesKo[idx],
+    adviceEn: advicesEn[idx]
+  };
+  renderSajuResult(lastSajuResult);
 }
 
 /* ================= COMMON ================= */
