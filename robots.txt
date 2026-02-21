@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://koosb72-lab.github.io/product-build-week/sitemap.xml
